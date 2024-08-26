@@ -1,0 +1,101 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home | Review Film</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-[#f6f8fd]">
+    <header>
+      <nav class="flex items-center justify-between p-4 bg-white shadow-md">
+        <div class="flex items-center space-x-4">
+          <img src="./film.png" alt="" class="h-10 w-10" />
+          <h1 class="text-xl font-bold text-gray-800">Title</h1>
+        </div>
+        <form action="" method="post" class="flex space-x-2">
+          <input type="text" class="border rounded px-2 py-1" />
+          <button type="submit" class="bg-blue-500 text-white px-4 py-1 rounded">Search</button>
+        </form>
+      </nav>
+    </header>
+    <main class="p-4">
+      <!-- region select -->
+      <div class="flex space-x-4 mb-6">
+        <h2 class="text-lg font-semibold">Jepang</h2>
+        <h2 class="text-lg font-semibold">Korea</h2>
+        <h2 class="text-lg font-semibold">China</h2>
+      </div>
+      <!-- filter -->
+      <div class="mb-6">
+        <form action="" method="post" class="space-y-4">
+          <div>
+            <h2 class="text-lg font-semibold">Filtered by:</h2>
+            <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+              <select name="year" class="border rounded px-2 py-1">
+                <option value="">-- Year --</option>
+                <option value="2021">2021</option>
+                <option value="2020">2020</option>
+                <option value="2019">2019</option>
+                <option value="2018">2018</option>
+                <option value="2017">2017</option>
+              </select>
+              <select name="genre" class="border rounded px-2 py-1">
+                <option value="">-- Genre --</option>
+                <option value="action">Action</option>
+                <option value="comedy">Comedy</option>
+                <option value="drama">Drama</option>
+                <option value="horror">Horror</option>
+                <option value="romance">Romance</option>
+              </select>
+              <select name="status" class="border rounded px-2 py-1">
+                <option value="">-- Status --</option>
+                <option value="ongoing">Ongoing</option>
+                <option value="completed">Completed</option>
+              </select>
+              <select name="availability" class="border rounded px-2 py-1">
+                <option value="">-- Availability --</option>
+                <option value="free">Free</option>
+                <option value="paid">Paid</option>
+              </select>
+              <select name="award" class="border rounded px-2 py-1">
+                <option value="">-- Award --</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <h2 class="text-lg font-semibold">Sort by:</h2>
+            <div class="grid grid-cols-2 gap-4">
+              <select name="sort" class="border rounded px-2 py-1">
+                <option value="">-- Sort --</option>
+                <option value="alphabet">Alphabet</option>
+                <option value="year">Year</option>
+                <option value="genre">Genre</option>
+                <option value="rating">Rating</option>
+                <option value="title">Title</option>
+              </select>
+              <select name="order" class="border rounded px-2 py-1">
+                <option value="">-- Order --</option>
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="bg-blue-500 text-white px-4 py-1 rounded">Filter</button>
+        </form>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div class="bg-white shadow-md rounded p-4">
+          <img src="./pemandangan.jpg" alt="" class="h-48 w-full object-cover rounded" />
+          <h2 class="text-lg font-bold mt-2">Title</h2>
+          <p class="text-sm text-gray-600">Year</p>
+          <p class="text-sm text-gray-600">Genre</p>
+          <p class="text-sm text-gray-600">Rate</p>
+          <p class="text-sm text-gray-600">Views</p>
+        </div>
+      </div>
+    </main>
+  </body>
+  
+</html>
