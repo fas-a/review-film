@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tables Countries - DramaKu Dashboard</title>
+    <title>Tables Users - DramaKu</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
@@ -61,12 +61,8 @@
           </ul>
           <ul>
             <li class="relative px-6 py-3">
-              <span
-                class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
-                aria-hidden="true"
-              ></span>
               <a
-                class="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200 dark:text-gray-100"
+                class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                 href="cmscountries.html"
               >
                 <svg
@@ -180,8 +176,12 @@
               </a>
             </li>
             <li class="relative px-6 py-3">
+              <span
+                class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
+                aria-hidden="true"
+              ></span>
               <a
-                class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                class="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200 dark:text-gray-100"
                 href="cmsusers.html"
               >
                 <svg
@@ -260,7 +260,7 @@
                 <input
                   class="w-full pl-8 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input"
                   type="text"
-                  placeholder="Search for country"
+                  placeholder="Search for users"
                   aria-label="Search"
                 />
               </div>
@@ -477,26 +477,43 @@
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
-              Tables Countries
+              Tables Users
             </h2>
 
-            <!-- Form Countries -->
+            <!-- Users Form -->
             <div class="w-full overflow-hidden rounded-lg shadow-xs">
               <div class="w-full overflow-x-auto">
                 <form
-                  id="countryForm"
+                  id="usersForm"
                   class="p-6 bg-white rounded-lg shadow-md dark:bg-gray-800"
                 >
                   <div class="mb-4">
                     <label
-                      for="country"
+                      for="username"
                       class="block text-sm font-medium text-gray-700 dark:text-gray-400"
-                      >Country</label
                     >
+                      Username
+                    </label>
                     <input
                       type="text"
-                      id="country"
-                      name="country"
+                      id="username"
+                      name="username"
+                      required
+                      class="w-full px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div class="mb-4">
+                    <label
+                      for="email"
+                      class="block text-sm font-medium text-gray-700 dark:text-gray-400"
+                    >
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
                       required
                       class="w-full px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
                     />
@@ -512,7 +529,7 @@
               </div>
             </div>
 
-            <!-- Table Section -->
+            <!-- Table Users -->
             <div class="w-full overflow-hidden rounded-lg shadow-xs mt-8">
               <div class="w-full overflow-x-auto">
                 <table class="w-full whitespace-no-wrap">
@@ -521,7 +538,8 @@
                       class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                     >
                       <th class="px-4 py-3">#</th>
-                      <th class="px-4 py-3">Countries</th>
+                      <th class="px-4 py-3">Username</th>
+                      <th class="px-4 py-3">Email</th>
                       <th class="px-4 py-3">Actions</th>
                     </tr>
                   </thead>
@@ -536,7 +554,8 @@
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">Japan</td>
+                      <td class="px-4 py-3 text-sm">anita1</td>
+                      <td class="px-4 py-3 text-sm">anita@gmail.com</td>
                       <td class="px-4 py-3">
                         <div class="flex items-center space-x-4 text-sm">
                           <button
@@ -587,58 +606,8 @@
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">Korea</td>
-                      <td class="px-4 py-3">
-                        <div class="flex items-center space-x-4 text-sm">
-                          <button
-                            class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
-                            aria-label="Edit"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              class="w-5 h-5"
-                              aria-hidden="true"
-                              fill="currentColor"
-                              viewBox="0 0 512 512"
-                            >
-                              <path
-                                d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z"
-                              />
-                            </svg>
-                            <span class="ml-2">Edit</span>
-                          </button>
-
-                          <button
-                            class="flex items-center justify-between px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
-                            aria-label="Delete"
-                          >
-                            <svg
-                              class="w-5 h-5"
-                              aria-hidden="true"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path
-                                fill-rule="evenodd"
-                                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                clip-rule="evenodd"
-                              ></path>
-                            </svg>
-                            <span class="ml-2">Delete</span>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-
-                    <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3">
-                        <div class="flex items-center text-sm">
-                          <div>
-                            <p class="font-semibold">3</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="px-4 py-3 text-sm">China</td>
+                      <td class="px-4 py-3 text-sm">borang</td>
+                      <td class="px-4 py-3 text-sm">bora@yahoo.com</td>
                       <td class="px-4 py-3">
                         <div class="flex items-center space-x-4 text-sm">
                           <button
@@ -785,124 +754,111 @@
       </div>
     </div>
     <script>
-      // Data dummy negara
-      let countries = [
-        { id: 1, name: "Japan" },
-        { id: 2, name: "Korea" },
-        { id: 3, name: "China" },
-      ];
+      let editingRow = null; // Variable to store the row being edited
 
-      // Fungsi untuk merender ulang tabel
-      function renderTable() {
-        const tbody = document.querySelector("tbody");
-        tbody.innerHTML = ""; // Kosongkan tabel sebelum dirender ulang
-
-        countries.forEach((country, index) => {
-          const row = document.createElement("tr");
-          row.classList.add("text-gray-700", "dark:text-gray-400");
-
-          row.innerHTML = `
-            <td class="px-4 py-3">
-              <div class="flex items-center text-sm">
-                <div>
-                  <p class="font-semibold">${index + 1}</p>
-                </div>
-              </div>
-            </td>
-            <td class="px-4 py-3 text-sm">${country.name}</td>
-            <td class="px-4 py-3">
-              <div class="flex items-center space-x-4 text-sm">
-                <button
-                  class="edit-btn flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
-                  aria-label="Edit"
-                  data-id="${country.id}"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="w-5 h-5"
-                    aria-hidden="true"
-                    fill="currentColor"
-                    viewBox="0 0 512 512"
-                  >
-                    <path
-                      d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z"
-                    />
-                  </svg>
-                  <span class="ml-2">Edit</span>
-                </button>
-    
-                <button
-                  class="delete-btn flex items-center justify-between px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
-                  aria-label="Delete"
-                  data-id="${country.id}"
-                >
-                  <svg
-                    class="w-5 h-5"
-                    aria-hidden="true"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                      clip-rule="evenodd"
-                    ></path>
-                  </svg>
-                  <span class="ml-2">Delete</span>
-                </button>
-              </div>
-            </td>
-          `;
-
-          tbody.appendChild(row);
-        });
+      // Fungsi untuk mengisi formulir dengan data yang ada di baris tabel
+      function populateForm(row) {
+        const cells = row.getElementsByTagName("td");
+        document.getElementById("username").value = cells[1].innerText;
+        document.getElementById("email").value = cells[2].innerText;
+        editingRow = row; // Save reference to the row being edited
       }
 
-      // Inisialisasi tabel
-      renderTable();
+      // Fungsi untuk menambahkan event listener ke tombol edit dan delete
+      function addRowListeners(row) {
+        // Event listener untuk tombol Edit
+        row
+          .querySelector('button[aria-label="Edit"]')
+          .addEventListener("click", function () {
+            populateForm(row); // Isi formulir dengan data baris yang ada
+          });
 
-      // Event listener untuk form submit
+        // Event listener untuk tombol Delete
+        row
+          .querySelector('button[aria-label="Delete"]')
+          .addEventListener("click", function () {
+            row.parentNode.removeChild(row); // Hapus baris dari tabel
+            updateRowNumbers(); // Perbarui nomor urut setelah penghapusan
+          });
+      }
+
+      // Menangani pengiriman formulir
       document
-        .getElementById("countryForm")
+        .getElementById("usersForm")
         .addEventListener("submit", function (e) {
-          e.preventDefault();
+          e.preventDefault(); // Mencegah form dari reload halaman
 
-          const countryName = document.getElementById("country").value;
-          if (countryName) {
-            const newCountry = {
-              id: countries.length + 1,
-              name: countryName,
-            };
-            countries.push(newCountry);
-            renderTable();
-            document.getElementById("country").value = ""; // Kosongkan input setelah submit
+          // Mengambil nilai dari input formulir
+          const username = document.getElementById("username").value;
+          const email = document.getElementById("email").value;
+
+          // Memastikan semua field diisi
+          if (!username || !email) {
+            alert("Please fill out all fields.");
+            return;
           }
+
+          const table = document.querySelector("table tbody");
+
+          if (editingRow) {
+            // Update the row being edited
+            const cells = editingRow.getElementsByTagName("td");
+            cells[1].innerText = username;
+            cells[2].innerText = email;
+            editingRow = null; // Reset editing row
+          } else {
+            // Membuat baris tabel baru dengan data dari formulir
+            const newRow = document.createElement("tr");
+            newRow.classList.add("text-gray-700", "dark:text-gray-400");
+            newRow.innerHTML = `
+                  <td class="px-4 py-3">
+                      <div class="flex items-center text-sm">
+                          <div>
+                              <p class="font-semibold">${
+                                table.rows.length + 1
+                              }</p>
+                          </div>
+                      </div>
+                  </td>
+                  <td class="px-4 py-3 text-sm">${username}</td>
+                  <td class="px-4 py-3 text-sm">${email}</td>
+                  <td class="px-4 py-3">
+                      <div class="flex items-center space-x-4 text-sm">
+                          <button class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue" aria-label="Edit">
+                              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 512 512">
+                                  <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z"/>
+                              </svg>
+                              <span class="ml-2">Edit</span>
+                          </button>
+  
+                          <button class="flex items-center justify-between px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:shadow-outline-red" aria-label="Delete">
+                              <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                              </svg>
+                              <span class="ml-2">Delete</span>
+                          </button>
+                      </div>
+                  </td>
+              `;
+
+            // Menambah baris baru ke tabel
+            table.appendChild(newRow);
+
+            // Menambah event listener untuk tombol edit dan delete pada baris baru
+            addRowListeners(newRow);
+          }
+
+          // Mengosongkan input setelah submit
+          document.getElementById("usersForm").reset();
         });
 
-      // Event listener untuk tombol Edit dan Delete
-      document.querySelector("tbody").addEventListener("click", function (e) {
-        if (e.target.closest(".edit-btn")) {
-          const id = parseInt(
-            e.target.closest(".edit-btn").getAttribute("data-id")
-          );
-          const country = countries.find((c) => c.id === id);
-          if (country) {
-            const newCountryName = prompt("Edit country name:", country.name);
-            if (newCountryName) {
-              country.name = newCountryName;
-              renderTable();
-            }
-          }
-        }
-
-        if (e.target.closest(".delete-btn")) {
-          const id = parseInt(
-            e.target.closest(".delete-btn").getAttribute("data-id")
-          );
-          countries = countries.filter((c) => c.id !== id);
-          renderTable();
-        }
-      });
+      // Fungsi untuk memperbarui nomor urut baris setelah penghapusan
+      function updateRowNumbers() {
+        const rows = document.querySelectorAll("table tbody tr");
+        rows.forEach((row, index) => {
+          row.cells[0].innerText = index + 1;
+        });
+      }
     </script>
   </body>
 </html>
