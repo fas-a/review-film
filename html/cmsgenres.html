@@ -38,7 +38,7 @@
             <li class="relative px-6 py-3">
               <a
                 class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                href="index.html"
+                href="cmsdramas.html"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -63,7 +63,7 @@
             <li class="relative px-6 py-3">
               <a
                 class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                href="index.html"
+                href="cmscountries.html"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -480,40 +480,39 @@
               Tables Genres
             </h2>
 
-            <!-- Form Section -->
-            <div class="mx-auto w-full">
-              <form
-                id="genreForm"
-                class="flex items-center bg-white shadow-md rounded-lg p-6 space-x-6 w-full"
-                style="overflow: visible"
-              >
-                <div class="flex-1">
-                  <label
-                    for="genre"
-                    class="block text-sm font-medium text-gray-700"
-                  >
-                    Genre
-                  </label>
-                  <input
-                    type="text"
-                    id="genre"
-                    name="genre"
-                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    placeholder="Enter genre name"
-                  />
-                </div>
-                <div class="flex-shrink-0">
+            <!-- Form Genres -->
+            <div class="w-full overflow-hidden rounded-lg shadow-xs">
+              <div class="w-full overflow-x-auto">
+                <form
+                  id="genreForm"
+                  class="p-6 bg-white rounded-lg shadow-md dark:bg-gray-800"
+                >
+                  <div class="mb-4">
+                    <label
+                      for="genre"
+                      class="block text-sm font-medium text-gray-700 dark:text-gray-400"
+                      >Genre</label
+                    >
+                    <input
+                      type="text"
+                      id="genre"
+                      name="genre"
+                      required
+                      class="w-full px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
+                    />
+                  </div>
+
                   <button
                     type="submit"
-                    class="inline-flex items-center px-6 py-2 text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                    class="px-4 py-2 text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
                   >
                     Submit
                   </button>
-                </div>
-              </form>
+                </form>
+              </div>
             </div>
 
-            <!-- Table Section -->
+            <!-- Table Genre -->
             <div class="w-full overflow-hidden rounded-lg shadow-xs">
               <div class="w-full overflow-x-auto">
                 <table class="w-full whitespace-no-wrap">
