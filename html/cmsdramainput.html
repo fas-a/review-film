@@ -480,120 +480,632 @@
               Tables Drama
             </h2>
 
-            <!-- Form for adding a new actor -->
-            <form class="mb-6" id="actor-form">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label class="block text-sm">
-                    <span class="text-gray-700 dark:text-gray-400"
-                      >Upload Picture</span
+            <div class="flex flex-col items-center p-10 bg-gray-100 text-black">
+              <div
+                class="w-full max-w-6xl bg-white rounded-lg shadow-lg p-12 space-y-10"
+              >
+                <form class="space-y-8">
+                  <div class="flex flex-col gap-6 md:flex-row">
+                    <div class="space-y-4 w-full md:w-1/3">
+                      <label
+                        for="banner"
+                        class="block text-sm font-medium text-gray-600"
+                      >
+                        Banner Image
+                      </label>
+                      <input
+                        type="file"
+                        id="banner"
+                        class="w-full p-4 rounded-md border border-gray-300 focus:ring focus:ring-blue-500"
+                        accept="image/*"
+                        onchange="previewImage(event)"
+                      />
+                      <img
+                        id="banner-preview"
+                        class="mt-4 w-full rounded-md shadow-md"
+                        src="#"
+                        alt="Banner Preview"
+                        style="display: none"
+                      />
+                    </div>
+
+                    <div
+                      class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full md:w-2/3"
                     >
-                    <input
-                      type="file"
-                      id="actorPhoto"
-                      class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 form-input"
-                      accept="image/*"
-                      required
-                    />
-                  </label>
-                </div>
+                      <div class="space-y-4">
+                        <label
+                          for="title"
+                          class="block text-sm font-medium text-gray-600"
+                        >
+                          Title
+                        </label>
+                        <input
+                          type="text"
+                          id="title"
+                          class="w-full p-4 rounded-md border border-gray-300 focus:ring focus:ring-blue-500"
+                          placeholder="Enter drama title"
+                          class="text-gray-200"
+                        />
+                      </div>
 
-                <div>
-                  <label class="block text-sm">
-                    <span class="text-gray-700 dark:text-gray-400">Title</span>
-                    <input
-                      type="text"
-                      id="country"
-                      class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 form-input"
-                      placeholder="Enter Country"
-                      required
-                    />
-                  </label>
-                </div>
+                      <div class="space-y-4">
+                        <label
+                          for="alternative-title"
+                          class="block text-sm font-medium text-gray-600"
+                        >
+                          Alternative Title
+                        </label>
+                        <input
+                          type="text"
+                          id="alternative-title"
+                          class="w-full p-4 rounded-md border border-gray-300 focus:ring focus:ring-blue-500"
+                          placeholder="Enter alternative title"
+                          class="text-gray-200"
+                        />
+                      </div>
 
-                <div>
-                  <label class="block text-sm">
-                    <span class="text-gray-700 dark:text-gray-400"
-                      >Alternative Title</span
+                      <div class="space-y-4">
+                        <label
+                          for="year"
+                          class="block text-sm font-medium text-gray-600"
+                        >
+                          Year
+                        </label>
+                        <input
+                          type="number"
+                          id="year"
+                          class="w-full p-4 rounded-md border border-gray-300 focus:ring focus:ring-blue-500"
+                          placeholder="Enter year"
+                          class="text-gray-200"
+                        />
+                      </div>
+
+                      <div class="space-y-4">
+                        <label
+                          for="country"
+                          class="block text-sm font-medium text-gray-600"
+                        >
+                          Country
+                        </label>
+                        <input
+                          type="text"
+                          id="country"
+                          class="w-full p-4 rounded-md border border-gray-300 focus:ring focus:ring-blue-500"
+                          placeholder="Enter country"
+                          class="text-gray-200"
+                        />
+                      </div>
+
+                      <div class="space-y-4">
+                        <label
+                          for="availability"
+                          class="block text-sm font-medium text-gray-600"
+                        >
+                          Availability
+                        </label>
+                        <input
+                          type="text"
+                          id="availability"
+                          class="w-full p-4 rounded-md border border-gray-300 focus:ring focus:ring-blue-500"
+                          placeholder="Enter availability (e.g., Netflix, Hulu)"
+                          class="text-gray-200"
+                        />
+                      </div>
+
+                      <div class="space-y-4">
+                        <label
+                          for="trailer"
+                          class="block text-sm font-medium text-gray-600"
+                        >
+                          Trailer Link
+                        </label>
+                        <input
+                          type="url"
+                          id="trailer"
+                          class="w-full p-4 rounded-md border border-gray-300 focus:ring focus:ring-blue-500"
+                          placeholder="Enter trailer link"
+                          class="text-gray-200"
+                        />
+                      </div>
+
+                      <div class="space-y-4">
+                        <label
+                          for="awards"
+                          class="block text-sm font-medium text-gray-600"
+                        >
+                          Awards
+                        </label>
+                        <select
+                          id="awards"
+                          class="w-full p-4 rounded-md border border-gray-300 focus:ring focus:ring-blue-500"
+                        >
+                          <option value="">Select award</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="space-y-4">
+                    <label
+                      for="synopsis"
+                      class="block text-sm font-medium text-gray-600"
                     >
-                    <input
-                      type="text"
-                      id="actorName"
-                      class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 form-input"
-                      placeholder="Enter Actor Name"
-                      required
-                    />
-                  </label>
-                </div>
+                      Synopsis
+                    </label>
+                    <textarea
+                      id="synopsis"
+                      rows="4"
+                      class="w-full p-4 rounded-md border border-gray-300 focus:ring focus:ring-blue-500"
+                      placeholder="Enter synopsis"
+                      class="text-gray-200"
+                    ></textarea>
+                  </div>
 
-                <div>
-                  <label class="block text-sm">
-                    <span class="text-gray-700 dark:text-gray-400">Year</span>
-                    <input
-                      type="text"
-                      id="actorName"
-                      class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 form-input"
-                      placeholder="Enter Actor Name"
-                      required
-                    />
-                  </label>
-                </div>
-
-                <div>
-                  <label class="block text-sm">
-                    <span class="text-gray-700 dark:text-gray-400"
-                      >Country</span
+                  <h3 class="mb-4 font-semibold text-gray-200">Genres</h3>
+                  <ul
+                    class="flex flex-wrap w-full text-sm font-medium text-gray-700 bg-gray-700 border border-gray-600 rounded-lg"
+                  >
+                    <!-- Genre Items -->
+                    <li
+                      class="w-1/8 border-b border-gray-700 sm:border-b-0 sm:border-r dark:border-gray-600"
                     >
+                      <div class="flex items-center px-3">
+                        <input
+                          id="genre-drama"
+                          type="checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <label
+                          for="genre-drama"
+                          class="w-full py-3 ms-2 text-sm font-medium text-gray-200"
+                        >
+                          Drama
+                        </label>
+                      </div>
+                    </li>
+                    <li
+                      class="w-1/8 border-b border-gray-700 sm:border-b-0 sm:border-r dark:border-gray-600"
+                    >
+                      <div class="flex items-center px-3">
+                        <input
+                          id="genre-horror"
+                          type="checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <label
+                          for="genre-horror"
+                          class="w-full py-3 ms-2 text-sm font-medium text-gray-200"
+                          >Horror</label
+                        >
+                      </div>
+                    </li>
+                    <!-- Kolom 2 -->
+                    <li
+                      class="w-1/8 border-b border-gray-700 sm:border-b-0 sm:border-r dark:border-gray-600"
+                    >
+                      <div class="flex items-center px-3">
+                        <input
+                          id="genre-comedy"
+                          type="checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <label
+                          for="genre-comedy"
+                          class="w-full py-3 ms-2 text-sm font-medium text-gray-200"
+                          >Comedy</label
+                        >
+                      </div>
+                    </li>
+                    <li
+                      class="w-1/8 border-b border-gray-700 sm:border-b-0 sm:border-r dark:border-gray-600"
+                    >
+                      <div class="flex items-center px-3">
+                        <input
+                          id="genre-romance"
+                          type="checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <label
+                          for="genre-romance"
+                          class="w-full py-3 ms-2 text-sm font-medium text-gray-200"
+                          >Romance</label
+                        >
+                      </div>
+                    </li>
+                    <!-- Kolom 3 -->
+                    <li
+                      class="w-1/8 border-b border-gray-700 sm:border-b-0 sm:border-r dark:border-gray-600"
+                    >
+                      <div class="flex items-center px-3">
+                        <input
+                          id="genre-fantasy"
+                          type="checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <label
+                          for="genre-fantasy"
+                          class="w-full py-3 ms-2 text-sm font-medium text-gray-200"
+                          >Fantasy</label
+                        >
+                      </div>
+                    </li>
+                    <li
+                      class="w-1/8 border-b border-gray-700 sm:border-b-0 sm:border-r dark:border-gray-600"
+                    >
+                      <div class="flex items-center px-3">
+                        <input
+                          id="genre-action"
+                          type="checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <label
+                          for="genre-action"
+                          class="w-full py-3 ms-2 text-sm font-medium text-gray-200"
+                          >Action</label
+                        >
+                      </div>
+                    </li>
+                    <!-- Kolom 4 -->
+                    <li
+                      class="w-1/8 border-b border-gray-700 sm:border-b-0 sm:border-r dark:border-gray-600"
+                    >
+                      <div class="flex items-center px-3">
+                        <input
+                          id="genre-thriller"
+                          type="checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <label
+                          for="genre-thriller"
+                          class="w-full py-3 ms-2 text-sm font-medium text-gray-200"
+                          >Thriller</label
+                        >
+                      </div>
+                    </li>
+                    <li
+                      class="w-1/8 border-b border-gray-700 sm:border-b-0 sm:border-r dark:border-gray-600"
+                    >
+                      <div class="flex items-center px-3">
+                        <input
+                          id="genre-biography"
+                          type="checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <label
+                          for="genre-biography"
+                          class="w-full py-3 ms-2 text-sm font-medium text-gray-200"
+                          >Biography</label
+                        >
+                      </div>
+                    </li>
+                    <!-- Kolom 5 -->
+                    <li
+                      class="w-1/8 border-b border-gray-700 sm:border-b-0 sm:border-r dark:border-gray-600"
+                    >
+                      <div class="flex items-center px-3">
+                        <input
+                          id="genre-documentary"
+                          type="checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <label
+                          for="genre-documentary"
+                          class="w-full py-3 ms-2 text-sm font-medium text-gray-200"
+                          >Documentary</label
+                        >
+                      </div>
+                    </li>
+                    <li
+                      class="w-1/8 border-b border-gray-700 sm:border-b-0 sm:border-r dark:border-gray-600"
+                    >
+                      <div class="flex items-center px-3">
+                        <input
+                          id="genre-reality"
+                          type="checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <label
+                          for="genre-reality"
+                          class="w-full py-3 ms-2 text-sm font-medium text-gray-200"
+                          >Reality</label
+                        >
+                      </div>
+                    </li>
+                    <!-- Kolom 6 -->
+                    <li
+                      class="w-1/8 border-b border-gray-700 sm:border-b-0 sm:border-r dark:border-gray-600"
+                    >
+                      <div class="flex items-center px-3">
+                        <input
+                          id="genre-family"
+                          type="checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <label
+                          for="genre-family"
+                          class="w-full py-3 ms-2 text-sm font-medium text-gray-200"
+                          >Family</label
+                        >
+                      </div>
+                    </li>
+                    <li
+                      class="w-1/8 border-b border-gray-700 sm:border-b-0 sm:border-r dark:border-gray-600"
+                    >
+                      <div class="flex items-center px-3">
+                        <input
+                          id="genre-animation"
+                          type="checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <label
+                          for="genre-animation"
+                          class="w-full py-3 ms-2 text-sm font-medium text-gray-200"
+                          >Animation</label
+                        >
+                      </div>
+                    </li>
+                    <!-- Kolom 7 -->
+                    <li
+                      class="w-1/8 border-b border-gray-700 sm:border-b-0 sm:border-r dark:border-gray-600"
+                    >
+                      <div class="flex items-center px-3">
+                        <input
+                          id="genre-anime"
+                          type="checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <label
+                          for="genre-anime"
+                          class="w-full py-3 ms-2 text-sm font-medium text-gray-200"
+                          >Anime</label
+                        >
+                      </div>
+                    </li>
+                    <li
+                      class="w-1/8 border-b border-gray-700 sm:border-b-0 dark:border-gray-600"
+                    >
+                      <div class="flex items-center px-3">
+                        <input
+                          id="genre-war"
+                          type="checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                        />
+                        <label
+                          for="genre-war"
+                          class="w-full py-3 ms-2 text-sm font-medium text-gray-200"
+                          >War</label
+                        >
+                      </div>
+                    </li>
+                  </ul>
+
+                  <div class="space-y-4">
+                    <label
+                      for="actors"
+                      class="block text-sm font-medium text-gray-600"
+                    >
+                      Search Actors
+                    </label>
                     <input
                       type="text"
-                      id="actorName"
-                      class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 form-input"
-                      placeholder="Enter Actor Name"
-                      required
+                      id="actors"
+                      class="w-full p-3 rounded-md bg-gray-700 border border-gray-600 focus:ring focus:ring-blue-500 text-gray-200"
+                      placeholder="Search for actors"
                     />
-                  </label>
-                </div>
+                    <div class="mt-4 space-y-4">
+                      <!-- First Row of Actor Cards (3 columns) -->
+                      <div class="flex justify-between space-x-4">
+                        <!-- Actor Card -->
+                        <div
+                          class="flex items-center justify-between w-full p-3 rounded-lg bg-gray-700 border border-gray-600"
+                        >
+                          <div class="flex items-center">
+                            <img
+                              src="https://via.placeholder.com/50"
+                              alt="Actor Name"
+                              class="w-12 h-12 rounded-full"
+                            />
+                            <span class="ml-4 text-gray-200">Actor Name</span>
+                          </div>
+                          <button
+                            type="button"
+                            class="text-red-500 hover:text-red-400"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="h-6 w-6"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        </div>
 
-                <div class="mb-4">
-                  <label
-                    for="synopsis"
-                    class="block text-sm font-medium text-gray-700 dark:text-gray-400"
-                    >Synopsis</label
-                  >
-                  <input
-                    type="text-area"
-                    id="synopsis"
-                    name="synopsis"
-                    required
-                    class="w-full px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
-                  />
-                </div>
+                        <div
+                          class="flex items-center justify-between w-full p-3 rounded-lg bg-gray-700 border border-gray-600"
+                        >
+                          <div class="flex items-center">
+                            <img
+                              src="https://via.placeholder.com/50"
+                              alt="Actor Name"
+                              class="w-12 h-12 rounded-full"
+                            />
+                            <span class="ml-4 text-gray-200">Actor Name</span>
+                          </div>
+                          <button
+                            type="button"
+                            class="text-red-500 hover:text-red-400"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="h-6 w-6"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        </div>
 
-                <div class="mb-4">
-                  <label
-                    for="availability"
-                    class="block text-sm font-medium text-gray-700 dark:text-gray-400"
-                    >Availability</label
-                  >
-                  <input
-                    type="text-area"
-                    id="availability"
-                    name="availability"
-                    required
-                    class="w-full px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
-                  />
-                </div>
+                        <div
+                          class="flex items-center justify-between w-full p-3 rounded-lg bg-gray-700 border border-gray-600"
+                        >
+                          <div class="flex items-center">
+                            <img
+                              src="https://via.placeholder.com/50"
+                              alt="Actor Name"
+                              class="w-12 h-12 rounded-full"
+                            />
+                            <span class="ml-4 text-gray-200">Actor Name</span>
+                          </div>
+                          <button
+                            type="button"
+                            class="text-red-500 hover:text-red-400"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="h-6 w-6"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
 
-                <div class="mt-4">
-                  <button
-                    type="submit"
-                    class="px-4 py-2 text-sm font-medium leading-5 text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-                  >
-                    Submit
-                  </button>
-                </div>
+                      <!-- Second Row of Actor Cards -->
+                      <div class="flex justify-between space-x-4">
+                        <!-- Actor Card -->
+                        <div
+                          class="flex items-center justify-between w-full p-3 rounded-lg bg-gray-700 border border-gray-600"
+                        >
+                          <div class="flex items-center">
+                            <img
+                              src="https://via.placeholder.com/50"
+                              alt="Actor Name"
+                              class="w-12 h-12 rounded-full"
+                            />
+                            <span class="ml-4 text-gray-200">Actor Name</span>
+                          </div>
+                          <button
+                            type="button"
+                            class="text-red-500 hover:text-red-400"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="h-6 w-6"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+
+                        <div
+                          class="flex items-center justify-between w-full p-3 rounded-lg bg-gray-700 border border-gray-600"
+                        >
+                          <div class="flex items-center">
+                            <img
+                              src="https://via.placeholder.com/50"
+                              alt="Actor Name"
+                              class="w-12 h-12 rounded-full"
+                            />
+                            <span class="ml-4 text-gray-200">Actor Name</span>
+                          </div>
+                          <button
+                            type="button"
+                            class="text-red-500 hover:text-red-400"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="h-6 w-6"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+
+                        <div
+                          class="flex items-center justify-between w-full p-3 rounded-lg bg-gray-700 border border-gray-600"
+                        >
+                          <div class="flex items-center">
+                            <img
+                              src="https://via.placeholder.com/50"
+                              alt="Actor Name"
+                              class="w-12 h-12 rounded-full"
+                            />
+                            <span class="ml-4 text-gray-200">Actor Name</span>
+                          </div>
+                          <button
+                            type="button"
+                            class="text-red-500 hover:text-red-400"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="h-6 w-6"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex justify-center mt-4">
+                    <button
+                      type="submit"
+                      class="px-6 py-3 text-white bg-blue-600 rounded-md hover:bg-blue-700"
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </form>
               </div>
-            </form>
+            </div>
           </div>
         </main>
       </div>
