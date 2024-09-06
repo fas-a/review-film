@@ -547,104 +547,126 @@
               Tables Drama
             </h2>
 
-            <!-- Popup -->
             <div
               id="popup"
-              class="fixed inset-0 flex items-center justify-center z-30 hidden"
+              class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-30 hidden"
             >
               <div
-                class="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl border"
+                class="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl max-h-[20rem] border relative overflow-y-auto"
               >
-                <div class="flex justify-between items-start mb-4">
-                  <h2 class="text-3xl font-extrabold text-custom-blue-dark">
-                    Film Details
-                  </h2>
-                  <button
-                    class="text-gray-400 hover:text-gray-200 focus:outline-none"
-                    onclick="hidePopup()"
+                <!-- Tombol Close -->
+                <button
+                  class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 focus:outline-none"
+                  onclick="hidePopup()"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                </div>
-                <div class="flex mb-6">
-                  <div class="w-2/3 pr-4">
-                    <h3
-                      class="text-xl font-semibold mb-2 text-custom-blue-dark"
-                    >
-                      Film Name
-                    </h3>
-                    <p
-                      id="popup-film-name"
-                      class="text-lg text-gray-300 mb-4"
-                    ></p>
-                    <h3
-                      class="text-xl font-semibold mb-2 text-custom-blue-dark"
-                    >
-                      Description
-                    </h3>
-                    <p class="text-lg text-gray-300 mb-4">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Nullam auctor, nunc id lacinia tincidunt, nunc nunc
-                      ultricies nunc, ac lacinia nunc nunc id nunc. Sed euismod,
-                      nunc id lacinia tincidunt, nunc nunc ultricies nunc, ac
-                      lacinia nunc nunc id nunc.
-                    </p>
-                    <h3
-                      class="text-xl font-semibold mb-2 text-custom-blue-dark"
-                    >
-                      Actors
-                    </h3>
-                    <div class="flex space-x-4">
-                      <img
-                        src="actor1.jpg"
-                        alt="Actor 1"
-                        class="w-24 h-24 rounded-full border-2 border-gray-700"
-                      />
-                      <img
-                        src="actor2.jpg"
-                        alt="Actor 2"
-                        class="w-24 h-24 rounded-full border-2 border-gray-700"
-                      />
-                    </div>
-                  </div>
-                  <div class="w-1/3">
-                    <h3
-                      class="text-xl font-semibold mb-2 text-custom-blue-dark"
-                    >
-                      Trailer
-                    </h3>
-                    <video
-                      src="trailer.mp4"
-                      controls
-                      class="w-full rounded-lg border-2 border-gray-700"
-                    ></video>
-                  </div>
-                </div>
-                <div class="flex justify-end space-x-4">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+
+                <!-- Tombol Approve dan Delete -->
+                <div class="flex justify-end space-x-4 mb-4">
                   <button
-                    class="bg-custom-blue-light text-dark-text py-2 px-4 rounded-md hover:bg-dark-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-custom-blue-dark"
+                    class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
                   >
                     Approve
                   </button>
                   <button
-                    class="bg-red-500 text-dark-text py-2 px-4 rounded-md hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                    onclick="hidePopup()"
+                    class="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
                   >
-                    Close
+                    Delete
                   </button>
+                </div>
+
+                <!-- Isi Popup -->
+                <div class="grid grid-cols-5 gap-4">
+                  <!-- Gambar Poster Drama -->
+                  <div class="col-span-1">
+                    <img
+                      src="ourblues.jpg"
+                      alt="Drama Poster"
+                      class="h-64 w-48 rounded-lg object-cover"
+                    />
+                  </div>
+
+                  <!-- Informasi Drama -->
+                  <div class="col-span-4">
+                    <h2 class="text-xl font-bold mb-2" id="popup-film-title">
+                      Title of the drama 1 that makes two lines
+                    </h2>
+                    <p class="text-sm text-gray-600 mb-2" id="popup-year">
+                      Other titles: Title 2, Title 3, Title 4<br />
+                      Year: Spring 2024
+                    </p>
+                    <p class="text-sm mb-4" id="popup-synopsis">
+                      Synopsis: Sometimes subjective, I don't read it
+                      thoroughly. But what helps me is the genres. I need to see
+                      genres and actors. That is what I need.
+                    </p>
+                    <p class="text-sm mb-2" id="popup-genre">
+                      Genre: Genre 1, Genre 2, Genre 3
+                    </p>
+                    <p class="text-sm mb-2" id="popup-rating">Rating: 3.5/5</p>
+                    <p class="text-sm" id="popup-availability">
+                      Availability: Fansub: @aoisub on X
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Daftar Aktor -->
+                <div class="grid grid-cols-3 gap-4 mt-6">
+                  <div class="w-40 h-40 rounded-full overflow-hidden">
+                    <img
+                      src="song-jongki.jpeg"
+                      alt="Actor 1"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div class="w-40 h-40 rounded-full overflow-hidden">
+                    <img
+                      src="song-jongki.jpeg"
+                      alt="Actor 2"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div class="w-40 h-40 rounded-full overflow-hidden">
+                    <img
+                      src="song-jongki.jpeg"
+                      alt="Actor 3"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+
+                <!-- Place Holder Video -->
+                <div
+                  class="bg-gray-200 h-48 w-full mt-6 rounded flex justify-center items-center"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-12 w-12 text-gray-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M14.752 11.168l-3.197-2.132c-.36-.24-.553-.356-.553-.536V7.5c0-.966 1.203-1.507 1.91-.946l5.037 3.364c.707.474.707 1.419 0 1.893l-5.037 3.364c-.707.47-1.91.02-1.91-.946v-1.002c0-.18.193-.296.553-.536l3.197-2.132z"
+                    />
+                  </svg>
                 </div>
               </div>
             </div>
@@ -695,7 +717,7 @@
                         <button
                           id="open-modal"
                           class="text-blue-500 hover:text-blue-700"
-                          onclick="showPopup()"
+                          onclick="showPopup('Japan - Eye Love You', '2024', 'Romance, Adventures, Comedy', 'I love this drama. It taught me a lot about money and finance.', 3.5)"
                         >
                           Pending
                         </button>
@@ -848,8 +870,6 @@
 
       function showPopup(filmName) {
         const popup = document.getElementById("popup");
-        const popupfilmName = document.getElementById("popup-film-name");
-        popupfilmName.textContent = filmName;
         popup.classList.remove("hidden");
       }
 
@@ -857,6 +877,18 @@
         const popup = document.getElementById("popup");
         popup.classList.add("hidden");
       }
+
+      // function showPopup(filmName) {
+      //   const popup = document.getElementById("popup");
+      //   const popupfilmName = document.getElementById("popup-film-name");
+      //   popupfilmName.textContent = filmName;
+      //   popup.classList.remove("hidden");
+      // }
+
+      // function hidePopup() {
+      //   const popup = document.getElementById("popup");
+      //   popup.classList.add("hidden");
+      // }
 
       // Event listener untuk membuka modal
       openModalButton.addEventListener("click", function () {
