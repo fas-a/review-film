@@ -34,15 +34,13 @@
               <h2>DramaKu</h2>
             </a>
           </div>
-          <ul class="mt-6">
+          <ul class="mt-6 space-y-1">
+            <!-- Dramas Menu -->
             <li class="relative px-6 py-3 group">
-              <span
-                class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
-                aria-hidden="true"
-              ></span>
               <button
                 id="dramasMenu"
                 class="flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                onclick="toggleSubmenu('submenuDramas', 'iconDramas')"
               >
                 <span class="inline-flex items-center">
                   <svg
@@ -62,25 +60,14 @@
                   </svg>
                   <span class="ml-4">Dramas</span>
                 </span>
-                <svg
-                  class="w-4 h-4"
-                  aria-hidden="true"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clip-rule="evenodd"
-                    fill-rule="evenodd"
-                  ></path>
-                </svg>
+                <span id="iconDramas">+</span>
+                <!-- Icon untuk + atau - -->
               </button>
 
               <!-- Submenu -->
               <ul
                 id="submenuDramas"
-                class="absolute hidden mt-2 space-y-2 bg-white dark:bg-gray-800 py-2 shadow-md"
-                aria-label="submenu"
+                class="hidden mt-2 space-y-2 bg-white dark:bg-gray-800 py-2 shadow-md"
               >
                 <li class="px-6 py-2">
                   <a
@@ -146,6 +133,7 @@
                 <span class="ml-4">Awards</span>
               </a>
             </li>
+
             <li class="relative px-6 py-3">
               <a
                 class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
@@ -169,6 +157,7 @@
                 <span class="ml-4">Genres</span>
               </a>
             </li>
+
             <li class="relative px-6 py-3">
               <a
                 class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
@@ -192,6 +181,7 @@
                 <span class="ml-4">Actors</span>
               </a>
             </li>
+
             <li class="relative px-6 py-3">
               <a
                 class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
@@ -215,6 +205,7 @@
                 <span class="ml-4">Comments</span>
               </a>
             </li>
+
             <li class="relative px-6 py-3">
               <a
                 class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
@@ -547,16 +538,18 @@
               Tables Drama
             </h2>
 
+            <!-- POPUP -->
             <div
               id="popup"
               class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-30 hidden"
             >
               <div
-                class="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl max-h-[20rem] border relative overflow-y-auto"
+                class="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl h-[800px] overflow-y-auto border relative"
+                style="max-height: 80vh"
               >
                 <!-- Tombol Close -->
                 <button
-                  class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 focus:outline-none"
+                  class="absolute top-4 right-4 text-gray-200 hover:text-gray-600 focus:outline-none"
                   onclick="hidePopup()"
                 >
                   <svg
@@ -575,98 +568,156 @@
                   </svg>
                 </button>
 
-                <!-- Tombol Approve dan Delete -->
-                <div class="flex justify-end space-x-4 mb-4">
-                  <button
-                    class="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
-                  >
-                    Approve
-                  </button>
-                  <button
-                    class="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
-                  >
-                    Delete
-                  </button>
-                </div>
-
                 <!-- Isi Popup -->
-                <div class="grid grid-cols-5 gap-4">
+                <div class="flex gap-6">
                   <!-- Gambar Poster Drama -->
-                  <div class="col-span-1">
+                  <div class="flex-shrink-0">
                     <img
                       src="ourblues.jpg"
                       alt="Drama Poster"
-                      class="h-64 w-48 rounded-lg object-cover"
+                      class="h-64 w-48 rounded-lg object-cover bg-gray-200"
                     />
                   </div>
 
                   <!-- Informasi Drama -->
-                  <div class="col-span-4">
+                  <div>
                     <h2 class="text-xl font-bold mb-2" id="popup-film-title">
                       Title of the drama 1 that makes two lines
                     </h2>
-                    <p class="text-sm text-gray-600 mb-2" id="popup-year">
+                    <p class="text-sm text-gray-800 mb-2" id="popup-year">
                       Other titles: Title 2, Title 3, Title 4<br />
                       Year: Spring 2024
                     </p>
-                    <p class="text-sm mb-4" id="popup-synopsis">
+                    <p class="text-sm text-gray-800 mb-2" id="popup-synopsis">
                       Synopsis: Sometimes subjective, I don't read it
                       thoroughly. But what helps me is the genres. I need to see
                       genres and actors. That is what I need.
                     </p>
-                    <p class="text-sm mb-2" id="popup-genre">
+                    <p class="text-sm text-gray-800 mb-2" id="popup-genre">
                       Genre: Genre 1, Genre 2, Genre 3
                     </p>
-                    <p class="text-sm mb-2" id="popup-rating">Rating: 3.5/5</p>
-                    <p class="text-sm" id="popup-availability">
+                    <p class="text-sm text-gray-800 mb-2" id="popup-rating">
+                      Rating: 3.5/5
+                    </p>
+                    <p
+                      class="text-sm text-gray-800 mb-2"
+                      id="popup-availability"
+                    >
                       Availability: Fansub: @aoisub on X
                     </p>
                   </div>
                 </div>
 
                 <!-- Daftar Aktor -->
-                <div class="grid grid-cols-3 gap-4 mt-6">
-                  <div class="w-40 h-40 rounded-full overflow-hidden">
+                <div class="flex justify-between space-x-4 mt-4">
+                  <!-- Actor Card 1 -->
+                  <div
+                    class="flex flex-col items-center justify-center w-full p-2 rounded-lg bg-gray-700 border border-gray-600"
+                  >
                     <img
                       src="song-jongki.jpeg"
-                      alt="Actor 1"
-                      class="w-full h-full object-cover"
+                      alt="Actor Name"
+                      class="w-10 h-10 rounded-full mb-1"
                     />
+                    <span class="text-gray-200 text-sm">Actor 1</span>
                   </div>
-                  <div class="w-40 h-40 rounded-full overflow-hidden">
+
+                  <!-- Actor Card 2 -->
+                  <div
+                    class="flex flex-col items-center justify-center w-full p-2 rounded-lg bg-gray-700 border border-gray-600"
+                  >
                     <img
                       src="song-jongki.jpeg"
-                      alt="Actor 2"
-                      class="w-full h-full object-cover"
+                      alt="Actor Name"
+                      class="w-10 h-10 rounded-full mb-1"
                     />
+                    <span class="text-gray-200 text-sm">Actor 2</span>
                   </div>
-                  <div class="w-40 h-40 rounded-full overflow-hidden">
+
+                  <!-- Actor Card 3 -->
+                  <div
+                    class="flex flex-col items-center justify-center w-full p-2 rounded-lg bg-gray-700 border border-gray-600"
+                  >
                     <img
                       src="song-jongki.jpeg"
-                      alt="Actor 3"
-                      class="w-full h-full object-cover"
+                      alt="Actor Name"
+                      class="w-10 h-10 rounded-full mb-1"
                     />
+                    <span class="text-gray-200 text-sm">Actor 3</span>
+                  </div>
+
+                  <!-- Actor Card 4 -->
+                  <div
+                    class="flex flex-col items-center justify-center w-full p-2 rounded-lg bg-gray-700 border border-gray-600"
+                  >
+                    <img
+                      src="song-jongki.jpeg"
+                      alt="Actor Name"
+                      class="w-10 h-10 rounded-full mb-1"
+                    />
+                    <span class="text-gray-200 text-sm">Actor 4</span>
+                  </div>
+
+                  <!-- Actor Card 5 -->
+                  <div
+                    class="flex flex-col items-center justify-center w-full p-2 rounded-lg bg-gray-700 border border-gray-600"
+                  >
+                    <img
+                      src="song-jongki.jpeg"
+                      alt="Actor Name"
+                      class="w-10 h-10 rounded-full mb-1"
+                    />
+                    <span class="text-gray-200 text-sm">Actor 5</span>
+                  </div>
+
+                  <!-- Actor Card 6 -->
+                  <div
+                    class="flex flex-col items-center justify-center w-full p-2 rounded-lg bg-gray-700 border border-gray-600"
+                  >
+                    <img
+                      src="song-jongki.jpeg"
+                      alt="Actor Name"
+                      class="w-10 h-10 rounded-full mb-1"
+                    />
+                    <span class="text-gray-200 text-sm">Actor 6</span>
                   </div>
                 </div>
 
-                <!-- Place Holder Video -->
-                <div
-                  class="bg-gray-200 h-48 w-full mt-6 rounded flex justify-center items-center"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-12 w-12 text-gray-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+                <!-- Video Trailer -->
+                <div class="w-full mt-4">
+                  <div
+                    class="relative"
+                    style="padding-bottom: 56.25%; height: 0; overflow: hidden"
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M14.752 11.168l-3.197-2.132c-.36-.24-.553-.356-.553-.536V7.5c0-.966 1.203-1.507 1.91-.946l5.037 3.364c.707.474.707 1.419 0 1.893l-5.037 3.364c-.707.47-1.91.02-1.91-.946v-1.002c0-.18.193-.296.553-.536l3.197-2.132z"
-                    />
-                  </svg>
+                    <iframe
+                      class="absolute top-0 left-0 w-full h-full"
+                      src="https://www.youtube.com/embed/1C7Nph5gFxQ?si=jSL9El7ZG7wbJFO9"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+
+                <!-- Tombol Approve dan Unapproved -->
+                <div class="flex justify-end space-x-4 mt-6">
+                  <button
+                    id="approveBtn"
+                    type="button"
+                    class="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
+                    style="background-color: #15803d; color: white"
+                    onclick="updateStatus('Approved')"
+                  >
+                    Approved
+                  </button>
+                  <button
+                    id="unapproveBtn"
+                    type="button"
+                    class="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
+                    onclick="updateStatus('Unapproved')"
+                  >
+                    Unapproved
+                  </button>
                 </div>
               </div>
             </div>
@@ -695,29 +746,33 @@
                       <td class="px-4 py-3">
                         <div class="flex items-center text-sm">
                           <div>
-                            <p class="font-semibold">1</p>
+                            <p class="px-4 py-3 text-sm">1</p>
                           </div>
                         </div>
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-4 py-3 text-sm" contenteditable="false">
                         [2024] Japan - Eye Love You
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-4 py-3 text-sm" contenteditable="false">
                         Takuya Kimura, Takeuchi Yuko, Neinen Reina
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-4 py-3 text-sm" contenteditable="false">
                         Romance, Adventures, Comedy
                       </td>
-                      <td class="px-4 py-3 text-sm">
+                      <td class="px-4 py-3 text-sm" contenteditable="false">
                         I love this drama. It taught me a lot about money and
                         finance. Love is not everything. We need to face the
                         reality too. Being stoic is the best.
                       </td>
                       <td class="px-4 py-3 text-sm">
                         <button
-                          id="open-modal"
-                          class="text-blue-500 hover:text-blue-700"
-                          onclick="showPopup('Japan - Eye Love You', '2024', 'Romance, Adventures, Comedy', 'I love this drama. It taught me a lot about money and finance.', 3.5)"
+                          class="statusBtn px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
+                          style="
+                            background-color: hsl(211, 19%, 44%);
+                            color: white;
+                          "
+                          data-index="1"
+                          onclick="showPopup(1)"
                         >
                           Pending
                         </button>
@@ -725,8 +780,9 @@
                       <td class="px-4 py-3">
                         <div class="flex items-center space-x-4 text-sm">
                           <button
-                            class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
-                            aria-label="Edit"
+                            class="editBtn flex items-center justify-between px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
+                            data-index="1"
+                            onclick="enableEditMode(this)"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -741,10 +797,11 @@
                             </svg>
                             <span class="ml-2">Edit</span>
                           </button>
-
                           <button
-                            class="flex items-center justify-between px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
+                            class="deleteBtn flex items-center justify-between px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
                             aria-label="Delete"
+                            data-index="1"
+                            onclick="deleteData(1)"
                           >
                             <svg
                               class="w-5 h-5"
@@ -763,7 +820,85 @@
                         </div>
                       </td>
                     </tr>
-                    <!-- Repeat for more rows -->
+
+                    <tr class="text-gray-700 dark:text-gray-400">
+                      <td class="px-4 py-3">
+                        <div class="flex items-center text-sm">
+                          <div>
+                            <p class="px-4 py-3 text-sm">2</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-4 py-3 text-sm" contenteditable="false">
+                        Our Blues
+                      </td>
+                      <td class="px-4 py-3 text-sm" contenteditable="false">
+                        Kim Woo Bin, Shin Min-a, Han Ji Min
+                      </td>
+                      <td class="px-4 py-3 text-sm" contenteditable="false">
+                        Romance, Adventures, Comedy
+                      </td>
+                      <td class="px-4 py-3 text-sm" contenteditable="false">
+                        Drama Our Blues mengikuti kehidupan orang-orang yang
+                        tinggal di pulau Jeju. Salah satunya, Lee Dong-seok,
+                        pria yang lahir dan besar di sebuah desa kecil.
+                      </td>
+                      <td class="px-4 py-3 text-sm">
+                        <button
+                          class="statusBtn px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
+                          style="
+                            background-color: hsl(211, 19%, 44%);
+                            color: white;
+                          "
+                          data-index="2"
+                          onclick="showPopup(2)"
+                        >
+                          Pending
+                        </button>
+                      </td>
+                      <td class="px-4 py-3">
+                        <div class="flex items-center space-x-4 text-sm">
+                          <button
+                            class="editBtn flex items-center justify-between px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
+                            data-index="1"
+                            onclick="enableEditMode(this)"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="w-5 h-5"
+                              aria-hidden="true"
+                              fill="currentColor"
+                              viewBox="0 0 512 512"
+                            >
+                              <path
+                                d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z"
+                              />
+                            </svg>
+                            <span class="ml-2">Edit</span>
+                          </button>
+                          <button
+                            class="deleteBtn flex items-center justify-between px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
+                            aria-label="Delete"
+                            data-index="1"
+                            onclick="deleteData(2)"
+                          >
+                            <svg
+                              class="w-5 h-5"
+                              aria-hidden="true"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fill-rule="evenodd"
+                                d="M6.7 2.3A1 1 0 017.4 2h5.3a1 1 0 01.7.3l2 2a1 1 0 01.3.7V5H4V4.7a1 1 0 01.3-.7l2-2zM4 7v7a4 4 0 004 4h4a4 4 0 004-4V7H4zm3 3a1 1 0 112 0v4a1 1 0 11-2 0v-4zm4 0a1 1 0 112 0v4a1 1 0 11-2 0v-4z"
+                                clip-rule="evenodd"
+                              ></path>
+                            </svg>
+                            <span class="ml-2">Delete</span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -858,37 +993,33 @@
       const dramasMenu = document.getElementById("dramasMenu");
       const submenuDramas = document.getElementById("submenuDramas");
 
-      // Event listener untuk menampilkan submenu saat menu 'Dramas' diklik
-      dramasMenu.addEventListener("click", function () {
-        submenuDramas.classList.toggle("hidden"); // Menampilkan atau menyembunyikan submenu
-      });
+      function toggleSubmenu(submenuId, iconId) {
+        const submenu = document.getElementById(submenuId);
+        const icon = document.getElementById(iconId);
+        submenu.classList.toggle("hidden");
+        icon.textContent = icon.textContent === "+" ? "-" : "+";
+      }
 
       // Mengambil elemen tombol dan modal dari DOM
       const openModalButton = document.getElementById("open-modal");
       const closeModalButton = document.getElementById("closeModal");
       const modal = document.getElementById("movieApprovalModal");
 
-      function showPopup(filmName) {
+      function showPopup(index) {
         const popup = document.getElementById("popup");
+
+        // Save the index to a data attribute on the popup or directly use it
+        popup.setAttribute("data-index", index);
+
+        // Show the popup
         popup.classList.remove("hidden");
+        popup.classList.add("block");
       }
 
       function hidePopup() {
         const popup = document.getElementById("popup");
         popup.classList.add("hidden");
       }
-
-      // function showPopup(filmName) {
-      //   const popup = document.getElementById("popup");
-      //   const popupfilmName = document.getElementById("popup-film-name");
-      //   popupfilmName.textContent = filmName;
-      //   popup.classList.remove("hidden");
-      // }
-
-      // function hidePopup() {
-      //   const popup = document.getElementById("popup");
-      //   popup.classList.add("hidden");
-      // }
 
       // Event listener untuk membuka modal
       openModalButton.addEventListener("click", function () {
@@ -907,17 +1038,133 @@
         }
       });
 
-      // Event listener untuk menampilkan/menyembunyikan submenu
-      const submenuButton = document.querySelector(
-        "button[aria-controls='submenu']"
-      );
-      if (submenuButton) {
-        submenuButton.addEventListener("click", function () {
-          const submenu = document.querySelector('ul[aria-label="submenu"]');
-          if (submenu) {
-            submenu.classList.toggle("hidden");
-          }
+      function updateStatus(status) {
+        const popup = document.getElementById("popup");
+
+        // Get the index of the item being updated
+        const index = popup.getAttribute("data-index");
+
+        // Find the correct button using the data-index
+        const statusButton = document.querySelector(
+          `button[data-index="${index}"]`
+        );
+
+        // Reset the button's style
+        statusButton.removeAttribute("style");
+
+        // Apply the appropriate styles based on the status
+        if (status === "Approved") {
+          statusButton.style.backgroundColor = "green"; // Set background color to green
+          statusButton.style.color = "white"; // Set text color to white
+          statusButton.textContent = "Approved";
+        } else if (status === "Unapproved") {
+          statusButton.style.backgroundColor = "#dc2626"; // Set background color to red-600
+          statusButton.style.color = "white"; // Set text color to white
+          statusButton.textContent = "Unapproved";
+        } else {
+          // Pending style
+          statusButton.style.backgroundColor = "hsl(211, 19%, 44%)"; // Custom pending color
+          statusButton.style.color = "white"; // Set text color to white
+          statusButton.textContent = "Pending";
+        }
+
+        // Close the popup
+        hidePopup();
+      }
+
+      function enableEditMode(button) {
+        const row = button.closest("tr"); // Ambil baris yang bersangkutan
+        const cells = row.querySelectorAll('[contenteditable="false"]'); // Ambil sel yang non-editable
+
+        // Ubah semua sel menjadi editable
+        cells.forEach((cell) => {
+          cell.setAttribute("contenteditable", "true");
+          cell.classList.add("border", "border-gray-300", "p-2"); // Styling agar terlihat saat dalam mode edit
         });
+
+        // Ganti ikon dan teks tombol menjadi "Save"
+        button.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 512 512">
+      <path d="M486.4 0H25.6C11.5 0 0 11.5 0 25.6v460.8C0 500.5 11.5 512 25.6 512h460.8c14.1 0 25.6-11.5 25.6-25.6V25.6C512 11.5 500.5 0 486.4 0zM204.8 435.2c-14.1 0-25.6-11.5-25.6-25.6V307.2c0-14.1 11.5-25.6 25.6-25.6h102.4c14.1 0 25.6 11.5 25.6 25.6v102.4c0 14.1-11.5 25.6-25.6 25.6H204.8zm51.2-179.2c-28.3 0-51.2-22.9-51.2-51.2s22.9-51.2 51.2-51.2 51.2 22.9 51.2 51.2-22.9 51.2-51.2 51.2z"/>
+    </svg>
+    <span class="ml-2">Save</span>
+  `;
+        button.classList.remove("bg-blue-500", "hover:bg-blue-600");
+        button.classList.add("bg-green-500", "hover:bg-green-600");
+
+        // Ubah fungsi onclick menjadi fungsi untuk menyimpan
+        button.onclick = function () {
+          confirmSaveChanges(button, cells);
+        };
+      }
+
+      function confirmSaveChanges(button, cells) {
+        // Konfirmasi apakah pengguna yakin untuk menyimpan perubahan
+        const confirmEdit = confirm(
+          "Apakah Anda yakin ingin menyimpan perubahan ini?"
+        );
+
+        if (confirmEdit) {
+          // Nonaktifkan mode edit dan simpan perubahan
+          cells.forEach((cell) => {
+            cell.setAttribute("contenteditable", "false");
+            cell.classList.remove("border", "border-gray-300", "p-2"); // Hapus styling edit
+          });
+
+          // Ubah tombol "Save" kembali menjadi "Edit" dengan ikon
+          button.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 512 512">
+        <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z"/>
+      </svg>
+      <span class="ml-2">Edit</span>
+    `;
+          button.classList.remove("bg-green-500", "hover:bg-green-600");
+          button.classList.add("bg-blue-500", "hover:bg-blue-600");
+
+          // Kembalikan fungsi onclick ke fungsi edit
+          button.onclick = function () {
+            enableEditMode(button);
+          };
+
+          alert("Perubahan berhasil disimpan!");
+        } else {
+          // Jika pengguna membatalkan, kembali ke mode non-editable
+          cells.forEach((cell) => {
+            cell.setAttribute("contenteditable", "false");
+            cell.classList.remove("border", "border-gray-300", "p-2");
+          });
+
+          // Kembalikan tombol "Save" menjadi "Edit" dengan ikon
+          button.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 512 512">
+        <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z"/>
+      </svg>
+      <span class="ml-2">Edit</span>
+    `;
+          button.classList.remove("bg-green-500", "hover:bg-green-600");
+          button.classList.add("bg-blue-500", "hover:bg-blue-600");
+
+          // Kembalikan fungsi onclick ke fungsi edit
+          button.onclick = function () {
+            enableEditMode(button);
+          };
+        }
+      }
+
+      function deleteData(index) {
+        // Konfirmasi sebelum menghapus
+        const confirmDelete = confirm(
+          "Apakah Anda yakin ingin menghapus data ini?"
+        );
+        if (confirmDelete) {
+          // Hapus baris yang sesuai dengan index
+          const row = document
+            .querySelector(`button[data-index="${index}"]`)
+            .closest("tr");
+          row.remove();
+
+          alert("Data berhasil dihapus!");
+        }
       }
     </script>
   </body>
