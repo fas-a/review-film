@@ -6,7 +6,8 @@ function LandingPage() {
   return (
     <div>
       <Carousel />
-      <SweepCard />
+      <SweepCard title="Most View"/>
+      <SweepCard title="Most Popular"/>
     </div>
   );
 }
