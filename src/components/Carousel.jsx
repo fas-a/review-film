@@ -1,58 +1,38 @@
-import React, { useState } from 'react';
-import './carousel.css'; // Pastikan Anda mengimpor CSS yang sesuai
+import React, { useRef, useState } from 'react';
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
 
-const Carousel = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import './carousel.css'
 
-  const slides = [
-    "https://upload.wikimedia.org/wikipedia/commons/9/9e/Timisoara_-_Regional_Business_Centre.jpg",
-    "https://content.r9cdn.net/rimg/dimg/db/02/06b291e8-city-14912-171317ad83a.jpg?width=1750&height=1000&xhint=3040&yhint=2553&crop=true",
-    "https://speakzeasy.files.wordpress.com/2015/05/twa_blogpic_timisoara-4415.jpg"
-  ];
 
-  const prevSlide = () => {
-    setActiveIndex(activeIndex === 0 ? slides.length - 1 : activeIndex - 1);
-  };
+// import required modules
+import { Pagination, Navigation } from 'swiper/modules';
 
-  const nextSlide = () => {
-    setActiveIndex(activeIndex === slides.length - 1 ? 0 : activeIndex + 1);
-  };
 
+export default function App() {
   return (
-    <div className="w-full px-4 md:px-20 xl:px-40 grid mt-4">
-      <div className="carousel">
-        <ul className="slides">
-          {slides.map((slide, index) => (
-            <li
-              className={`slide-container ${index === activeIndex ? "active" : ""}`}
-              key={index}
-            >
-              <div className="slide-image">
-                <img src={slide} alt={`Slide ${index + 1}`} />
-              </div>
-              <div className="carousel-controls">
-                <button className="prev-slide" onClick={prevSlide}>
-                  <span>&lsaquo;</span>
-                </button>
-                <button className="next-slide" onClick={nextSlide}>
-                  <span>&rsaquo;</span>
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-        <div className="carousel-dots">
-          {slides.map((_, index) => (
-            <label
-              key={index}
-              className={`carousel-dot ${index === activeIndex ? "active" : ""}`}
-              onClick={() => setActiveIndex(index)}
-            ></label>
-          ))}
-        </div>
-      </div>
+    <>
+    <div className='w-full h-half px-4 md:px-20 xl:px-40 grid mt-4'>
+      <Swiper
+        pagination={{
+          clickable: true,
+        }}
+        navigation={true}
+        modules={[Pagination, Navigation]}
+        className=""
+      >
+        
+        <SwiperSlide><img className='w-full img-carousel' src="img/banner-film/film1.jpg" /></SwiperSlide>
+        <SwiperSlide><img className='w-full img-carousel' src="img/banner-film/film2.jpg" /></SwiperSlide>
+        <SwiperSlide><img className='w-full img-carousel' src="img/banner-film/film3.jpg" /></SwiperSlide>
+        <SwiperSlide><img className='w-full img-carousel' src="img/banner-film/film4.jpg" /></SwiperSlide>
+      </Swiper>
     </div>
+      
+    </>
   );
-};
-
-export default Carousel;
+}
