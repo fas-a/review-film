@@ -1,13 +1,15 @@
 import React from "react";
 import FilmCardV from "./components/FilmCardV";
 import SweepCard from "./components/SweepCard";
+import Header from './components/Header';
 import Comment from "./components/Comment";
 import CommentForm from "./components/CommentForm";
 
 function DetailFilm() {
   return (
     <div>
-      <div className="w-full px-4 md:px-20 xl:px-40 grid mt-4 image-wrapper">
+        <Header />
+      <div className="pt-20 w-full px-4 md:px-20 xl:px-40 grid mt-4 image-wrapper">
         <img
           className="w-full h-128 rounded-lg"
           src="https://upload.wikimedia.org/wikipedia/commons/9/9e/Timisoara_-_Regional_Business_Centre.jpg"

@@ -2,13 +2,15 @@ import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Filter from './components/Filter';
 import FilmCardH from './components/FilmCardH';
+import Header from './components/Header';
 
 function SearchPage() {
     const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get('q');
   return (
     <div>
-      <div className="w-full px-4 md:px-20 xl:px-40 grid mt-4">
+        <Header />
+      <div className="pt-20 w-full px-4 md:px-20 xl:px-40 grid mt-4">
         {/* Bagian untuk menampilkan keterangan pencarian */}
         <div className="mb-4 text-lg text-gray-700 dark:text-gray-200">
           Menampilkan hasil pencarian untuk: <strong>{searchQuery}</strong>

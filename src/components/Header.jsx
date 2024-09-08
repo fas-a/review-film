@@ -5,7 +5,7 @@ import icon from "../img/logo-dramaKu.png";
 const Header = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   const toggleTheme = () => {
@@ -26,7 +26,7 @@ const Header = () => {
 
   return (
     <header
-      className={`z-10 py-4 bg-white shadow-md ${
+      className={`fixed top-0 left-0 right-0 z-10 py-4 bg-white shadow-md ${
         isDarkMode ? "dark:bg-gray-800" : ""
       }`}
     >
@@ -35,7 +35,7 @@ const Header = () => {
           <img src={icon} className="w-12 h-12" alt="Dramaku Logo" />
           <a
             className="text-lg font-bold text-gray-800 dark:text-gray-200"
-            href="#"
+            href="./"
           >
             Dramaku
           </a>
@@ -107,9 +107,15 @@ const Header = () => {
             </button>
           </li>
           <li className="relative">
-            <button className="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+            {/* <button className="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
               Log In
-            </button>
+            </button> */}
+            <a
+              className="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+              href="/login"
+            >
+              Log in
+            </a>
           </li>
           <li className="relative">
             <button
