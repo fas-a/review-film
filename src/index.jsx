@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import Header from './components/Header';
 import LandingPage from './LandingPage';
+import SearchPage from './SearchPage';
 import reportWebVitals from './reportWebVitals';
 import DetailFilm from './DetailFilm';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
@@ -15,6 +16,7 @@ root.render(
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/detail" element={<DetailFilm />} />
+        <Route path="/search" element={<SearchPage />} />
       </Routes>
     </Router>
   </React.StrictMode>

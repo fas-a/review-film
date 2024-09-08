@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import icon from '../img/logo-dramaKu.png'
+import { useNavigate } from "react-router-dom";
+import icon from "../img/logo-dramaKu.png";
 
 const Header = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
@@ -14,11 +17,20 @@ const Header = () => {
     setIsProfileMenuOpen(!isProfileMenuOpen);
   };
 
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim() !== "") {
+      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
   return (
-    <header className={`z-10 py-4 bg-white shadow-md ${isDarkMode ? "dark:bg-gray-800" : ""}`}>
-      <div
-        className="w-full flex items-center justify-between h-full px-6 mx-auto text-purple-600 dark:text-purple-300"
-      >
+    <header
+      className={`z-10 py-4 bg-white shadow-md ${
+        isDarkMode ? "dark:bg-gray-800" : ""
+      }`}
+    >
+      <div className="w-full flex items-center justify-between h-full px-6 mx-auto text-purple-600 dark:text-purple-300">
         <div className="flex items-center flex-shrink-0 space-x-6 text-gray-500 dark:text-gray-400">
           <img src={icon} className="w-12 h-12" alt="Dramaku Logo" />
           <a
@@ -30,26 +42,36 @@ const Header = () => {
         </div>
         <div className="flex justify-center flex-1">
           <div className="relative w-full max-w-xl ml-6 mr-6 focus-within:text-purple-500">
-            <div className="absolute inset-y-0 flex items-center pl-2">
-              <svg
-                className="w-4 h-4"
-                aria-hidden="true"
-                fill="currentColor"
-                viewBox="0 0 20 20"
+            <form onSubmit={handleSearchSubmit} method="post">
+              <div className="absolute inset-y-0 flex items-center pl-2">
+                <svg
+                  className="w-4 h-4"
+                  aria-hidden="true"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+              </div>
+              <input
+                className="w-full pl-8 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input"
+                type="text"
+                placeholder="Search Drama"
+                aria-label="Search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)} // Update state
+              />
+              <button
+                type="submit"
+                className="absolute inset-y-0 right-0 px-4 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-r-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
               >
-                <path
-                  fillRule="evenodd"
-                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </div>
-            <input
-              className="w-full pl-8 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input"
-              type="text"
-              placeholder="Search Drama"
-              aria-label="Search"
-            />
+                Search
+              </button>
+            </form>
           </div>
         </div>
         <ul className="flex items-center flex-shrink-0 space-x-6">
@@ -79,17 +101,13 @@ const Header = () => {
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
-                  <path
-                    d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
-                  ></path>
+                  <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
                 </svg>
               )}
             </button>
           </li>
           <li className="relative">
-            <button
-              className="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-            >
+            <button className="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
               Log In
             </button>
           </li>
@@ -127,9 +145,7 @@ const Header = () => {
                       viewBox="0 0 24 24"
                       stroke="currentColor"
                     >
-                      <path
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      ></path>
+                      <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                     </svg>
                     <span>Profile</span>
                   </a>
@@ -149,12 +165,8 @@ const Header = () => {
                       viewBox="0 0 24 24"
                       stroke="currentColor"
                     >
-                      <path
-                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.065 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.065c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.065-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z"
-                      ></path>
-                      <path
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      ></path>
+                      <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.065 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.065c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.065-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z"></path>
+                      <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                     </svg>
                     <span>Settings</span>
                   </a>
@@ -174,9 +186,7 @@ const Header = () => {
                       viewBox="0 0 24 24"
                       stroke="currentColor"
                     >
-                      <path
-                        d="M17 16l4-4m0 0l-4-4m4 4H7"
-                      ></path>
+                      <path d="M17 16l4-4m0 0l-4-4m4 4H7"></path>
                     </svg>
                     <span>Log out</span>
                   </a>
