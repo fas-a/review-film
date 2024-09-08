@@ -21,8 +21,8 @@ export default function App({ title }) {
           <h1 className="flex py-5 lg:px-20 md:px-10 px-5 lg:mx-40 md:mx-20 mx-5 font-bold text-4xl text-gray-800">
             {title}
           </h1>
-          <div class="flex overflow-x-auto hide-scroll-bar">
-            <div class="flex flex-nowrap py-2 lg:ml-40 md:ml-20 ml-10">
+          <div className="flex overflow-x-auto hide-scroll-bar">
+            <div className="flex flex-nowrap py-2 lg:ml-40 md:ml-20 ml-10">
               <FilmCardV
                 src="./img/poster-film/filmv1.jpg"
                 title="Captain Marvel"

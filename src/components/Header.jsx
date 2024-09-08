@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import './tailwind.output.css';
 import icon from '../img/logo-dramaKu.png'
 
 const Header = () => {
