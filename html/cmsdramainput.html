@@ -503,11 +503,14 @@
               <div
                 class="w-full max-w-6xl bg-white rounded-lg shadow-lg p-12 space-y-10 p-8"
               >
-                <form class="space-y-8">
+                <form class="space-y-8" action="cmsdramas.html" method="POST">
                   <div class="grid grid-cols-12 gap-6">
                     <!-- Banner Image Upload -->
                     <div class="col-span-3">
-                      <label for="banner" class="block text-sm font-medium text-gray-600">
+                      <label
+                        for="banner"
+                        class="block text-sm font-medium text-gray-600"
+                      >
                         Banner Image
                       </label>
                       <input
@@ -525,12 +528,14 @@
                         style="display: none"
                       />
                     </div>
-          
+
                     <!-- Form Fields -->
                     <div class="col-span-9 grid grid-cols-12 gap-4">
                       <!-- Title and Alt Title -->
                       <div class="col-span-6">
-                        <label for="title" class="block text-sm font-medium text-gray-600"
+                        <label
+                          for="title"
+                          class="block text-sm font-medium text-gray-600"
                           >Title</label
                         >
                         <input
@@ -538,6 +543,7 @@
                           id="title"
                           name="title"
                           class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700"
+                          placeholder="Enter the drama title"
                         />
                       </div>
                       <div class="col-span-6">
@@ -551,16 +557,19 @@
                           id="altTitle"
                           name="altTitle"
                           class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700"
+                          placeholder="Enter the alternative title"
                         />
                       </div>
-          
+
                       <!-- Year and Country -->
                       <div class="col-span-6">
-                        <label for="year" class="block text-sm font-medium text-gray-600"
+                        <label
+                          for="year"
+                          class="block text-sm font-medium text-gray-600"
                           >Year</label
                         >
                         <input
-                          type="text"
+                          type="number"
                           id="year"
                           name="year"
                           class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700"
@@ -577,9 +586,10 @@
                           id="country"
                           name="country"
                           class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700"
+                          placeholder="Enter the country of origin"
                         />
                       </div>
-          
+
                       <!-- Synopsis -->
                       <div class="col-span-12">
                         <label
@@ -593,10 +603,10 @@
                           rows="4"
                           class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700"
                         >
-                        Synopsis sometimes unhelpful. I don’t read it thoroughly. But what helps me is the genres. I need to see genres and actors. That’s what I want.</textarea
-                        >
+                        Ex:  Synopsis sometimes unhelpful. I don’t read it thoroughly. But what helps me is the genres. I need to see genres and actors. That’s what I want.
+                        </textarea>
                       </div>
-          
+
                       <!-- Availability -->
                       <div class="col-span-12">
                         <label
@@ -609,10 +619,10 @@
                           id="availability"
                           name="availability"
                           class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700"
-                          value="Fansub: @xxosub on X"
+                          placeholder="Ex: Fansub: @xxosub on X"
                         />
                       </div>
-          
+
                       <!-- Trailer Link and Award -->
                       <div class="col-span-6">
                         <label
@@ -625,10 +635,13 @@
                           id="trailer"
                           name="trailer"
                           class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700"
+                          placeholder="Enter the trailer link"
                         />
                       </div>
                       <div class="col-span-6">
-                        <label for="award" class="block text-sm font-medium text-gray-600"
+                        <label
+                          for="award"
+                          class="block text-sm font-medium text-gray-600"
                           >Award</label
                         >
                         <select
@@ -640,7 +653,7 @@
                           <option value="award2">Award 2</option>
                         </select>
                       </div>
-          
+
                       <!-- Genres -->
                       <div class="col-span-12">
                         <label
@@ -833,7 +846,7 @@
                           </div>
                         </div>
                       </div>
-          
+
                       <!-- Add Actors -->
                       <div class="col-span-12">
                         <label
@@ -848,7 +861,7 @@
                           placeholder="Search Actor Names"
                           class="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700 mb-4"
                         />
-          
+
                         <div class="grid grid-cols-3 gap-4">
                           <!-- Actor Placeholder -->
                           <div class="w-40 h-40 rounded-full overflow-hidden">
@@ -918,14 +931,16 @@
                       </div>
                     </div>
                   </div>
-          
+
                   <!-- Left Image Placeholder (with uploaded image) -->
                   <div
                     class="col-span-12 mt-6"
                     id="image-placeholder-container"
                     style="display: none"
                   >
-                    <div class="w-full h-48 bg-gray-200 rounded-md overflow-hidden">
+                    <div
+                      class="w-full h-48 bg-gray-200 rounded-md overflow-hidden"
+                    >
                       <img
                         id="left-image-placeholder"
                         class="w-full h-full object-cover"
@@ -934,7 +949,7 @@
                       />
                     </div>
                   </div>
-          
+
                   <!-- Submit Button -->
                   <div class="flex justify-center mt-12">
                     <button
@@ -963,100 +978,29 @@
         icon.textContent = icon.textContent === "+" ? "-" : "+";
       }
 
-      document.addEventListener("DOMContentLoaded", function () {
-        const table = document.querySelector("table tbody");
-        const form = document.getElementById("actor-form");
-        let editMode = false;
-        let editRow = null;
+      function previewImage(event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const bannerPreview = document.getElementById("banner-preview");
+            const placeholder = document.getElementById(
+              "left-image-placeholder"
+            );
+            const placeholderContainer = document.getElementById(
+              "image-placeholder-container"
+            );
 
-        // Handle form submission for adding a new actor
-        form.addEventListener("submit", function (e) {
-          e.preventDefault();
+            // Set src attribute of both previews
+            bannerPreview.src = e.target.result;
+            placeholder.src = e.target.result;
 
-          const country = document.getElementById("country").value;
-          const actorName = document.getElementById("actorName").value;
-          const birthDate = document.getElementById("birthDate").value;
-          const photo = document.getElementById("actorPhoto").files[0];
-
-          if (editMode && editRow) {
-            // Update existing row
-            updateRow(editRow, country, actorName, birthDate, photo);
-            editMode = false;
-            editRow = null;
-          } else {
-            // Add new row
-            addRow(country, actorName, birthDate, photo);
-          }
-
-          // Reset form
-          form.reset();
-        });
-
-        // Function to add a new row to the table
-        function addRow(country, actorName, birthDate, photo) {
-          const row = document.createElement("tr");
-          row.classList.add("text-gray-700", "dark:text-gray-400");
-          row.innerHTML = `
-            <td class="px-4 py-3">${table.children.length + 1}</td>
-            <td class="px-4 py-3 text-sm">${country}</td>
-            <td class="px-4 py-3 text-sm">${actorName}</td>
-            <td class="px-4 py-3 text-sm">${birthDate}</td>
-            <td class="px-4 py-3 text-sm">
-              <img class="object-cover w-12 h-12 rounded-full" src="${URL.createObjectURL(
-                photo
-              )}" alt="" loading="lazy">
-            </td>
-            <td class="px-4 py-3">
-              <div class="flex items-center space-x-4 text-sm">
-                <button class="edit-btn flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue" aria-label="Edit">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-5 h-5" aria-hidden="true" fill="currentColor">
-                    <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z"/>
-                  </svg>
-                  <span class="ml-2">Edit</span>
-                </button>
-                <button class="delete-btn flex items-center justify-between px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:shadow-outline-red" aria-label="Delete">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                  </svg>
-                  <span class="ml-2">Delete</span>
-                </button>
-              </div>
-            </td>
-          `;
-          table.appendChild(row);
-
-          // Add event listeners for the edit and delete buttons
-          row.querySelector(".edit-btn").addEventListener("click", function () {
-            startEdit(row);
-          });
-
-          row
-            .querySelector(".delete-btn")
-            .addEventListener("click", function () {
-              table.removeChild(row);
-            });
+            // Display the images
+            bannerPreview.style.display = "block";
+          };
+          reader.readAsDataURL(file);
         }
-
-        // Function to start editing a row
-        function startEdit(row) {
-          editMode = true;
-          editRow = row;
-
-          const cells = row.querySelectorAll("td");
-          document.getElementById("country").value = cells[1].innerText;
-          document.getElementById("actorName").value = cells[2].innerText;
-          document.getElementById("birthDate").value = cells[3].innerText;
-        }
-
-        // Function to update an existing row
-        function updateRow(row, country, actorName, birthDate, photo) {
-          const cells = row.querySelectorAll("td");
-          cells[1].innerText = country;
-          cells[2].innerText = actorName;
-          cells[3].innerText = birthDate;
-          cells[4].querySelector("img").src = URL.createObjectURL(photo);
-        }
-      });
+      }
     </script>
   </body>
 </html>
