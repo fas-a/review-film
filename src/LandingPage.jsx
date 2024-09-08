@@ -10,9 +10,9 @@ function LandingPage() {
       <Carousel />
       <SweepCard title="Most View"/>
       <SweepCard title="Most Popular"/>
-      <div class="w-full px-4 md:px-20 xl:px-40 grid mt-4">
+      <div className="w-full px-4 md:px-20 xl:px-40 grid mt-4">
         <Filter />
-        <div class="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
             <FilmCardH src='./img/film.jpg'/>
             <FilmCardH src='./img/film.jpg'/>
             <FilmCardH src='./img/film.jpg'/>

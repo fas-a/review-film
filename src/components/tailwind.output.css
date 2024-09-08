@@ -854,6 +854,9 @@ video {
 .grid-cols-3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
+.grid-cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
 .grid-cols-6 {
   grid-template-columns: repeat(6, minmax(0, 1fr));
 }
@@ -875,6 +878,9 @@ video {
 .flex-wrap {
   flex-wrap: wrap;
 }
+.flex-none {
+  flex: 0 0 auto;
+}
 .items-end {
   align-items: flex-end;
 }
@@ -889,6 +895,15 @@ video {
 }
 .justify-between {
   justify-content: space-between;
+}
+.justify-items-center {
+  justify-items: center;
+}
+.justify-items-end {
+  justify-items: flex-end;
+}
+.shrink {
+  flex-shrink: 1;
 }
 .flex-1 {
   flex: 1 1 0%;
@@ -970,6 +985,9 @@ video {
 }
 .text-6xl {
   font-size: 4rem;
+}
+.text-right {
+  text-align: right;
 }
 .leading-5 {
   line-height: 1.25rem;
@@ -1094,6 +1112,9 @@ video {
 }
 .min-w-0 {
   min-width: 0;
+}
+.min-w-52 {
+  min-width: 13rem;
 }
 .object-cover {
   -o-object-fit: cover;
@@ -1627,6 +1648,9 @@ video {
 .z-30 {
   z-index: 30;
 }
+.gap-y-2 {
+  gap: 0.5rem;
+}
 .gap-4 {
   grid-gap: 1rem;
   gap: 1rem;
@@ -1634,6 +1658,9 @@ video {
 .gap-6 {
   grid-gap: 1.5rem;
   gap: 1.5rem;
+}
+.col-span-1 {
+  grid-column: span 1 / span 1;
 }
 .col-span-2 {
   grid-column: span 2 / span 2;
@@ -1644,11 +1671,26 @@ video {
 .col-span-4 {
   grid-column: span 4 / span 4;
 }
+.col-span-5 {
+  grid-column: span 5 / span 5;
+}
 .col-span-6 {
   grid-column: span 6 / span 6;
 }
+.col-span-7 {
+  grid-column: span 7 / span 7;
+}
+.col-span-8 {
+  grid-column: span 8 / span 8;
+}
 .col-span-9 {
   grid-column: span 9 / span 9;
+}
+.col-span-10 {
+  grid-column: span 10 / span 10;
+}
+.col-span-11 {
+  grid-column: span 11 / span 11;
 }
 .col-span-12 {
   grid-column: span 12 / span 12;
