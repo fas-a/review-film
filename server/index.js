@@ -1,13 +1,19 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
-const port = process.env.PORT || 5000;
+const dramaRoutes = require('./routes/drama');
 
-app.use(express.json());
+// Enable CORS for all routes
+app.use(cors());
 
-app.get('/', (req, res) => {
-  res.send('Server is running');
-});
+// Or configure CORS to allow specific origins
+app.use(cors({
+  origin: 'http://localhost:3000' // Replace with your frontend origin
+}));
 
-app.listen(port, () => {
-  console.log(`Server is listening on port ${port}`);
+// Define your routes
+app.use('/api', dramaRoutes);
+
+app.listen(3001, () => {
+  console.log('Server running on port 3001');
 });
