@@ -1,0 +1,42 @@
+// models/User.js
+module.exports = (sequelize, DataTypes) => {
+    const User = sequelize.define('User', {
+      id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+        allowNull: false
+      },
+      username: {
+        type: DataTypes.STRING(50),
+        allowNull: false,
+        unique: true
+      },
+      email: {
+        type: DataTypes.STRING(100),
+        allowNull: false,
+        unique: true
+      },
+      password: {
+        type: DataTypes.STRING(100),
+        allowNull: false
+      },
+      role: {
+        type: DataTypes.ENUM('Admin', 'User'),
+        defaultValue: 'User'
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+      },
+      updatedAt: {
+        type: DataTypes.DATE
+      }
+    }, {
+      tableName: 'users',
+      timestamps: true
+    });
+    
+    return User;
+  };
+  
