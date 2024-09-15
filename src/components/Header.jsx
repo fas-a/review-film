@@ -25,12 +25,8 @@ const Header = () => {
   };
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-10 py-4 bg-white shadow-md ${
-        isDarkMode ? "dark:bg-gray-800" : ""
-      }`}
-    >
-      <div className="w-full flex items-center justify-between h-full px-6 mx-auto text-purple-600 dark:text-purple-300">
+    <header className="z-10 py-4 bg-white shadow-md">
+      <div className="container flex items-center justify-between h-full px-6 mx-auto text-purple-600 dark:text-purple-300">
         <div className="flex items-center flex-shrink-0 space-x-6 text-gray-500 dark:text-gray-400">
           <img src={icon} className="w-12 h-12" alt="Dramaku Logo" />
           <a

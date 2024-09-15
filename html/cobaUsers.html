@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tables Countries - DramaKu Dashboard</title>
+    <title>Tables Users - DramaKu</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
@@ -34,32 +34,58 @@
               <h2>DramaKu</h2>
             </a>
           </div>
-          <ul class="mt-6">
-            <li class="relative px-6 py-3">
-              <a
-                class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                href="cmsdramas.html"
+          <ul class="mt-6 space-y-1">
+            <!-- Dramas Menu -->
+            <li class="relative px-6 py-3 group">
+              <button
+                id="dramasMenu"
+                class="flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                onclick="toggleSubmenu('submenuDramas', 'iconDramas')"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-5 h-5"
-                  aria-hidden="true"
-                  fill="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 640 512"
-                  stroke="currentColor"
-                >
-                  <path
-                    d="M256 0L576 0c35.3 0 64 28.7 64 64l0 224c0 35.3-28.7 64-64 64l-320 0c-35.3 0-64-28.7-64-64l0-224c0-35.3 28.7-64 64-64zM476 106.7C471.5 100 464 96 456 96s-15.5 4-20 10.7l-56 84L362.7 169c-4.6-5.7-11.5-9-18.7-9s-14.2 3.3-18.7 9l-64 80c-5.8 7.2-6.9 17.1-2.9 25.4s12.4 13.6 21.6 13.6l80 0 48 0 144 0c8.9 0 17-4.9 21.2-12.7s3.7-17.3-1.2-24.6l-96-144zM336 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zM64 128l96 0 0 256 0 32c0 17.7 14.3 32 32 32l128 0c17.7 0 32-14.3 32-32l0-32 160 0 0 64c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 192c0-35.3 28.7-64 64-64zm8 64c-8.8 0-16 7.2-16 16l0 16c0 8.8 7.2 16 16 16l16 0c8.8 0 16-7.2 16-16l0-16c0-8.8-7.2-16-16-16l-16 0zm0 104c-8.8 0-16 7.2-16 16l0 16c0 8.8 7.2 16 16 16l16 0c8.8 0 16-7.2 16-16l0-16c0-8.8-7.2-16-16-16l-16 0zm0 104c-8.8 0-16 7.2-16 16l0 16c0 8.8 7.2 16 16 16l16 0c8.8 0 16-7.2 16-16l0-16c0-8.8-7.2-16-16-16l-16 0zm336 16l0 16c0 8.8 7.2 16 16 16l16 0c8.8 0 16-7.2 16-16l0-16c0-8.8-7.2-16-16-16l-16 0c-8.8 0-16 7.2-16 16z"
-                  ></path>
-                </svg>
-                <span class="ml-4">Dramas</span>
-              </a>
+                <span class="inline-flex items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-5 h-5"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 640 512"
+                    stroke="currentColor"
+                  >
+                    <path
+                      d="M256 0L576 0c35.3 0 64 28.7 64 64l0 224c0 35.3-28.7 64-64 64l-320 0c-35.3 0-64-28.7-64-64l0-224c0-35.3 28.7-64 64-64zM476 106.7C471.5 100 464 96 456 96s-15.5 4-20 10.7l-56 84L362.7 169c-4.6-5.7-11.5-9-18.7-9s-14.2 3.3-18.7 9l-64 80c-5.8 7.2-6.9 17.1-2.9 25.4s12.4 13.6 21.6 13.6l80 0 48 0 144 0c8.9 0 17-4.9 21.2-12.7s3.7-17.3-1.2-24.6l-96-144zM336 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zM64 128l96 0 0 256 0 32c0 17.7 14.3 32 32 32l128 0c17.7 0 32-14.3 32-32l0-32 160 0 0 64c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 192c0-35.3 28.7-64 64-64zm8 64c-8.8 0-16 7.2-16 16l0 16c0 8.8 7.2 16 16 16l16 0c8.8 0 16-7.2 16-16l0-16c0-8.8-7.2-16-16-16l-16 0zm0 104c-8.8 0-16 7.2-16 16l0 16c0 8.8 7.2 16 16 16l16 0c8.8 0 16-7.2 16-16l0-16c0-8.8-7.2-16-16-16l-16 0zm0 104c-8.8 0-16 7.2-16 16l0 16c0 8.8 7.2 16 16 16l16 0c8.8 0 16-7.2 16-16l0-16c0-8.8-7.2-16-16-16l-16 0zm336 16l0 16c0 8.8 7.2 16 16 16l16 0c8.8 0 16-7.2 16-16l0-16c0-8.8-7.2-16-16-16l-16 0c-8.8 0-16 7.2-16 16z"
+                    ></path>
+                  </svg>
+                  <span class="ml-4">Dramas</span>
+                </span>
+                <span id="iconDramas">+</span>
+                <!-- Icon untuk + atau - -->
+              </button>
+
+              <!-- Submenu -->
+              <ul
+                id="submenuDramas"
+                class="hidden mt-2 space-y-2 bg-white dark:bg-gray-800 py-2 shadow-md"
+              >
+                <li class="px-6 py-2">
+                  <a
+                    href="cmsdramas.html"
+                    class="w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                    >Validate</a
+                  >
+                </li>
+                <li class="px-6 py-2">
+                  <a
+                    href="cmsdramainput.html"
+                    class="w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                    >Input New Drama</a
+                  >
+                </li>
+              </ul>
             </li>
-          </ul>
-          <ul>
+
             <li class="relative px-6 py-3">
               <a
                 class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
@@ -107,13 +133,9 @@
               </a>
             </li>
             <li class="relative px-6 py-3">
-              <span
-                class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
-                aria-hidden="true"
-              ></span>
               <a
-                class="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200 dark:text-gray-100"
-                href="cmscountries.html"
+                class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                href="cmsgenres.html"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -180,8 +202,12 @@
               </a>
             </li>
             <li class="relative px-6 py-3">
+              <span
+                class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
+                aria-hidden="true"
+              ></span>
               <a
-                class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                class="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200 dark:text-gray-100"
                 href="cmsusers.html"
               >
                 <svg
@@ -260,7 +286,7 @@
                 <input
                   class="w-full pl-8 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input"
                   type="text"
-                  placeholder="Search for genres"
+                  placeholder="Search for users"
                   aria-label="Search"
                 />
               </div>
@@ -477,26 +503,43 @@
             <h2
               class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
             >
-              Tables Genres
+              Tables Users
             </h2>
 
-            <!-- Form Genres -->
+            <!-- Users Form -->
             <div class="w-full overflow-hidden rounded-lg shadow-xs">
               <div class="w-full overflow-x-auto">
                 <form
-                  id="genreForm"
+                  id="usersForm"
                   class="p-6 bg-white rounded-lg shadow-md dark:bg-gray-800"
                 >
                   <div class="mb-4">
                     <label
-                      for="genre"
+                      for="username"
                       class="block text-sm font-medium text-gray-700 dark:text-gray-400"
-                      >Genre</label
                     >
+                      Username
+                    </label>
                     <input
                       type="text"
-                      id="genre"
-                      name="genre"
+                      id="username"
+                      name="username"
+                      required
+                      class="w-full px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div class="mb-4">
+                    <label
+                      for="email"
+                      class="block text-sm font-medium text-gray-700 dark:text-gray-400"
+                    >
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
                       required
                       class="w-full px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
                     />
@@ -512,7 +555,7 @@
               </div>
             </div>
 
-            <!-- Table Genre -->
+            <!-- Table Users -->
             <div class="w-full overflow-hidden rounded-lg shadow-xs mt-8">
               <div class="w-full overflow-x-auto">
                 <table class="w-full whitespace-no-wrap">
@@ -521,7 +564,8 @@
                       class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                     >
                       <th class="px-4 py-3">#</th>
-                      <th class="px-4 py-3">Genres</th>
+                      <th class="px-4 py-3">Username</th>
+                      <th class="px-4 py-3">Email</th>
                       <th class="px-4 py-3">Actions</th>
                     </tr>
                   </thead>
@@ -643,56 +687,63 @@
         icon.textContent = icon.textContent === "+" ? "-" : "+";
       }
 
-      let genres = [
-        { id: 1, name: "Romance" },
-        { id: 2, name: "Action" },
-        { id: 3, name: "Comedy" },
+      let users = [
+        { id: 1, username: "salsabil", email: "salsabil@gmail.com" },
+        { id: 2, username: "faris", email: "faris@gmail.com" },
       ];
+
+      let editingRow = null; // Variable untuk menyimpan baris yang sedang diedit
 
       function renderTable() {
         const tbody = document.querySelector("tbody");
         tbody.innerHTML = "";
-
-        genres.forEach((genre, index) => {
+        users.forEach((user, index) => {
           const row = document.createElement("tr");
           row.classList.add("text-gray-700", "dark:text-gray-400");
-
           row.innerHTML = `
-              <td class="px-4 py-3">
-                <div class="flex items-center text-sm">
-                  <div>
-                    <p class="font-semibold">${index + 1}</p>
-                  </div>
+            <td class="px-4 py-3">
+              <div class="flex items-center text-sm">
+                <div>
+                  <p class="font-semibold">${index + 1}</p>
                 </div>
-              </td>
-              <td class="px-4 py-3 text-sm" contenteditable="false" data-id="${
-                genre.id
-              }">
-                ${genre.name}
-              </td>
-              <td class="px-4 py-3">
-                <div class="flex items-center space-x-4 text-sm">
-                  <button class="edit-btn flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue" aria-label="Edit" data-id="${
-                    genre.id
-                  }">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 512 512">
-                      <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z" />
-                    </svg>
-                    <span class="ml-2">Edit</span>
-                  </button>
-      
-                  <button class="delete-btn flex items-center justify-between px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:shadow-outline-red" aria-label="Delete" data-id="${
-                    genre.id
-                  }">
-                    <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                    </svg>
-                    <span class="ml-2">Delete</span>
-                  </button>
-                </div>
-              </td>
-            `;
-
+              </div>
+            </td>
+            <td class="px-4 py-3 text-sm" contenteditable="false" data-id="${
+              user.id
+            }">
+              ${user.username}
+            </td>
+            <td class="px-4 py-3 text-sm" contenteditable="false" data-id="${
+              user.id
+            }">
+              ${user.email}
+            </td>
+            <td class="px-4 py-3 text-sm" contenteditable="false" data-id="${
+              user.id
+            }">
+              ${user.user}
+            </td>
+            <td class="px-4 py-3">
+              <div class="flex items-center space-x-4 text-sm">
+                <button class="edit-btn flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue" aria-label="Edit" data-id="${
+                  user.id
+                }">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 512 512">
+                    <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z"/>
+                  </svg>
+                  <span class="ml-2">Edit</span>
+                </button>
+                <button class="delete-btn flex items-center justify-between px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:shadow-outline-red" aria-label="Delete" data-id="${
+                  user.id
+                }">
+                  <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                  </svg>
+                  <span class="ml-2">Delete</span>
+                </button>
+              </div>
+            </td>
+          `;
           tbody.appendChild(row);
         });
       }
@@ -700,41 +751,52 @@
       renderTable();
 
       document
-        .getElementById("genreForm")
+        .getElementById("usersForm")
         .addEventListener("submit", function (e) {
           e.preventDefault();
-          const genreName = document.getElementById("genre").value;
-          if (genreName) {
-            const newGenre = { id: genres.length + 1, name: genreName };
-            genres.push(newGenre);
+          const username = document.getElementById("username").value;
+          const email = document.getElementById("email").value;
+
+          if (username && email) {
+            const newUsers = {
+              id: users.length + 1,
+              username: username,
+              email: email,
+            };
+            users.push(newUsers);
             renderTable();
-            document.getElementById("genre").value = "";
+            document.getElementById("usersForm").reset();
+          } else {
+            alert("Please fill out all fields.");
           }
         });
 
       document.querySelector("tbody").addEventListener("click", function (e) {
         if (e.target.closest(".edit-btn")) {
           const button = e.target.closest(".edit-btn");
-          const td = button.closest("tr").querySelector("td[contenteditable]");
-          const isEditable = td.getAttribute("contenteditable") === "true";
+          const tr = button.closest("tr");
+          const tds = tr.querySelectorAll(
+            "td:not(:first-child):not(:last-child)"
+          );
+          const isEditing = tds[0].getAttribute("contenteditable") === "true";
 
-          if (!isEditable) {
-            td.setAttribute("contenteditable", "true");
-            td.focus();
+          if (!isEditing) {
+            tds.forEach((td) => td.setAttribute("contenteditable", "true"));
             button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 512 512">
-                  <path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z"/>
-                </svg><span class="ml-2">Save</span>`;
+              <path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z"/>
+            </svg><span class="ml-2">Save</span>`;
           } else {
             if (window.confirm("Are you sure you want to save changes?")) {
-              td.setAttribute("contenteditable", "false");
+              tds.forEach((td) => td.setAttribute("contenteditable", "false"));
               const id = parseInt(button.getAttribute("data-id"));
-              const genre = genres.find((g) => g.id === id);
-              if (genre) {
-                genre.name = td.textContent;
+              const user = users.find((a) => a.id === id);
+              if (user) {
+                user.country = tds[0].textContent;
+                user.year = tds[1].textContent;
               }
               button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 512 512">
-                    <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z"/>
-                  </svg><span class="ml-2">Edit</span>`;
+                <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z"/>
+              </svg><span class="ml-2">Edit</span>`;
             }
           }
         }
@@ -744,7 +806,7 @@
             const id = parseInt(
               e.target.closest(".delete-btn").getAttribute("data-id")
             );
-            genres = genres.filter((c) => c.id !== id);
+            users = users.filter((a) => a.id !== id);
             renderTable();
           }
         }
