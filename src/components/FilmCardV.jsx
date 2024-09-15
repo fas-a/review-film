@@ -1,17 +1,29 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+
 function FilmCardV({ src, title }) {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const handleClick = () => {
+    navigate('/detail');
+  };
   return (
     <>
-      {/* Hello world */}
       <div className="inline-block px-3">
-        <div className="relative w-40 h-60 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out">
+        <div onClick={handleClick} className="relative w-40 h-60 max-w-xs overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out">
           <img
             src={src}
             className="object-cover w-full h-full"
             alt=""
           />
-          <p className="w-full absolute inset-x-0 bottom-0 bg-black bg-opacity-50 text-center text-white">
+          <h4 className="w-full absolute font-semibold inset-x-0 bottom-0 bg-black bg-opacity-50 text-center text-white">
             {title}
-          </p>
+          </h4>
         </div>
       </div>
     </>
