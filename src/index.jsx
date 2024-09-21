@@ -11,6 +11,10 @@ import CmsCountries from "./CmsCountries";
 import CmsGenres from "./CmsGenres";
 import CmsAwards from "./CmsAwards";
 import CmsUsers from "./CmsUsers";
+import CmsComments from "./CmsComments";
+import CmsActors from "./CmsActors";
+import CmsDramas from "./CmsDramas";
+import CmsDramaInput from "./CmsDramaInput";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./components/tailwind.output.css";
 
@@ -28,6 +32,10 @@ root.render(
         <Route path="/cmsgenres" element={<CmsGenres />} />
         <Route path="/cmsawards" element={<CmsAwards />} />
         <Route path="/cmsusers" element={<CmsUsers />} />
+        <Route path="/cmscomments" element={<CmsComments />} />
+        <Route path="/cmsactors" element={<CmsActors />} />
+        <Route path="/cmsdramas" element={<CmsDramas />} />
+        <Route path="/cmsdramainput" element={<CmsDramaInput />} />
       </Routes>
     </Router>
   </React.StrictMode>
