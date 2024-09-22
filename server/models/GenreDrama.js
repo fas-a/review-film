@@ -16,7 +16,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     tableName: 'genre_drama',
-    timestamps: false
+    timestamps: false,
+    define: {
+      noPrimaryKey: true,
+    },
   });
 
   return GenreDrama;

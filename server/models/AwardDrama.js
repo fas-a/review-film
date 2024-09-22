@@ -17,9 +17,12 @@ module.exports = (sequelize, DataTypes) => {
       }
     }, {
       tableName: 'award_drama',
-      timestamps: false
+      timestamps: false,
+      define: {
+        noPrimaryKey: true,
+      },
     });
-    
+    AwardDrama.removeAttribute('id');
     return AwardDrama;
   };
   
