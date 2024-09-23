@@ -15,6 +15,7 @@ import CmsComments from "./CmsComments";
 import CmsActors from "./CmsActors";
 import CmsDramas from "./CmsDramas";
 import CmsDramaInput from "./CmsDramaInput";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./components/tailwind.output.css";
 
@@ -28,14 +29,16 @@ root.render(
         <Route path="/search" element={<SearchPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/cmscountries" element={<CmsCountries />} />
-        <Route path="/cmsgenres" element={<CmsGenres />} />
-        <Route path="/cmsawards" element={<CmsAwards />} />
-        <Route path="/cmsusers" element={<CmsUsers />} />
-        <Route path="/cmscomments" element={<CmsComments />} />
-        <Route path="/cmsactors" element={<CmsActors />} />
-        <Route path="/cmsdramas" element={<CmsDramas />} />
-        <Route path="/cmsdramainput" element={<CmsDramaInput />} />
+        
+        {/* Rute yang dilindungi */}
+        <Route path="/cmscountries" element={<ProtectedRoute><CmsCountries /></ProtectedRoute>} />
+        <Route path="/cmsgenres" element={<ProtectedRoute><CmsGenres /></ProtectedRoute>} />
+        <Route path="/cmsawards" element={<ProtectedRoute><CmsAwards /></ProtectedRoute>} />
+        <Route path="/cmsusers" element={<ProtectedRoute><CmsUsers /></ProtectedRoute>} />
+        <Route path="/cmscomments" element={<ProtectedRoute><CmsComments /></ProtectedRoute>} />
+        <Route path="/cmsactors" element={<ProtectedRoute><CmsActors /></ProtectedRoute>} />
+        <Route path="/cmsdramas" element={<ProtectedRoute><CmsDramas /></ProtectedRoute>} />
+        <Route path="/cmsdramainput" element={<ProtectedRoute><CmsDramaInput /></ProtectedRoute>} />
       </Routes>
     </Router>
   </React.StrictMode>

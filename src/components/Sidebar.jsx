@@ -10,7 +10,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="z-20 hidden w-56 overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0 sticky top-0">
+    <aside className="z-20 hidden h-full w-56 overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0 fixed top-0">
       <div className="py-4 text-gray-500 dark:text-gray-400">
         <div className="flex justify-around items-center">
           <img

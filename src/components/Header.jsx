@@ -23,10 +23,14 @@ const Header = () => {
       navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
     }
   };
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    window.location.href = '/';
+};
 
   return (
-    <header className="z-10 py-4 bg-white shadow-md">
-      <div className="container flex items-center justify-between h-full px-6 mx-auto text-purple-600 dark:text-purple-300">
+    <header className="z-10 py-4 w-full bg-white shadow-md fixed top-0">
+      <div className="w-full flex items-center justify-between h-full px-6 text-purple-600 dark:text-purple-300">
         <div className="flex items-center flex-shrink-0 space-x-6 text-gray-500 dark:text-gray-400">
           <img src={icon} className="w-12 h-12" alt="Dramaku Logo" />
           <a
@@ -174,9 +178,9 @@ const Header = () => {
                   </a>
                 </li>
                 <li className="flex">
-                  <a
+                  <button 
                     className="inline-flex items-center w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-                    href="#"
+                    onClick={handleLogout}
                   >
                     <svg
                       className="w-4 h-4 mr-3"
@@ -191,7 +195,7 @@ const Header = () => {
                       <path d="M17 16l4-4m0 0l-4-4m4 4H7"></path>
                     </svg>
                     <span>Log out</span>
-                  </a>
+                  </button>
                 </li>
               </ul>
             )}

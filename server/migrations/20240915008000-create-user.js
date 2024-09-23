@@ -8,6 +8,7 @@ module.exports = {
           primaryKey: true,
           allowNull: false
         },
+        googleId: { type: DataTypes.Text },
         username: {
           type: Sequelize.STRING(50),
           allowNull: false,
