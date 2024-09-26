@@ -1,14 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Pagination from "./components/Pagination.jsx";
 
 const CmsCountries = () => {
-  const [countries, setCountries] = useState([
-    { id: 1, name: "Japan" },
-    { id: 2, name: "Korea" },
-    { id: 3, name: "China" },
-  ]);
+  const [countries, setCountries] = useState([]);
   const [countryName, setCountryName] = useState("");
   const [editableId, setEditableId] = useState(null);
   const [editName, setEditName] = useState("");
@@ -42,11 +38,26 @@ const CmsCountries = () => {
     }
   };
 
+  useEffect(() => {
+    fetch("http://localhost:3001/api/countries") // Full URL to the API endpoint
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setCountries(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching countries");
+      });
+  }, []);
+
   return (
-    <div className="flex h-screen pt-8 bg-gray-50 dark:bg-gray-900">
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
       <Sidebar />
       <div className="flex flex-col flex-1 w-full">
-        <Header />
         <div className="mt-10 flex-1 flex flex-col">
           <main className="flex-1 pb-16 overflow-y-auto">
             <div className="container grid px-6 mx-auto">
