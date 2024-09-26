@@ -1,34 +1,85 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Pagination from "./components/Pagination.jsx";
 
 const CmsCountries = () => {
-  const [countries, setCountries] = useState([
-    { id: 1, name: "Japan" },
-    { id: 2, name: "Korea" },
-    { id: 3, name: "China" },
-  ]);
+  const [countries, setCountries] = useState([]);
   const [countryName, setCountryName] = useState("");
   const [editableId, setEditableId] = useState(null);
   const [editName, setEditName] = useState("");
 
   const addCountry = (name) => {
-    setCountries([...countries, { id: countries.length + 1, name }]);
-  };
+    fetch("http://localhost:3001/api/countries", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((newCountry) => {
+        setCountries([...countries, newCountry]);
+        setCountryName("");
+      })
+      .catch((error) => {
+        console.error("Error adding country:", error);
+      });
+  };  
 
   const editCountry = (id, name) => {
-    setCountries(
-      countries.map((country) =>
-        country.id === id ? { ...country, name } : country
-      )
-    );
+    fetch(`http://localhost:3001/api/countries/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((updatedCountry) => {
+        // Update state with the new country data
+        setCountries(
+          countries.map((country) =>
+            country.id === id ? updatedCountry : country
+          )
+        );
+        setEditableId(null); // Exit edit mode
+        setEditName(""); // Clear input
+      })
+      .catch((error) => {
+        console.error("Error updating country:", error);
+      });
   };
 
   const deleteCountry = (id) => {
-    setCountries(countries.filter((country) => country.id !== id));
+    fetch(`http://localhost:3001/api/countries/${id}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(() => {
+        // Remove country from the local state after successful deletion
+        setCountries(countries.filter((country) => country.id !== id));
+      })
+      .catch((error) => {
+        console.error("Error deleting country:", error);
+      });
   };
-
+  
   const handleEditClick = (id, name) => {
     setEditableId(id);
     setEditName(name);
@@ -37,10 +88,24 @@ const CmsCountries = () => {
   const handleSaveClick = (id) => {
     if (window.confirm("Are you sure you want to save changes?")) {
       editCountry(id, editName);
-      setEditableId(null);
-      setEditName("");
     }
   };
+
+  useEffect(() => {
+    fetch("http://localhost:3001/api/countries") // Full URL to the API endpoint
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setCountries(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching country");
+      });
+  }, []);
 
   return (
     <div className="flex h-screen pt-8 bg-gray-50 dark:bg-gray-900">
