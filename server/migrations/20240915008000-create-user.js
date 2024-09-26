@@ -8,7 +8,7 @@ module.exports = {
           primaryKey: true,
           allowNull: false
         },
-        googleId: { type: DataTypes.Text },
+        googleId: { type: Sequelize.TEXT },
         username: {
           type: Sequelize.STRING(50),
           allowNull: false,
