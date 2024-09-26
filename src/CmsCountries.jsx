@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Pagination from "./components/Pagination.jsx";
@@ -8,6 +8,22 @@ const CmsCountries = () => {
   const [countryName, setCountryName] = useState("");
   const [editableId, setEditableId] = useState(null);
   const [editName, setEditName] = useState("");
+
+  useEffect(() => {
+    fetch("http://localhost:3001/api/countries") // Full URL to the API endpoint
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setCountries(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching country");
+      });
+  }, []);
 
   const addCountry = (name) => {
     fetch("http://localhost:3001/api/countries", {
