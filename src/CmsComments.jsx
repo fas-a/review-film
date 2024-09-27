@@ -84,10 +84,9 @@ const CmsComments = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 pt-8 dark:bg-gray-900">
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
       <Sidebar />
       <div className="flex flex-col flex-1 w-full">
-        <Header />
         <div className="mt-10 flex-1 flex flex-col">
           <main className="flex-1 pb-16 overflow-y-auto">
             <div className="container grid px-6 mx-auto">

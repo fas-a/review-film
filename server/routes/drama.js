@@ -9,6 +9,7 @@ const {
   ActorDrama,
   DramaGenre,
   Country,
+  Award,
 } = require("../models"); // Sesuaikan dengan model
 
 // GET /api/dramas - Ambil semua drama beserta aktor dan genre terkait
@@ -100,6 +101,24 @@ router.delete("/countries/:id", async (req, res) => {
   } catch (error) {
     console.error("Error deleting country:", error);
     res.status(500).json({ message: "Failed to delete country" });
+  }
+});
+
+// GET /api/awards - Ambil semua award beserta negara terkait
+router.get("/awards", async (req, res) => {
+  try {
+    const awards = await Award.findAll({
+      include: [
+        {
+          model: Country,
+          attributes: ["id", "name"], // Negara terkait
+        },
+      ],
+    });
+    res.json(awards);
+  } catch (error) {
+    console.error("Error fetching awards:", error);
+    res.status(500).json({ message: "Failed to fetch awards" });
   }
 });
 

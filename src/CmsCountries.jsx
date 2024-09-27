@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
-import Pagination from "./components/Pagination.jsx";
+import Pagination from "./components/Pagination";
+import Alert from "./components/Alert";
 
 const CmsCountries = () => {
   const [countries, setCountries] = useState([]);
   const [countryName, setCountryName] = useState("");
   const [editableId, setEditableId] = useState(null);
   const [editName, setEditName] = useState("");
+  const [alert, setAlert] = useState({ message: "", type: "" });
 
   useEffect(() => {
     fetch("http://localhost:3001/api/countries") // Full URL to the API endpoint
@@ -24,6 +26,11 @@ const CmsCountries = () => {
         console.error("Error fetching country");
       });
   }, []);
+
+  const showAlert = (message, type) => {
+    setAlert({ message, type });
+    setTimeout(() => setAlert({ message: "", type: "" }), 3000); // Alert hilang setelah 3 detik
+  };
 
   const addCountry = (name) => {
     fetch("http://localhost:3001/api/countries", {
@@ -42,6 +49,7 @@ const CmsCountries = () => {
       .then((newCountry) => {
         setCountries([...countries, newCountry]);
         setCountryName("");
+        showAlert("Data added successfully!", "success");
       })
       .catch((error) => {
         console.error("Error adding country:", error);
@@ -71,6 +79,7 @@ const CmsCountries = () => {
         );
         setEditableId(null); // Exit edit mode
         setEditName(""); // Clear input
+        showAlert("Data updated successfully!", "info");
       })
       .catch((error) => {
         console.error("Error updating country:", error);
@@ -90,6 +99,7 @@ const CmsCountries = () => {
       .then(() => {
         // Remove country from the local state after successful deletion
         setCountries(countries.filter((country) => country.id !== id));
+        showAlert("Data deleted successfully.", "error");
       })
       .catch((error) => {
         console.error("Error deleting country:", error);
@@ -119,6 +129,16 @@ const CmsCountries = () => {
               <h2 className="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
                 Tables Countries
               </h2>
+
+              {/* Tampilkan alert jika ada */}
+              {alert.message && (
+                <Alert
+                  message={alert.message}
+                  type={alert.type}
+                  onClose={() => setAlert({ message: "", type: "" })}
+                />
+              )}
+
               <div className="w-full overflow-hidden rounded-lg shadow-xs">
                 <div className="w-full overflow-x-auto">
                   <form
