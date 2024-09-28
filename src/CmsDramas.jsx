@@ -235,16 +235,21 @@ const CmsDramas = () => {
                             <button
                               className={`px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue ${
                                 drama.status === "Pending"
-                                  ? "pending-status"
+                                  ? "bg-blue-500"
                                   : drama.status === "Approved"
-                                  ? "bg-red-500" // Button berwarna merah untuk "Approved"
-                                  : "bg-gray-500" // Warna untuk status lainnya seperti "Unapproved"
+                                  ? "bg-green-600"
+                                  : "bg-red-600"
                               }`}
                               style={{
                                 backgroundColor:
                                   drama.status === "Pending"
                                     ? "hsl(211, 19%, 44%)"
-                                    : "",
+                                    : drama.status === "Approved"
+                                    ? "hsl(142, 74%, 30%)"
+                                    : "hsl(0, 78%, 52%)",
+                                color: "white",
+                                padding: "8px 16px",
+                                margin: "4px",
                               }}
                               onClick={() => handleStatusClick(drama)}
                             >

@@ -1,57 +1,125 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Pagination from "./components/Pagination.jsx";
+import Alert from "./components/Alert";
 
 const CmsAwards = () => {
-  const [awards, setAwards] = useState([
-    { id: 1, country: "USA", year: "2023", award: "Best Picture" },
-    { id: 2, country: "France", year: "2022", award: "Best Director" },
-    { id: 3, country: "Japan", year: "2021", award: "Best Cinematography" },
-  ]);
-
-  const [newAward, setNewAward] = useState({
-    country: "",
-    year: "",
-    award: "",
-  });
+  const [awards, setAwards] = useState([]);
+  const [awardName, setAwardName] = useState("");
+  const [awardYear, setAwardYear] = useState("");
+  const [countryId, setCountryId] = useState("");
+  const [countries, setCountries] = useState([]);
   const [editableId, setEditableId] = useState(null);
-  const [editAward, setEditAward] = useState({
-    country: "",
-    year: "",
-    award: "",
-  });
+  const [editName, setEditName] = useState("");
+  const [editYear, setEditYear] = useState("");
+  const [editCountryId, setEditCountryId] = useState("");
+  const [alert, setAlert] = useState({ message: "", type: "" });
 
-  const addAward = () => {
-    setAwards([...awards, { id: awards.length + 1, ...newAward }]);
-    setNewAward({ country: "", year: "", award: "" });
+  useEffect(() => {
+    // Fetch awards
+    fetch("http://localhost:3001/api/awards") // Full URL to the API endpoint
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setAwards(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching awards:", error);
+      });
+
+    // Fetch countries
+    const fetchCountries = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/api/countries");
+        if (!response.ok) throw new Error("Failed to fetch countries");
+        const data = await response.json();
+        console.log(data); // Check the structure of the data here
+        setCountries(data); // Store countries in state
+      } catch (error) {
+        console.error("Error fetching countries:", error);
+      }
+    };
+
+    fetchCountries(); // Call fetchCountries inside useEffect
+  }, []); // Empty dependency array to run only on component mount
+
+  const showAlert = (message, type) => {
+    setAlert({ message, type });
+    setTimeout(() => setAlert({ message: "", type: "" }), 3000);
   };
 
-  const editAwardEntry = (id, updatedAward) => {
-    setAwards(
-      awards.map((award) =>
-        award.id === id ? { ...award, ...updatedAward } : award
-      )
-    );
+  const addAward = () => {
+    fetch("http://localhost:3001/api/awards", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: awardName,
+        year: awardYear,
+        country_id: countryId,
+      }),
+    })
+      .then((response) => response.json())
+      .then((newAward) => {
+        setAwards([...awards, newAward]);
+        setAwardName("");
+        setAwardYear("");
+        setCountryId("");
+        showAlert("Award added successfully!", "success");
+      })
+      .catch((error) => console.error("Error adding award:", error));
+  };
+
+  const editAward = (id) => {
+    fetch(`http://localhost:3001/api/awards/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: editName,
+        year: editYear,
+      }),
+    })
+      .then((response) => response.json())
+      .then((updatedAward) => {
+        setAwards(
+          awards.map((award) => (award.id === id ? updatedAward : award))
+        );
+        setEditableId(null);
+        showAlert("Award updated successfully!", "info");
+      })
+      .catch((error) => console.error("Error updating award:", error));
   };
 
   const deleteAward = (id) => {
-    setAwards(awards.filter((award) => award.id !== id));
+    fetch(`http://localhost:3001/api/awards/${id}`, {
+      method: "DELETE",
+    })
+      .then(() => {
+        setAwards(awards.filter((award) => award.id !== id));
+        showAlert("Award deleted successfully.", "error");
+      })
+      .catch((error) => console.error("Error deleting award:", error));
   };
 
-  const handleEditClick = (award) => {
-    setEditableId(award.id);
-    setEditAward({
-      country: award.country,
-      year: award.year,
-      award: award.award,
-    });
+  const handleEditClick = (id, name, year, countryId) => {
+    setEditableId(id);
+    setEditName(name);
+    setEditYear(year);
+    setEditCountryId(countryId);
   };
 
   const handleSaveClick = (id) => {
-    editAwardEntry(id, editAward);
-    setEditableId(null);
-    setEditAward({ country: "", year: "", award: "" });
+    if (window.confirm("Are you sure you want to save changes?")) {
+      editAward(id);
+    }
   };
 
   return (
@@ -62,14 +130,25 @@ const CmsAwards = () => {
           <main className="flex-1 pb-16 overflow-y-auto">
             <div className="container grid px-6 mx-auto">
               <h2 className="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
-                Awards Management
+                Awards Table
               </h2>
-              <div className="w-full overflow-hidden rounded-lg shadow-xs">
+
+              {/* Alert Section */}
+              {alert.message && (
+                <Alert
+                  message={alert.message}
+                  type={alert.type}
+                  onClose={() => setAlert({ message: "", type: "" })}
+                />
+              )}
+
+              {/* Form untuk menambahkan award baru */}
+              <div className="w-full overflow-hidden rounded-lg shadow-xs mb-8">
                 <div className="w-full overflow-x-auto">
                   <form
                     onSubmit={(e) => {
                       e.preventDefault();
-                      if (newAward.country && newAward.year && newAward.award) {
+                      if (awardName && awardYear && countryId) {
                         addAward();
                       }
                     }}
@@ -77,61 +156,63 @@ const CmsAwards = () => {
                   >
                     <div className="mb-4">
                       <label
-                        htmlFor="country"
-                        className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2"
-                      >
-                        Country
-                      </label>
-                      <input
-                        type="text"
-                        id="country"
-                        name="country"
-                        required
-                        value={newAward.country}
-                        onChange={(e) =>
-                          setNewAward({ ...newAward, country: e.target.value })
-                        }
-                        className="w-full px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <label
-                        htmlFor="year"
-                        className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2"
-                      >
-                        Year
-                      </label>
-                      <input
-                        type="text"
-                        id="year"
-                        name="year"
-                        required
-                        value={newAward.year}
-                        onChange={(e) =>
-                          setNewAward({ ...newAward, year: e.target.value })
-                        }
-                        className="w-full px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <label
                         htmlFor="award"
                         className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2"
                       >
-                        Award
+                        Award Name
                       </label>
                       <input
                         type="text"
                         id="award"
                         name="award"
                         required
-                        value={newAward.award}
-                        onChange={(e) =>
-                          setNewAward({ ...newAward, award: e.target.value })
-                        }
+                        value={awardName}
+                        onChange={(e) => setAwardName(e.target.value)}
                         className="w-full px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
                       />
                     </div>
+
+                    <div className="mb-4">
+                      <label
+                        htmlFor="year"
+                        className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2"
+                      >
+                        Award Year
+                      </label>
+                      <input
+                        type="number"
+                        id="year"
+                        name="year"
+                        required
+                        value={awardYear}
+                        onChange={(e) => setAwardYear(e.target.value)}
+                        className="w-full px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
+                      />
+                    </div>
+
+                    <div className="mb-4">
+                      <label
+                        htmlFor="country"
+                        className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2"
+                      >
+                        Country
+                      </label>
+                      <select
+                        id="country"
+                        required
+                        value={countryId}
+                        onChange={(e) => setCountryId(e.target.value)}
+                        className="w-full px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
+                      >
+                        <option value="">Select Country</option>
+                        {countries.map((country) => (
+                          <option key={country.id} value={country.id}>
+                            {country.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
                     <button
                       type="submit"
                       className="px-4 py-2 text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
@@ -141,114 +222,74 @@ const CmsAwards = () => {
                   </form>
                 </div>
               </div>
+
+              {/* Tabel daftar awards */}
               <div className="w-full overflow-hidden rounded-lg shadow-xs mt-8">
                 <div className="w-full overflow-x-auto">
                   <table className="w-full whitespace-no-wrap">
                     <thead>
                       <tr className="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
                         <th className="px-4 py-3">#</th>
-                        <th className="px-4 py-3">Country</th>
-                        <th className="px-4 py-3">Year</th>
                         <th className="px-4 py-3">Award</th>
+                        <th className="px-4 py-3">Year</th>
+                        <th className="px-4 py-3">Country</th>
                         <th className="px-4 py-3">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
                       {awards.map((award, index) => (
                         <tr
-                          key={award.id}
+                          key={award?.id} // Safe access to award.id
                           className="text-gray-700 dark:text-gray-400"
                         >
-                          <td className="px-4 py-3 text-sm">{index + 1}</td>
-
-                          {/* Country Input */}
                           <td className="px-4 py-3 text-sm">
-                            {editableId === award.id ? (
+                            <div className="flex items-center text-sm">
+                              <div>{index + 1}</div>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3 text-sm">
+                            {editableId === award?.id ? (
                               <input
                                 type="text"
-                                value={editAward.country}
-                                onChange={(e) =>
-                                  setEditAward({
-                                    ...editAward,
-                                    country: e.target.value,
-                                  })
-                                }
+                                value={editName}
+                                onChange={(e) => setEditName(e.target.value)}
+                                autoFocus
                                 className="w-[100px] px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
                               />
                             ) : (
-                              <span
-                                onDoubleClick={() => handleEditClick(award)}
-                                className="w-[100px] inline-block"
-                              >
-                                {award.country}
-                              </span>
+                              award.name
+                            )}
+                          </td>
+                          <td className="px-4 py-3 text-sm">
+                            {editableId === award?.id ? (
+                              <input
+                                type="number"
+                                value={editYear}
+                                onChange={(e) => setEditYear(e.target.value)}
+                                autoFocus
+                                className="w-[80px] px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
+                              />
+                            ) : (
+                              award.year
                             )}
                           </td>
 
-                          {/* Year Input */}
                           <td className="px-4 py-3 text-sm">
-                            {editableId === award.id ? (
-                              <input
-                                type="text"
-                                value={editAward.year}
-                                onChange={(e) =>
-                                  setEditAward({
-                                    ...editAward,
-                                    year: e.target.value,
-                                  })
-                                }
-                                className="w-[100px] px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
-                              />
-                            ) : (
-                              <span
-                                onDoubleClick={() => handleEditClick(award)}
-                                className="w-[100px] inline-block"
-                              >
-                                {award.year}
-                              </span>
-                            )}
-                          </td>
-
-                          {/* Award Input */}
-                          <td className="px-4 py-3 text-sm">
-                            {editableId === award.id ? (
-                              <input
-                                type="text"
-                                value={editAward.award}
-                                onChange={(e) =>
-                                  setEditAward({
-                                    ...editAward,
-                                    award: e.target.value,
-                                  })
-                                }
-                                className="w-[100px] px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
-                              />
-                            ) : (
-                              <span
-                                onDoubleClick={() => handleEditClick(award)}
-                                className="w-[100px] inline-block"
-                              >
-                                {award.award}
-                              </span>
-                            )}
+                            {
+                              countries.find(
+                                (country) => country.id === award.country_id
+                              )?.name
+                            }
                           </td>
 
                           {/* Save & Delete Buttons */}
-                          <td className="px-4 py-3 text-sm">
-                            <div className="flex gap-4">
+                          <td className="px-4 py-3">
+                            <div className="flex items-center space-x-4 text-sm">
                               {editableId === award.id ? (
                                 <button
                                   className="save-btn flex items-center justify-between w-[100px] px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
                                   aria-label="Save"
-                                  onClick={() => {
-                                    if (
-                                      window.confirm(
-                                        "Are you sure you want to save changes?"
-                                      )
-                                    ) {
-                                      handleSaveClick(award.id);
-                                    }
-                                  }}
+                                  onClick={() => handleSaveClick(award.id)}
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -265,7 +306,14 @@ const CmsAwards = () => {
                                 <button
                                   className="edit-btn flex items-center justify-between w-[100px] px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
                                   aria-label="Edit"
-                                  onClick={() => handleEditClick(award)}
+                                  onClick={() =>
+                                    handleEditClick(
+                                      award.id,
+                                      award.name,
+                                      award.year,
+                                      award.country_id
+                                    )
+                                  }
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -314,7 +362,6 @@ const CmsAwards = () => {
                     </tbody>
                   </table>
                 </div>
-                <Pagination />
               </div>
             </div>
           </main>

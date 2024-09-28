@@ -104,21 +104,163 @@ router.delete("/countries/:id", async (req, res) => {
   }
 });
 
+// GENRES
+// GET /api/genres - Ambil semua genre
+router.get("/genres", async (req, res) => {
+  try {
+    const genres = await Genre.findAll({
+      attributes: ["id", "name"], // Hanya ambil kolom id dan name
+    });
+    res.json(genres);
+  } catch (error) {
+    console.error("Error fetching genres:", error);
+    res.status(500).json({ message: "Failed to fetch genres" });
+  }
+});
+
+// POST /api/genres - Tambah genre baru
+router.post(
+  "/genres",
+  [check("name").not().isEmpty().withMessage("Genre name is required")],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const { name } = req.body;
+      const newGenre = await Genre.create({ name });
+      res.status(201).json(newGenre);
+    } catch (error) {
+      console.error("Error adding genre:", error);
+      res.status(500).json({ message: "Failed to add genre" });
+    }
+  }
+);
+
+// PUT /api/genres/:id - Edit genre berdasarkan ID
+router.put("/genres/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name } = req.body;
+
+    const genre = await Genre.findByPk(id);
+    if (!genre) {
+      return res.status(404).json({ message: "Genre not found" });
+    }
+
+    genre.name = name;
+    await genre.save();
+
+    res.json(genre);
+  } catch (error) {
+    console.error("Error updating genre:", error);
+    res.status(500).json({ message: "Failed to update genre" });
+  }
+});
+
+// DELETE /api/genres/:id - Hapus genre berdasarkan ID
+router.delete("/genres/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const genre = await Genre.findByPk(id);
+    if (!genre) {
+      return res.status(404).json({ message: "Genre not found" });
+    }
+
+    await genre.destroy();
+    res.json({ message: "Genre deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting genre:", error);
+    res.status(500).json({ message: "Failed to delete genre" });
+  }
+});
+
+// AWARD
 // GET /api/awards - Ambil semua award beserta negara terkait
 router.get("/awards", async (req, res) => {
   try {
     const awards = await Award.findAll({
-      include: [
-        {
-          model: Country,
-          attributes: ["id", "name"], // Negara terkait
-        },
-      ],
+      include: {
+        model: Country,
+        as: "country", // Sesuaikan dengan alias di model
+        attributes: ["id", "name"], // Tampilkan kolom id dan name dari Country
+      },
     });
     res.json(awards);
   } catch (error) {
     console.error("Error fetching awards:", error);
     res.status(500).json({ message: "Failed to fetch awards" });
+  }
+});
+
+// POST /api/awards - Tambah award baru
+router.post(
+  "/awards",
+  [
+    check("name").not().isEmpty().withMessage("Award name is required"),
+    check("year").isInt().withMessage("Year must be a valid integer"),
+    check("country_id")
+      .isInt()
+      .withMessage("Country ID must be a valid integer"),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const { name, year, country_id } = req.body;
+      const newAward = await Award.create({ name, year, country_id });
+      res.status(201).json(newAward);
+    } catch (error) {
+      console.error("Error adding award:", error);
+      res.status(500).json({ message: "Failed to add award" });
+    }
+  }
+);
+
+// PUT /api/awards/:id - Edit award berdasarkan ID
+router.put("/awards/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, year, country_id } = req.body;
+
+    const award = await Award.findByPk(id);
+    if (!award) {
+      return res.status(404).json({ message: "Award not found" });
+    }
+
+    award.name = name;
+    award.year = year;
+    award.country_id = country_id;
+    await award.save();
+
+    res.json(award);
+  } catch (error) {
+    console.error("Error updating award:", error);
+    res.status(500).json({ message: "Failed to update award" });
+  }
+});
+
+// DELETE /api/awards/:id - Hapus award berdasarkan ID
+router.delete("/awards/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const award = await Award.findByPk(id);
+    if (!award) {
+      return res.status(404).json({ message: "Award not found" });
+    }
+
+    await award.destroy();
+    res.json({ message: "Award deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting award:", error);
+    res.status(500).json({ message: "Failed to delete award" });
   }
 });
 

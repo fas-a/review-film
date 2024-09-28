@@ -267,70 +267,7 @@
 
             <div
               class="flex items-center space-x-4 justify-center flex-1 lg:mr-32"
-            >
-              <!-- Filter by Select -->
-              <div class="flex items-center space-x-4">
-                <label
-                  for="filter"
-                  class="text-sm text-gray-700 dark:text-gray-400"
-                >
-                  Filtered by:
-                </label>
-                <select
-                  id="filter"
-                  class="ml-2 text-sm text-gray-700 bg-gray-100 border-0 rounded-md dark:bg-gray-700 dark:text-gray-200 focus:outline-none focus:shadow-outline-purple form-select"
-                >
-                  <option value="none">None</option>
-                  <option value="date">Date</option>
-                  <option value="rating">Rating</option>
-                  <option value="status">Status</option>
-                </select>
-              </div>
-
-              <!-- Shows Select -->
-              <div class="flex items-center space-x-4">
-                <label
-                  for="show"
-                  class="text-sm text-gray-700 dark:text-gray-400"
-                  >Shows</label
-                >
-                <select
-                  id="show"
-                  class="text-sm text-gray-700 bg-gray-100 border-0 rounded-md dark:bg-gray-700 dark:text-gray-200 focus:outline-none focus:shadow-outline-purple form-select"
-                >
-                  <option value="10">10</option>
-                  <option value="20">20</option>
-                  <option value="30">30</option>
-                  <option value="40">40</option>
-                </select>
-              </div>
-
-              <!-- Search Bar -->
-              <div
-                class="relative w-full max-w-xl focus-within:text-purple-500"
-              >
-                <div class="absolute inset-y-0 flex items-center pl-2">
-                  <svg
-                    class="w-4 h-4"
-                    aria-hidden="true"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                      clip-rule="evenodd"
-                    ></path>
-                  </svg>
-                </div>
-                <input
-                  class="w-full pl-8 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input"
-                  type="text"
-                  placeholder="Search for comments"
-                  aria-label="Search"
-                />
-              </div>
-            </div>
+            ></div>
 
             <ul class="flex items-center flex-shrink-0 space-x-6">
               <!-- Theme toggler -->
@@ -547,6 +484,72 @@
               Tables Comments
             </h2>
 
+            <div
+              class="flex items-center space-x-4 justify-center flex-1 lg:mr-32"
+            >
+              <!-- Filter by Select -->
+              <div class="flex items-center space-x-4">
+                <label
+                  for="filter"
+                  class="text-sm text-gray-700 dark:text-gray-400"
+                  >Filtered by:</label
+                >
+                <select
+                  id="filter"
+                  class="ml-2 text-sm text-gray-700 bg-gray-100 border-0 rounded-md dark:bg-gray-700 dark:text-gray-200 focus:outline-none focus:shadow-outline-purple form-select"
+                >
+                  <option value="none">None</option>
+                  <option value="approved">Approved</option>
+                  <option value="unapproved">Unapproved</option>
+                </select>
+              </div>
+
+              <!-- Shows Select -->
+              <div class="flex items-center space-x-4">
+                <label
+                  for="show"
+                  class="text-sm text-gray-700 dark:text-gray-400"
+                  >Shows</label
+                >
+                <select
+                  id="show"
+                  class="text-sm text-gray-700 bg-gray-100 border-0 rounded-md dark:bg-gray-700 dark:text-gray-200 focus:outline-none focus:shadow-outline-purple form-select"
+                >
+                  <option value="10">10</option>
+                  <option value="20">20</option>
+                  <option value="30">30</option>
+                  <option value="40">40</option>
+                </select>
+              </div>
+
+              <!-- Search Bar -->
+              <div
+                class="relative w-full max-w-xl focus-within:text-purple-500"
+              >
+                <div class="absolute inset-y-0 flex items-center pl-2">
+                  <svg
+                    class="w-4 h-4"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                      clip-rule="evenodd"
+                    ></path>
+                  </svg>
+                </div>
+                <input
+                  class="w-full pl-8 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input"
+                  type="text"
+                  id="search"
+                  placeholder="Search for comments"
+                  aria-label="Search"
+                />
+              </div>
+            </div>
+
             <!-- Table Users -->
             <div class="w-full overflow-hidden rounded-lg shadow-xs mt-8">
               <div class="w-full overflow-x-auto">
@@ -561,220 +564,106 @@
                       <th class="px-4 py-3">Drama</th>
                       <th class="px-4 py-3">Comments</th>
                       <th class="px-4 py-3">Status</th>
-                      <th class="px-4 py-3">Actions</th>
                     </tr>
                   </thead>
                   <tbody
                     class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800"
                   >
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3">
-                        <div class="flex items-center text-sm">
-                          <div>
-                            <p class="font-semibold">1</p>
-                          </div>
-                        </div>
+                      <td class="px-4 py-3 text-sm">
+                        <input
+                          type="checkbox"
+                          class="form-checkbox h-5 w-5 text-indigo-600"
+                        />
                       </td>
                       <td class="px-4 py-3 text-sm">anita1</td>
-                      <td class="px-4 py-3 text-sm">4</td>
+                      <td class="px-4 py-3 text-sm rating" data-rate="4"></td>
                       <td class="px-4 py-3 text-sm">Crash Landing on You</td>
                       <td class="px-4 py-3 text-sm">Amazing drama!</td>
-                      <td class="px-4 py-3 text-sm">Approved</td>
-                      <td class="px-4 py-3">
-                        <div class="flex items-center space-x-4 text-sm">
-                          <button
-                            class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
-                            aria-label="Edit"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              class="w-5 h-5"
-                              aria-hidden="true"
-                              fill="currentColor"
-                              viewBox="0 0 512 512"
-                            >
-                              <path
-                                d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z"
-                              />
-                            </svg>
-                            <span class="ml-2">Edit</span>
-                          </button>
-
-                          <button
-                            class="flex items-center justify-between px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
-                            aria-label="Delete"
-                          >
-                            <svg
-                              class="w-5 h-5"
-                              aria-hidden="true"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path
-                                fill-rule="evenodd"
-                                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                clip-rule="evenodd"
-                              ></path>
-                            </svg>
-                            <span class="ml-2">Delete</span>
-                          </button>
-                        </div>
+                      <td class="px-4 py-3 text-sm">
+                        <button
+                          class="statusBtn px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
+                          style="
+                            background-color: hsl(211, 19%, 44%);
+                            color: white;
+                          "
+                          data-index="1"
+                        >
+                          Pending
+                        </button>
                       </td>
                     </tr>
 
-                    <!-- Contoh Baris Kedua -->
                     <tr class="text-gray-700 dark:text-gray-400">
-                      <td class="px-4 py-3">
-                        <div class="flex items-center text-sm">
-                          <div>
-                            <p class="font-semibold">2</p>
-                          </div>
-                        </div>
+                      <td class="px-4 py-3 text-sm">
+                        <input
+                          type="checkbox"
+                          class="form-checkbox h-5 w-5 text-indigo-600"
+                        />
                       </td>
                       <td class="px-4 py-3 text-sm">borang</td>
-                      <td class="px-4 py-3 text-sm">5</td>
+                      <td class="px-4 py-3 text-sm rating" data-rate="3"></td>
                       <td class="px-4 py-3 text-sm">Itaewon Class</td>
                       <td class="px-4 py-3 text-sm">Very inspiring story!</td>
-                      <td class="px-4 py-3 text-sm">Unapproved</td>
-                      <td class="px-4 py-3">
-                        <div class="flex items-center space-x-4 text-sm">
-                          <button
-                            class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
-                            aria-label="Edit"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              class="w-5 h-5"
-                              aria-hidden="true"
-                              fill="currentColor"
-                              viewBox="0 0 512 512"
-                            >
-                              <path
-                                d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z"
-                              />
-                            </svg>
-                            <span class="ml-2">Edit</span>
-                          </button>
-
-                          <button
-                            class="flex items-center justify-between px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
-                            aria-label="Delete"
-                          >
-                            <svg
-                              class="w-5 h-5"
-                              aria-hidden="true"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path
-                                fill-rule="evenodd"
-                                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                clip-rule="evenodd"
-                              ></path>
-                            </svg>
-                            <span class="ml-2">Delete</span>
-                          </button>
-                        </div>
+                      <td class="px-4 py-3 text-sm">
+                        <button
+                          class="statusBtn px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
+                          style="
+                            background-color: hsl(211, 19%, 44%);
+                            color: white;
+                          "
+                          data-index="2"
+                        >
+                          Pending
+                        </button>
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
+
+              <!-- Select all & action buttons -->
               <div
-                class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800"
+                class="grid px-4 py-3 text-x border-t dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
               >
-                <span class="flex items-center col-span-3">
-                  Showing 21-30 of 100
-                </span>
-                <span class="col-span-2"></span>
-                <!-- Pagination -->
-                <span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
-                  <nav aria-label="Table navigation">
-                    <ul class="inline-flex items-center">
-                      <li>
-                        <button
-                          class="px-3 py-1 rounded-md rounded-l-lg focus:outline-none focus:shadow-outline-purple"
-                          aria-label="Previous"
-                        >
-                          <svg
-                            class="w-4 h-4 fill-current"
-                            aria-hidden="true"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                              clip-rule="evenodd"
-                              fill-rule="evenodd"
-                            ></path>
-                          </svg>
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple"
-                        >
-                          1
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple"
-                        >
-                          2
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          class="px-3 py-1 text-white transition-colors duration-150 bg-purple-600 border border-r-0 border-purple-600 rounded-md focus:outline-none focus:shadow-outline-purple"
-                        >
-                          3
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple"
-                        >
-                          4
-                        </button>
-                      </li>
-                      <li>
-                        <span class="px-3 py-1">...</span>
-                      </li>
-                      <li>
-                        <button
-                          class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple"
-                        >
-                          8
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple"
-                        >
-                          9
-                        </button>
-                      </li>
-                      <li>
-                        <button
-                          class="px-3 py-1 rounded-md rounded-r-lg focus:outline-none focus:shadow-outline-purple"
-                          aria-label="Next"
-                        >
-                          <svg
-                            class="w-4 h-4 fill-current"
-                            aria-hidden="true"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                              clip-rule="evenodd"
-                              fill-rule="evenodd"
-                            ></path>
-                          </svg>
-                        </button>
-                      </li>
-                    </ul>
-                  </nav>
-                </span>
+                <div class="flex flex-col items-start space-y-2">
+                  <label class="inline-flex items-center">
+                    <input
+                      type="checkbox"
+                      class="form-checkbox h-5 w-5 text-indigo-600"
+                      id="selectAll"
+                    />
+                    <span class="ml-2 text-gray-700">Select All</span>
+                  </label>
+
+                  <div class="flex space-x-4">
+                    <!-- Approved Button -->
+                    <button
+                      id="approveBtn"
+                      type="button"
+                      class="px-3 py-1 text-white bg-green-500 rounded-lg hover:bg-green-700 focus:outline-none focus:shadow-outline-green"
+                      style="
+                        background-color: #15803d;
+                        color: white;
+                        width: auto;
+                      "
+                      onclick="updateStatus('Approved')"
+                    >
+                      Approved
+                    </button>
+
+                    <!-- Unapproved Button -->
+                    <button
+                      id="unapproveBtn"
+                      type="button"
+                      class="px-3 py-1 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
+                      style="width: auto"
+                      onclick="updateStatus('Unapproved')"
+                    >
+                      Unapproved
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -811,95 +700,23 @@
         editingRow = row;
       }
 
-      function addRowListeners(row) {
-        row
-          .querySelector('button[aria-label="Edit"]')
-          .addEventListener("click", function () {
-            populateForm(row);
-          });
+      // Fungsi untuk mengubah rating menjadi bintang
+      function generateStars(rating) {
+        const fullStar =
+          '<svg class="w-4 h-4 inline-block text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.286a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.03a1 1 0 00-.364 1.118l1.07 3.286c.3.921-.755 1.688-1.538 1.118l-2.8-2.03a1 1 0 00-1.176 0l-2.8 2.03c-.783.57-1.838-.197-1.538-1.118l1.07-3.286a1 1 0 00-.364-1.118l-2.8-2.03c-.783-.57-.38-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.07-3.286z"></path></svg>';
 
-        row
-          .querySelector('button[aria-label="Delete"]')
-          .addEventListener("click", function () {
-            row.parentNode.removeChild(row);
-            updateRowNumbers();
-          });
-      }
-
-      document
-        .getElementById("commentForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-
-          const username = document.getElementById("username").value;
-          const rate = document.querySelector(
-            'input[name="rate"]:checked'
-          ).value;
-          const drama = document.getElementById("drama").value;
-          const comment = document.getElementById("comment").value;
-          const status = document.getElementById("status").value;
-
-          if (!username || !rate || !drama || !comment || !status) {
-            alert("Please fill out all fields.");
-            return;
-          }
-
-          const table = document.querySelector("table tbody");
-
-          if (editingRow) {
-            const cells = editingRow.getElementsByTagName("td");
-            cells[1].innerText = username;
-            cells[2].innerHTML = generateStars(rate);
-            cells[2].setAttribute("data-rate", rate);
-            cells[2].innerText = drama;
-            cells[4].innerText = comment;
-            cells[5].innerText = status;
-            editingRow = null;
-          } else {
-            const newRow = document.createElement("tr");
-            newRow.classList.add("text-gray-700", "dark:text-gray-400");
-            newRow.innerHTML = `
-                    <td class="px-4 py-3">${table.rows.length + 1}</td>
-                    <td class="px-4 py-3">${username}</td>
-                    <td class="px-4 py-3" data-rate="${rate}">${generateStars(
-              rate
-            )}</td>
-                    <td class="px-4 py-3">${drama}</td>
-                    <td class="px-4 py-3">${comment}</td>
-                    <td class="px-4 py-3">${status}</td>
-                    <td class="px-4 py-3">
-                      <div class="flex items-center space-x-4 text-sm">
-                          <button class="flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue" aria-label="Edit">
-                              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 512 512">
-                                  <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z"/>
-                              </svg>
-                              <span class="ml-2">Edit</span>
-                          </button>
-  
-                          <button class="flex items-center justify-between px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:shadow-outline-red" aria-label="Delete">
-                              <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
-                                  <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                              </svg>
-                              <span class="ml-2">Delete</span>
-                          </button>
-                      </div>
-                  </td>
-                `;
-
-            table.appendChild(newRow);
-            addRowListeners(newRow);
-          }
-
-          document.getElementById("commentForm").reset();
-        });
-
-      function generateStars(rate) {
         let stars = "";
-        for (let i = 1; i <= 5; i++) {
-          stars += i <= rate ? "★" : "☆";
+        for (let i = 0; i < rating; i++) {
+          stars += fullStar;
         }
         return stars;
       }
+
+      // Ambil semua elemen rating dan ubah menjadi bintang
+      document.querySelectorAll(".rating").forEach((cell) => {
+        const rating = parseInt(cell.dataset.rate);
+        cell.innerHTML = generateStars(rating);
+      });
 
       function updateRowNumbers() {
         const rows = document.querySelectorAll("table tbody tr");
@@ -907,6 +724,100 @@
           row.cells[0].innerText = index + 1;
         });
       }
+
+      // Fungsi untuk memperbarui status berdasarkan tombol yang ditekan
+      function updateStatus(status) {
+        const checkboxes = document.querySelectorAll(
+          'tbody input[type="checkbox"]'
+        );
+        checkboxes.forEach((checkbox) => {
+          if (checkbox.checked) {
+            const row = checkbox.closest("tr");
+            const statusButton = row.querySelector(".statusBtn");
+            statusButton.textContent = status;
+
+            // Update warna tombol berdasarkan status
+            if (status === "Approved") {
+              statusButton.style.backgroundColor = "green";
+              statusButton.style.color = "white";
+              statusButton.textContent = "Approved";
+            } else if (status === "Unapproved") {
+              statusButton.style.backgroundColor = "#dc2626"; // red-600
+              statusButton.style.color = "white";
+              statusButton.textContent = "Unapproved";
+            }
+
+            // Optional: Anda bisa menambahkan logika untuk memperbarui status ke database di sini
+          }
+        });
+
+        // Hapus centang semua checkbox setelah update
+        document.getElementById("selectAll").checked = false;
+        checkboxes.forEach((checkbox) => (checkbox.checked = false));
+      }
+
+      document
+        .getElementById("selectAll")
+        .addEventListener("click", function () {
+          const checkboxes = document.querySelectorAll(
+            'tbody input[type="checkbox"]'
+          );
+          checkboxes.forEach((checkbox) => {
+            checkbox.checked = this.checked;
+          });
+        });
+
+      // Fungsi untuk melakukan pencarian di semua kolom
+      const searchInput = document.getElementById("search");
+      searchInput.addEventListener("input", function () {
+        const searchText = searchInput.value.toLowerCase();
+        const rows = document.querySelectorAll("tbody tr");
+
+        rows.forEach((row) => {
+          // Dapatkan semua kolom dalam baris ini
+          const cells = row.getElementsByTagName("td");
+          let rowText = "";
+
+          // Gabungkan semua teks dari setiap kolom ke dalam satu string
+          for (let i = 1; i < cells.length; i++) {
+            rowText += cells[i].innerText.toLowerCase() + " ";
+          }
+
+          // Jika teks pencarian cocok dengan teks di salah satu kolom, tampilkan baris
+          if (rowText.includes(searchText)) {
+            row.style.display = "";
+          } else {
+            row.style.display = "none";
+          }
+        });
+      });
+
+      document.getElementById("filter").addEventListener("change", function () {
+        const filterValue = this.value.toLowerCase();
+        const rows = document.querySelectorAll("tbody tr");
+        rows.forEach((row) => {
+          const status = row
+            .querySelector(".statusBtn")
+            .innerText.toLowerCase();
+          if (filterValue === "none" || status === filterValue) {
+            row.style.display = ""; // Tampilkan baris jika status sesuai
+          } else {
+            row.style.display = "none"; // Sembunyikan baris jika tidak sesuai
+          }
+        });
+      });
+
+      document.getElementById("show").addEventListener("change", function () {
+        const showLimit = parseInt(this.value);
+        const rows = document.querySelectorAll("tbody tr");
+        rows.forEach((row, index) => {
+          if (index < showLimit) {
+            row.style.display = ""; // Tampilkan baris jika dalam batas
+          } else {
+            row.style.display = "none"; // Sembunyikan baris jika melebihi batas
+          }
+        });
+      });
     </script>
   </body>
 </html>

@@ -1,30 +1,105 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Pagination from "./components/Pagination.jsx";
+import Alert from "./components/Alert";
 
 const CmsGenres = () => {
-  const [genres, setGenres] = useState([
-    { id: 1, name: "Romance" },
-    { id: 2, name: "Action" },
-    { id: 3, name: "Comedy" },
-  ]);
+  const [genres, setGenres] = useState([]);
   const [genreName, setGenreName] = useState("");
   const [editableId, setEditableId] = useState(null);
   const [editName, setEditName] = useState("");
+  const [alert, setAlert] = useState({ message: "", type: "" });
+
+  useEffect(() => {
+    fetch("http://localhost:3001/api/genres") // Full URL to the API endpoint
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setGenres(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching genre");
+      });
+  }, []);
+
+  const showAlert = (message, type) => {
+    setAlert({ message, type });
+    setTimeout(() => setAlert({ message: "", type: "" }), 3000); // Alert hilang setelah 3 detik
+  };
 
   const addGenre = (name) => {
-    setGenres([...genres, { id: genres.length + 1, name }]);
+    fetch("http://localhost:3001/api/genres", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((newGenre) => {
+        setGenres([...genres, newGenre]);
+        setGenreName("");
+        showAlert("Data added successfully!", "success");
+      })
+      .catch((error) => {
+        console.error("Error adding genre:", error);
+      });
   };
 
   const editGenre = (id, name) => {
-    setGenres(
-      genres.map((genre) => (genre.id === id ? { ...genre, name } : genre))
-    );
+    fetch(`http://localhost:3001/api/genres/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((updatedGenre) => {
+        setGenres(
+          genres.map((genre) => (genre.id === id ? updatedGenre : genre))
+        );
+        setEditableId(null);
+        setEditName("");
+        showAlert("Data updated successfully!", "info");
+      })
+      .catch((error) => {
+        console.error("Error updating genre:", error);
+      });
   };
 
   const deleteGenre = (id) => {
-    setGenres(genres.filter((genre) => genre.id !== id));
+    fetch(`http://localhost:3001/api/genres/${id}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(() => {
+        setGenres(genres.filter((genre) => genre.id !== id));
+        showAlert("Data deleted successfully.", "error");
+      })
+      .catch((error) => {
+        console.error("Error deleting genre:", error);
+      });
   };
 
   const handleEditClick = (id, name) => {
@@ -50,6 +125,16 @@ const CmsGenres = () => {
               <h2 className="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
                 Tables Genres
               </h2>
+
+              {/* Tampilkan alert jika ada */}
+              {alert.message && (
+                <Alert
+                  message={alert.message}
+                  type={alert.type}
+                  onClose={() => setAlert({ message: "", type: "" })}
+                />
+              )}
+
               <div className="w-full overflow-hidden rounded-lg shadow-xs">
                 <div className="w-full overflow-x-auto">
                   <form

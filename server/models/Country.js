@@ -1,29 +1,32 @@
 // models/Country.js
 module.exports = (sequelize, DataTypes) => {
-    const Country = sequelize.define('Country', {
+  const Country = sequelize.define(
+    "Country",
+    {
       id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
-        allowNull: false
+        allowNull: false,
       },
       name: {
         type: DataTypes.STRING(50),
         allowNull: false,
-        unique: true
+        unique: true,
       },
       createdAt: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
+        defaultValue: DataTypes.NOW,
       },
       updatedAt: {
-        type: DataTypes.DATE
-      }
-    }, {
-      tableName: 'countries',
-      timestamps: true
-    });
-    
-    return Country;
-  };
-  
+        type: DataTypes.DATE,
+      },
+    },
+    {
+      tableName: "countries",
+      timestamps: true,
+    }
+  );
+
+  return Country;
+};
