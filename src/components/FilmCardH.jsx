@@ -12,10 +12,11 @@ function FilmCardH({ title, src, synopsis, year, genres = [], rate, views }) {
     navigate("/detail");
   };
 
-  // Ensure genres is an array before mapping
-  console.log(genres);
+  // Pastikan genres adalah array dan tampilkan sebagai string yang dipisahkan koma
   const genreNames =
-    genres.map((genre) => genre.name).join(", ") || "No genres available";
+    Array.isArray(genres) && genres.length > 0
+      ? genres.map((genre) => genre.name).join(", ")
+      : "No genres available";
 
   return (
     <div
@@ -35,9 +36,11 @@ function FilmCardH({ title, src, synopsis, year, genres = [], rate, views }) {
           </p>
           <div className="flex justify-between">
             <p className="text-xs text-gray-600 dark:text-gray-400">
-              Rate 3.5/5
+              Rate {rate}/5
             </p>
-            <p className="text-xs text-gray-600 dark:text-gray-400">19 views</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">
+              {views} views
+            </p>
           </div>
         </div>
       </div>

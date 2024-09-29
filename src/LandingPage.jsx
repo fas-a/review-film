@@ -8,9 +8,14 @@ import Header from "./components/Header";
 function LandingPage() {
   const [films, setFilms] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedGenre, setSelectedGenre] = useState("");
+  const [selectedYear, setSelectedYear] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedAvailability, setSelectedAvailability] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/dramas") // Full URL to the API endpoint
+    fetch("http://localhost:3001/api/dramas")
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -22,10 +27,78 @@ function LandingPage() {
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching films");
+        console.error("Error fetching films", error);
         setLoading(false);
       });
   }, []);
+
+  // Fungsi untuk handle perubahan filter genre
+  const handleGenreChange = (genre) => {
+    setSelectedGenre(genre);
+  };
+
+  // Fungsi untuk handle perubahan filter year
+  const handleYearChange = (year) => {
+    setSelectedYear(year);
+  };
+
+  const handleCountryChange = (country) => {
+    setSelectedCountry(country);
+  };
+
+  const handleAvailabilityChange = (availability) => {
+    setSelectedAvailability(availability);
+  };
+
+  const handleStatusChange = (status) => {
+    setSelectedStatus(status);
+  };
+
+  // Fungsi helper untuk mendapatkan nama genre
+  const getGenreName = (genre) => {
+    if (typeof genre === "string") return genre;
+    if (typeof genre === "object" && genre !== null) {
+      return genre.name || genre.Name || genre.genre || genre.Genre || "";
+    }
+    return "";
+  };
+
+  // Filter film berdasarkan genre dan tahun yang dipilih
+  const filteredFilms = films.filter((film) => {
+    const matchesGenre = selectedGenre
+      ? film.Genres &&
+        film.Genres.some(
+          (genre) =>
+            getGenreName(genre).toLowerCase() === selectedGenre.toLowerCase()
+        )
+      : true;
+
+    const matchesYear = selectedYear
+      ? film.year.toString() === selectedYear
+      : true;
+
+    const matchesCountry = selectedCountry
+      ? film.country.toLowerCase() === selectedCountry.toLowerCase() // Gantilah dengan properti yang benar
+      : true;
+
+    const matchesAvailability = selectedAvailability
+      ? film.availability &&
+        film.availability.toLowerCase() === selectedAvailability.toLowerCase() // Gantilah dengan properti yang benar
+      : true;
+
+    const matchesStatus = selectedStatus
+      ? film.status &&
+        film.status.toLowerCase() === selectedStatus.toLowerCase() // Gantilah dengan properti yang benar
+      : true;
+
+    return (
+      matchesGenre &&
+      matchesYear &&
+      matchesCountry &&
+      matchesAvailability &&
+      matchesStatus
+    ); // Film akan muncul jika cocok dengan genre, tahun, negara, atau availability
+  });
 
   if (loading) {
     return <p>Loading...</p>;
@@ -39,19 +112,34 @@ function LandingPage() {
         <SweepCard title="Most View" />
         <SweepCard title="Most Popular" />
         <div className="w-full px-4 md:px-20 xl:px-40 grid mt-4">
-          <Filter />
+          <Filter
+            selectedGenre={selectedGenre}
+            onGenreChange={handleGenreChange}
+            selectedYear={selectedYear}
+            onYearChange={handleYearChange}
+            selectedCountry={selectedCountry}
+            onCountryChange={handleCountryChange}
+            selectedAvailability={selectedAvailability}
+            onAvailabilityChange={handleAvailabilityChange}
+            selectedStatus={selectedStatus}
+            onStatusChange={handleStatusChange}
+          />
+
           <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
-            {/* Render daftar film yang diambil dari API */}
-            {films.map((film) => (
-              <FilmCardH
-                key={film.id}
-                src={film.poster || "./img/film.jpg"} // Asumsi ada field 'poster' untuk gambar
-                title={film.title} // Asumsi ada field 'title'
-                synopsis={film.synopsis} // Asumsi ada field 'description'
-                year={film.year} // Asumsi ada field 'year'
-                genres={film.Genres} // Asumsi ada field 'genres'
-              />
-            ))}
+            {filteredFilms.length > 0 ? (
+              filteredFilms.map((film) => (
+                <FilmCardH
+                  key={film.id}
+                  src={film.poster || "./img/film.jpg"}
+                  title={film.title}
+                  synopsis={film.synopsis}
+                  year={film.year}
+                  genres={film.Genres ? film.Genres : []}
+                />
+              ))
+            ) : (
+              <p>No films found.</p>
+            )}
           </div>
         </div>
       </div>

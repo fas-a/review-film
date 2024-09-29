@@ -1,54 +1,137 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
-import Pagination from "./components/Pagination.jsx";
+import Pagination from "./components/Pagination";
+import Alert from "./components/Alert";
 
 const CmsUsers = () => {
-  const [users, setUsers] = useState([
-    { id: 1, name: "salsabilk", email: "salsabil@gmail.com", role: "Admin" },
-    { id: 2, name: "faris_a", email: "fariss@gmail.com", role: "Admin" },
-  ]);
+  const [users, setUsers] = useState([]);
 
   const [newUser, setNewUser] = useState({
-    name: "",
+    username: "",
     email: "",
     role: "",
   });
   const [editableId, setEditableId] = useState(null);
   const [editUser, setEditUser] = useState({
-    name: "",
+    username: "",
     email: "",
     role: "",
   });
 
-  const addUser = () => {
-    setUsers([...users, { id: users.length + 1, ...newUser }]);
-    setNewUser({ name: "", email: "", role: "" });
+  const [alert, setAlert] = useState({ message: "", type: "" });
+
+  useEffect(() => {
+    fetch("http://localhost:3001/api/users") // Full URL to the API endpoint
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        const sortedData = data.sort((a, b) => a.id - b.id);
+        setUsers(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching country");
+      });
+  }, []);
+
+  const showAlert = (message, type) => {
+    setAlert({ message, type });
+    setTimeout(() => setAlert({ message: "", type: "" }), 3000); // Alert hilang setelah 3 detik
   };
 
-  const editUserEntry = (id, updatedUser) => {
-    setUsers(
-      users.map((user) => (user.id === id ? { ...user, ...updatedUser } : user))
-    );
+  const addUser = (newUser) => {
+    fetch("http://localhost:3001/api/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newUser), // Mengirim seluruh object newUser
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((newUserData) => {
+        setUsers([...users, newUserData]); // Menggunakan data yang dikembalikan
+        setNewUser({ username: "", email: "", role: "" }); // Reset form input
+        showAlert("Data added successfully!", "success");
+      })
+      .catch((error) => {
+        console.error("Error adding user:", error);
+        showAlert("Failed to add user!", "error");
+      });
+  };
+
+  // Ganti nama fungsi dari editUser menjadi updateUser
+  const updateUser = (id, updatedUser) => {
+    fetch(`http://localhost:3001/api/users/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedUser),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((updatedUserData) => {
+        // Update state dengan data user yang baru
+        setUsers(
+          users.map((user) => (user.id === id ? updatedUserData : user))
+        );
+        setEditableId(null); // Keluar dari mode edit
+        setEditUser({ username: "", email: "", role: "" }); // Kosongkan input
+        showAlert("Data updated successfully!", "info");
+      })
+      .catch((error) => {
+        console.error("Error updating user:", error);
+      });
   };
 
   const deleteUser = (id) => {
-    setUsers(users.filter((user) => user.id !== id));
+    fetch(`http://localhost:3001/api/users/${id}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(() => {
+        // Hapus user dari state setelah berhasil delete
+        setUsers(users.filter((user) => user.id !== id));
+        showAlert("Data deleted successfully.", "error");
+      })
+      .catch((error) => {
+        console.error("Error deleting user:", error);
+      });
   };
 
   const handleEditClick = (user) => {
     setEditableId(user.id);
     setEditUser({
-      name: user.name,
+      username: user.username,
       email: user.email,
       role: user.role,
     });
   };
 
   const handleSaveClick = (id) => {
-    editUserEntry(id, editUser);
-    setEditableId(null);
-    setEditUser({ name: "", email: "", role: "" });
+    if (window.confirm("Are you sure you want to save changes?")) {
+      updateUser(id, editUser);
+      setEditableId(null);
+      setEditUser({ username: "", email: "", role: "" });
+    }
   };
 
   return (
@@ -61,13 +144,23 @@ const CmsUsers = () => {
               <h2 className="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
                 Users Management
               </h2>
-              <div className="w-full overflow-hidden rounded-lg shadow-xs">
+
+              {/* Tampilkan alert jika ada */}
+              {alert.message && (
+                <Alert
+                  message={alert.message}
+                  type={alert.type}
+                  onClose={() => setAlert({ message: "", type: "" })}
+                />
+              )}
+
+              {/* <div className="w-full overflow-hidden rounded-lg shadow-xs">
                 <div className="w-full overflow-x-auto">
                   <form
                     onSubmit={(e) => {
                       e.preventDefault();
-                      if (newUser.name && newUser.email && newUser.role) {
-                        addUser();
+                      if (newUser.username && newUser.email && newUser.role) {
+                        addUser(newUser); // Kirim newUser sebagai parameter
                       }
                     }}
                     className="p-6 bg-white rounded-lg shadow-md dark:bg-gray-800"
@@ -77,16 +170,16 @@ const CmsUsers = () => {
                         htmlFor="name"
                         className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2"
                       >
-                        Name
+                        Username
                       </label>
                       <input
                         type="text"
-                        id="name"
-                        name="name"
+                        id="username"
+                        name="username"
                         required
-                        value={newUser.name}
+                        value={newUser.username}
                         onChange={(e) =>
-                          setNewUser({ ...newUser, name: e.target.value })
+                          setNewUser({ ...newUser, username: e.target.value })
                         }
                         className="w-full px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
                       />
@@ -137,14 +230,14 @@ const CmsUsers = () => {
                     </button>
                   </form>
                 </div>
-              </div>
+              </div> */}
               <div className="w-full overflow-hidden rounded-lg shadow-xs mt-8">
                 <div className="w-full overflow-x-auto">
                   <table className="w-full whitespace-no-wrap">
                     <thead>
                       <tr className="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
                         <th className="px-4 py-3">#</th>
-                        <th className="px-4 py-3">Name</th>
+                        <th className="px-4 py-3">Username</th>
                         <th className="px-4 py-3">Email</th>
                         <th className="px-4 py-3">Role</th>
                         <th className="px-4 py-3">Actions</th>
@@ -163,11 +256,11 @@ const CmsUsers = () => {
                             {editableId === user.id ? (
                               <input
                                 type="text"
-                                value={editUser.name}
+                                value={editUser.username}
                                 onChange={(e) =>
                                   setEditUser({
                                     ...editUser,
-                                    name: e.target.value,
+                                    username: e.target.value,
                                   })
                                 }
                                 className="w-[100px] px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
@@ -177,7 +270,7 @@ const CmsUsers = () => {
                                 onDoubleClick={() => handleEditClick(user)}
                                 className="w-[100px] inline-block"
                               >
-                                {user.name}
+                                {user.username}
                               </span>
                             )}
                           </td>
@@ -237,15 +330,7 @@ const CmsUsers = () => {
                                 <button
                                   className="save-btn flex items-center justify-between w-[100px] px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
                                   aria-label="Save"
-                                  onClick={() => {
-                                    if (
-                                      window.confirm(
-                                        "Are you sure you want to save changes?"
-                                      )
-                                    ) {
-                                      handleSaveClick(user.id);
-                                    }
-                                  }}
+                                  onClick={() => handleSaveClick(user.id)}
                                 >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
