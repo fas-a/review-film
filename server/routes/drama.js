@@ -11,6 +11,7 @@ const {
   Country,
   Award,
   User,
+  AwardDrama,
 } = require("../models"); // Sesuaikan dengan model
 
 // GET /api/dramas - Ambil semua drama beserta aktor dan genre terkait
@@ -22,6 +23,11 @@ router.get("/dramas", async (req, res) => {
           model: Genre,
           through: DramaGenre,
           attributes: ["id", "name"], // Genre terkait
+        },
+        {
+          model: Award,
+          through: AwardDrama,
+          attributes: ["id", "name"],
         },
       ],
     });
@@ -210,13 +216,7 @@ router.delete("/genres/:id", async (req, res) => {
 // GET /api/awards - Ambil semua award beserta negara terkait
 router.get("/awards", async (req, res) => {
   try {
-    const awards = await Award.findAll({
-      include: {
-        model: Country,
-        as: "country", // Sesuaikan dengan alias di model
-        attributes: ["id", "name"], // Tampilkan kolom id dan name dari Country
-      },
-    });
+    const awards = await Award.findAll({});
     res.json(awards);
   } catch (error) {
     console.error("Error fetching awards:", error);
