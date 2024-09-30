@@ -44,6 +44,7 @@ function LandingPage() {
 
   const handleCountryChange = (country) => {
     setSelectedCountry(country);
+    console.log("Selected country ID:", country);
   };
 
   const handleAvailabilityChange = (availability) => {
@@ -78,7 +79,7 @@ function LandingPage() {
       : true;
 
     const matchesCountry = selectedCountry
-      ? film.country.toLowerCase() === selectedCountry.toLowerCase() // Gantilah dengan properti yang benar
+      ? film.country_id === Number(selectedCountry) // Pastikan mencocokkan ID negara
       : true;
 
     const matchesAvailability = selectedAvailability

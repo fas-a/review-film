@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 function Filter({
   selectedGenre,
@@ -34,6 +34,27 @@ function Filter({
     onStatusChange(event.target.value); // Kirim nilai status yang dipilih ke parent
   };
 
+  const [countryId, setCountryId] = useState("");
+  const [countries, setCountries] = useState([]);
+
+  // Fetch countries
+  useEffect(() => {
+    // Fetch countries
+    const fetchCountries = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/api/countries");
+        if (!response.ok) throw new Error("Failed to fetch countries");
+        const data = await response.json();
+        console.log(data); // Check the structure of the data here
+        setCountries(data); // Store countries in state
+      } catch (error) {
+        console.error("Error fetching countries:", error);
+      }
+    };
+
+    fetchCountries(); // Call fetchCountries inside useEffect
+  }, []); // Empty dependency array to run only on component mount
+
   return (
     <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
       <div className="flex justify-between flex-wrap items-center">
@@ -48,16 +69,11 @@ function Filter({
               value={selectedCountry} // Pastikan ini sesuai dengan props
             >
               <option value="">-- Country --</option>
-              <option value="indonesia">Indonesia</option>
-              <option value="malaysia">Malaysia</option>
-              <option value="china">China</option>
-              <option value="spain">Spain</option>
-              <option value="thailand">Thailand</option>
-              <option value="korea">South Korea</option>
-              <option value="india">India</option>
-              <option value="japan">Japan</option>
-              <option value="uk">United Kingdom</option>
-              <option value="usa">United State America</option>
+              {countries.map((country) => (
+                <option key={country.id} value={country.id}>
+                  {country.name}
+                </option>
+              ))}
             </select>
           </label>
           <label className="block text-sm">
@@ -70,7 +86,6 @@ function Filter({
               <option value={2024}>2024</option>
               <option value={2023}>2023</option>
               <option value={2022}>2022</option>
-              <option value={2021}>2021</option>
               <option value={2021}>2021</option>
               <option value={2020}>2020</option>
               <option value={2019}>2019</option>
