@@ -38,5 +38,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
+  Award.associate = (models) => {
+    Award.belongsToMany(models.Drama, {
+      through: models.AwardDrama,
+      foreignKey: 'award_id',
+    });
+  };
+
   return Award;
 };

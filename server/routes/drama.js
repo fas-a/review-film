@@ -36,7 +36,20 @@ router.get("/dramas", async (req, res) => {
 router.get("/drama/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const drama = await Drama.findByPk(id);
+    const drama = await Drama.findByPk(id, {
+      include: [
+        {
+          model: Genre,
+          through: DramaGenre,
+          attributes: ["id", "name"], // Genre terkait
+        },
+        {
+          model: Actor,
+          through: ActorDrama,
+          attributes: ["id", "name"], // Aktor terkait
+        },
+      ],
+    });
     if (!drama) {
       return res.status(404).json({ message: "Drama not found" });
     }

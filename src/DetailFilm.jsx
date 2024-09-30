@@ -2,14 +2,15 @@ import React from "react";
 import FilmCardV from "./components/FilmCardV";
 import SweepCard from "./components/SweepCard";
 import { useParams } from "react-router-dom";
-import Header from './components/Header';
+import Header from "./components/Header";
 import Comment from "./components/Comment";
 import CommentForm from "./components/CommentForm";
 import { useEffect, useState } from "react";
 
 function DetailFilm() {
   const { id } = useParams();
-  const [film, setFilm] = useState();
+  const [film, setFilm] = useState("");
+  const [videoId, setVideoId] = useState(null);
   useEffect(() => {
     fetch("http://localhost:3001/api/drama/" + id)
       .then((response) => {
@@ -25,24 +26,27 @@ function DetailFilm() {
         console.error("Error fetching film", error);
       });
   }, []);
-  console.log(film)
+  console.log(videoId);
+  const getVideoId = (url) => {
+    const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^&\n]{11})/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+  };
   return (
     <div>
-        <Header />
+      <Header />
       <div className="pt-20 w-full px-4 md:px-20 xl:px-40 grid mt-4 image-wrapper">
-        <video
-          className="w-full h-128 rounded-lg" controls
-        >
-          <source src={film.link_trailer} type="videp/mp4"/>
-        </video>
+      {film && film.link_trailer && (
+        <iframe
+          className="w-full h-128 rounded-lg"
+          src={`https://www.youtube.com/embed/${getVideoId(film.link_trailer)}`}
+          allowFullScreen
+        />
+      )}
       </div>
       <div className="w-full px-4 md:px-20 xl:px-40 grid grid-cols-4 gap-4 mt-4">
         <div className="col-span-1 pr-2">
-          <img
-            className="w-full rounded-lg"
-            src={film.poster}
-            alt=""
-          />
+          <img className="w-full rounded-lg" src={film.poster} alt="" />
         </div>
         <div className="col-span-3 bg-white rounded-lg shadow-md dark:bg-gray-800 p-4">
           <h2 className="mb-4 text-2xl font-semibold text-gray-700 dark:text-gray-200">
@@ -58,7 +62,7 @@ function DetailFilm() {
             {film.synopsis}
           </p>
           <p className="mb-4 font-semibold text-gray-800 dark:text-gray-300">
-            Genre
+          {console.log(film.genre)}
           </p>
           <p className="mb-4 font-semibold text-gray-800 dark:text-gray-300">
             Rating

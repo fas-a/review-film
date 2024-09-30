@@ -58,6 +58,16 @@ module.exports = (sequelize, DataTypes) => {
       through: models.GenreDrama,
       foreignKey: 'drama_id'
     });
+
+    Drama.belongsToMany(models.Actor, {
+      through: models.ActorDrama,
+      foreignKey: 'drama_id'
+    });
+
+    Drama.belongsToMany(models.Award, {
+      through: models.AwardDrama,
+      foreignKey: 'drama_id'
+    });
   };
 
   return Drama;
