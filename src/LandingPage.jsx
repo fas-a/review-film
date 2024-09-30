@@ -130,6 +130,7 @@ function LandingPage() {
             {filteredFilms.length > 0 ? (
               filteredFilms.map((film) => (
                 <FilmCardH
+                  key={film.id}
                   id={film.id}
                   src={film.poster || "./img/film.jpg"}
                   title={film.title}
