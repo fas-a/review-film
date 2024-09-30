@@ -25,7 +25,7 @@ root.render(
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/detail" element={<DetailFilm />} />
+        <Route path="/detail/:id" element={<DetailFilm />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />

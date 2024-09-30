@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function FilmCardH({ title, src, synopsis, year, genres = [], rate, views }) {
+function FilmCardH({ id, title, src, synopsis, year, genres = [], rate, views }) {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -9,7 +9,7 @@ function FilmCardH({ title, src, synopsis, year, genres = [], rate, views }) {
   }, []);
 
   const handleClick = () => {
-    navigate("/detail");
+    navigate('/detail/' + id);
   };
 
   // Pastikan genres adalah array dan tampilkan sebagai string yang dipisahkan koma

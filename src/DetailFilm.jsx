@@ -1,41 +1,61 @@
 import React from "react";
 import FilmCardV from "./components/FilmCardV";
 import SweepCard from "./components/SweepCard";
+import { useParams } from "react-router-dom";
 import Header from './components/Header';
 import Comment from "./components/Comment";
 import CommentForm from "./components/CommentForm";
+import { useEffect, useState } from "react";
 
 function DetailFilm() {
+  const { id } = useParams();
+  const [film, setFilm] = useState();
+  useEffect(() => {
+    fetch("http://localhost:3001/api/drama/" + id)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setFilm(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching film", error);
+      });
+  }, []);
+  console.log(film)
   return (
     <div>
         <Header />
       <div className="pt-20 w-full px-4 md:px-20 xl:px-40 grid mt-4 image-wrapper">
-        <img
-          className="w-full h-128 rounded-lg"
-          src="https://upload.wikimedia.org/wikipedia/commons/9/9e/Timisoara_-_Regional_Business_Centre.jpg"
-          alt=""
-        ></img>
+        <video
+          className="w-full h-128 rounded-lg" controls
+        >
+          <source src={film.link_trailer} type="videp/mp4"/>
+        </video>
       </div>
       <div className="w-full px-4 md:px-20 xl:px-40 grid grid-cols-4 gap-4 mt-4">
         <div className="col-span-1 pr-2">
           <img
             className="w-full rounded-lg"
-            src="./img/poster-film/filmv1.jpg"
+            src={film.poster}
             alt=""
           />
         </div>
         <div className="col-span-3 bg-white rounded-lg shadow-md dark:bg-gray-800 p-4">
           <h2 className="mb-4 text-2xl font-semibold text-gray-700 dark:text-gray-200">
-            Judul film
+            {film.title}
           </h2>
           <p className="mb-4 font-semibold text-gray-800 dark:text-gray-300">
-            Other titles
+            {film.alt_title}
           </p>
           <p className="mb-4 font-semibold text-gray-800 dark:text-gray-300">
-            Year
+            {film.year}
           </p>
-          <p className="mb-4 font-semibold text-gray-800 dark:text-gray-300">
-            Sinopsis
+          <p className="mb-4 text-gray-800 dark:text-gray-300">
+            {film.synopsis}
           </p>
           <p className="mb-4 font-semibold text-gray-800 dark:text-gray-300">
             Genre

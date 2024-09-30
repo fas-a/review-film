@@ -33,6 +33,20 @@ router.get("/dramas", async (req, res) => {
   }
 });
 
+router.get("/drama/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const drama = await Drama.findByPk(id);
+    if (!drama) {
+      return res.status(404).json({ message: "Drama not found" });
+    }
+    res.json(drama);
+  } catch (error) {
+    console.error("Error fetching drama:", error);
+    res.status(500).json({ message: "Failed to fetching drama" });
+  }
+});
+
 router.get("/countries", async (req, res) => {
   try {
     const countries = await Country.findAll({

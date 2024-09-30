@@ -1,21 +1,21 @@
 {
   "development": {
     "username": "postgres",
-    "password": "Apaaja22*",
+    "password": "123456789",
     "database": "review-film",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "test": {
     "username": "postgres",
-    "password": "Apaaja22*",
+    "password": "123456789",
     "database": "review-film",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "production": {
     "username": "postgres",
-    "password": "Apaaja22*",
+    "password": "123456789",
     "database": "review-film",
     "host": "127.0.0.1",
     "dialect": "postgres"
