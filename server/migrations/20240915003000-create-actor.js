@@ -17,7 +17,7 @@ module.exports = {
           type: Sequelize.DATE
         },
         photo: {
-          type: Sequelize.BLOB('long')
+          type: Sequelize.TEXT
         },
         country_id: {
           type: Sequelize.INTEGER,

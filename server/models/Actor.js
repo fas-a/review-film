@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE
       },
       photo: {
-        type: DataTypes.BLOB('long')
+        type: DataTypes.TEXT
       },
       country_id: {
         type: DataTypes.INTEGER,

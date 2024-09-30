@@ -17,8 +17,17 @@ module.exports = {
       },
       {
         googleId: null,
-        username: 'user',
-        email: 'user@example.com',
+        username: 'faris',
+        email: 'faris@example.com',
+        password: await bcrypt.hash('12345678', 10), // Gunakan await di sini
+        role: 'User',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        googleId: null,
+        username: 'sabil',
+        email: 'sabil@example.com',
         password: await bcrypt.hash('12345678', 10), // Gunakan await di sini
         role: 'User',
         createdAt: new Date(),

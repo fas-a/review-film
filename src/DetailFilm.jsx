@@ -28,21 +28,25 @@ function DetailFilm() {
   }, []);
   console.log(videoId);
   const getVideoId = (url) => {
-    const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^&\n]{11})/;
+    const regex =
+      /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^&\n]{11})/;
     const match = url.match(regex);
     return match ? match[1] : null;
   };
+
   return (
     <div>
       <Header />
       <div className="pt-20 w-full px-4 md:px-20 xl:px-40 grid mt-4 image-wrapper">
-      {film && film.link_trailer && (
-        <iframe
-          className="w-full h-128 rounded-lg"
-          src={`https://www.youtube.com/embed/${getVideoId(film.link_trailer)}`}
-          allowFullScreen
-        />
-      )}
+        {film && film.link_trailer && (
+          <iframe
+            className="w-full h-128 rounded-lg"
+            src={`https://www.youtube.com/embed/${getVideoId(
+              film.link_trailer
+            )}`}
+            allowFullScreen
+          />
+        )}
       </div>
       <div className="w-full px-4 md:px-20 xl:px-40 grid grid-cols-4 gap-4 mt-4">
         <div className="col-span-1 pr-2">
@@ -61,14 +65,16 @@ function DetailFilm() {
           <p className="mb-4 text-gray-800 dark:text-gray-300">
             {film.synopsis}
           </p>
-          <p className="mb-4 font-semibold text-gray-800 dark:text-gray-300">
-          {console.log(film.genre)}
+          <p className="mb-4 text-gray-800 dark:text-gray-300">
+            {film.Genres && film.Genres.length > 0
+              ? film.Genres.map((genre) => genre.name).join(", ")
+              : "No genres available"}
           </p>
           <p className="mb-4 font-semibold text-gray-800 dark:text-gray-300">
             Rating
           </p>
-          <p className="mb-4 font-semibold text-gray-800 dark:text-gray-300">
-            Availability
+          <p className="mb-4 text-gray-800 dark:text-gray-300">
+            {film.availability}
           </p>
         </div>
       </div>
@@ -79,17 +85,16 @@ function DetailFilm() {
           </h1>
           <div className="flex overflow-x-auto hide-scroll-bar">
             <div className="flex flex-nowrap py-2 lg:ml-40 md:ml-20 ml-10">
-              <FilmCardV src="./img/song-jongki.jpeg" title="Song Jong Ki" />
-              <FilmCardV src="./img/song-jongki.jpeg" title="Song Jong Ki" />
-              <FilmCardV src="./img/song-jongki.jpeg" title="Song Jong Ki" />
-              <FilmCardV src="./img/song-jongki.jpeg" title="Song Jong Ki" />
-              <FilmCardV src="./img/song-jongki.jpeg" title="Song Jong Ki" />
-              <FilmCardV src="./img/song-jongki.jpeg" title="Song Jong Ki" />
-              <FilmCardV src="./img/song-jongki.jpeg" title="Song Jong Ki" />
-              <FilmCardV src="./img/song-jongki.jpeg" title="Song Jong Ki" />
-              <FilmCardV src="./img/song-jongki.jpeg" title="Song Jong Ki" />
-              <FilmCardV src="./img/song-jongki.jpeg" title="Song Jong Ki" />
-              <FilmCardV src="./img/song-jongki.jpeg" title="Song Jong Ki" />
+              {film.Actors && film.Actors.length > 0 ? (
+                film.Actors.map((actor) => (
+                  <FilmCardV
+                    src={actor.photo}
+                    title={actor.name}
+                  />
+                ))
+              ) : (
+                <p>No actors available</p> // Fallback message if no actors
+              )}
             </div>
           </div>
         </div>

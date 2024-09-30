@@ -7,6 +7,9 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         allowNull: false
       },
+      photo: {
+        type: DataTypes.TEXT
+      },
       googleId: { type: DataTypes.TEXT },
       username: {
         type: DataTypes.STRING(50),

@@ -17,6 +17,7 @@ module.exports = {
             name: row.name,
             birth_date: new Date(row.birth_date), // Pastikan tipe data birth_date benar
             photo: row.photo,
+            country_id: row.country_id,
             createdAt: new Date(),
             updatedAt: new Date(),
           });

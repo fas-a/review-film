@@ -46,7 +46,7 @@ router.get("/drama/:id", async (req, res) => {
         {
           model: Actor,
           through: ActorDrama,
-          attributes: ["id", "name"], // Aktor terkait
+          attributes: ["id", "name", "photo"], // Aktor terkait
         },
       ],
     });
