@@ -87,10 +87,7 @@ function DetailFilm() {
             <div className="flex flex-nowrap py-2 lg:ml-40 md:ml-20 ml-10">
               {film.Actors && film.Actors.length > 0 ? (
                 film.Actors.map((actor) => (
-                  <FilmCardV
-                    src={actor.photo}
-                    title={actor.name}
-                  />
+                  <FilmCardV src={actor.photo} title={actor.name} />
                 ))
               ) : (
                 <p>No actors available</p> // Fallback message if no actors
@@ -123,30 +120,17 @@ function DetailFilm() {
               <div className="w-full overflow-x-auto">
                 <table className="w-full whitespace-no-wrap">
                   <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                    <Comment
-                      avatar="https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
-                      name="ABu"
-                      comment="Wow keren"
-                      rating="5.0"
-                    />
-                    <Comment
-                      avatar="https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
-                      name="Faris"
-                      comment="Wow keren"
-                      rating="5.0"
-                    />
-                    <Comment
-                      avatar="https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
-                      name="Faris"
-                      comment="Wow keren"
-                      rating="5.0"
-                    />
-                    <Comment
-                      avatar="https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
-                      name="Faris"
-                      comment="Wow keren"
-                      rating="5.0"
-                    />
+                    {film.Comments && film.Comments.length > 0 ? (
+                      film.Comments.map((comment) => (
+                        <Comment avatar="https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
+                        name={comment.User.username}
+                        comment={comment.content}
+                        rating={comment.rate}
+                        />
+                      ))
+                    ) : (
+                      <p>No comment available</p> // Fallback message if no actors
+                    )}
                   </tbody>
                 </table>
               </div>

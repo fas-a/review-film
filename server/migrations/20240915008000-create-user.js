@@ -9,6 +9,9 @@ module.exports = {
           allowNull: false
         },
         googleId: { type: Sequelize.TEXT },
+        photo: {
+          type: Sequelize.TEXT
+        },
         username: {
           type: Sequelize.STRING(50),
           allowNull: false,

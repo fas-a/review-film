@@ -2,20 +2,22 @@ import React, { useState } from "react";
 import LoginForm from "./components/LoginForm";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
+  const [emailOrUsername, setEmailOrUsername] = useState('');
   const [password, setPassword] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const response = await fetch('http://localhost:3001/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+    const response = await fetch("http://localhost:3001/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ emailOrUsername, password }),
     });
+    console.log(emailOrUsername);
     const data = await response.json();
     if (response.ok) {
-      localStorage.setItem('token', data.token);
-      window.location.href = '/'; 
+      sessionStorage.setItem("token", data.token);
+      console.log(data.token);
+      window.location.href = "/";
     } else {
       console.error(data.message);
     }
@@ -51,12 +53,13 @@ const LoginPage = () => {
                 <form action="" method="post" onSubmit={handleLogin}>
                   <label className="block text-sm">
                     <span className="text-gray-700 dark:text-gray-400">
-                      Email
+                      Email or Username
                     </span>
                     <input
                       className="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                      placeholder="Jane Doe"
-                      value={email} onChange={e => setEmail(e.target.value)}
+                      placeholder="Enter your email or username"
+                      value={emailOrUsername}
+                      onChange={(e) => setEmailOrUsername(e.target.value)} // Ubah menjadi emailOrUsername
                     />
                   </label>
                   <label className="block mt-4 text-sm">
@@ -67,16 +70,22 @@ const LoginPage = () => {
                       className="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                       placeholder="***************"
                       type="password"
-                      value={password} onChange={e => setPassword(e.target.value)}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                   </label>
-                  <button type="submit" className="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-            Log in
-        </button>
-                  
+                  <button
+                    type="submit"
+                    className="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                  >
+                    Log in
+                  </button>
                 </form>
                 <hr className="my-8" />
-                <a href="http://localhost:3001/auth/google" className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium leading-5 text-white text-gray-700 transition-colors duration-150 border border-gray-300 rounded-lg dark:text-gray-400 active:bg-transparent hover:border-gray-500 focus:border-gray-500 active:text-gray-500 focus:outline-none focus:shadow-outline-gray">
+                <a
+                  href="http://localhost:3001/auth/google"
+                  className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium leading-5 text-white text-gray-700 transition-colors duration-150 border border-gray-300 rounded-lg dark:text-gray-400 active:bg-transparent hover:border-gray-500 focus:border-gray-500 active:text-gray-500 focus:outline-none focus:shadow-outline-gray"
+                >
                   <svg
                     className="w-4 h-4 mr-2"
                     xmlns="http://www.w3.org/2000/svg"
