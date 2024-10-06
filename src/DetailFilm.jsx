@@ -11,7 +11,43 @@ function DetailFilm() {
   const { id } = useParams();
   const [film, setFilm] = useState("");
   const [videoId, setVideoId] = useState(null);
+  const [hasAccess, setHasAccess] = useState(null);
+  const [user, setUser] = useState(null);
+
+  const getProtectedData = async () => {
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      setHasAccess(false);
+      return;
+    }
+    try {
+      const response = await fetch("http://localhost:3001/auth/protected", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+
+        if (data.access) {
+          setHasAccess(true);
+          setUser(data.user);
+        } else {
+          setHasAccess(false);
+        }
+      } else {
+        console.log("Failed to fetch protected data");
+        setHasAccess(false);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setHasAccess(false);
+    }
+  };
   useEffect(() => {
+    getProtectedData();
     fetch("http://localhost:3001/api/drama/" + id)
       .then((response) => {
         if (!response.ok) {
@@ -122,10 +158,11 @@ function DetailFilm() {
                   <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
                     {film.Comments && film.Comments.length > 0 ? (
                       film.Comments.map((comment) => (
-                        <Comment avatar="https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
-                        name={comment.User.username}
-                        comment={comment.content}
-                        rating={comment.rate}
+                        <Comment
+                          avatar="https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
+                          name={comment.User.username}
+                          comment={comment.content}
+                          rating={comment.rate}
                         />
                       ))
                     ) : (
@@ -143,7 +180,11 @@ function DetailFilm() {
               Tambah Komen
             </h2>
           </div>
-          <CommentForm />
+          {hasAccess ? (
+            <CommentForm />
+          ) : (
+            <p>Anda harus login untuk memberikan komentar</p>
+          )}
         </div>
       </div>
     </div>
