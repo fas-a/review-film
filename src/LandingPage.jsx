@@ -13,6 +13,7 @@ function LandingPage() {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedAvailability, setSelectedAvailability] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedAward, setSelectedAward] = useState("");
 
   useEffect(() => {
     fetch("http://localhost:3001/api/dramas")
@@ -55,6 +56,10 @@ function LandingPage() {
     setSelectedStatus(status);
   };
 
+  const handleAwardChange = (award) => {
+    setSelectedAward(award); // Menangani perubahan award
+  };
+
   // Fungsi helper untuk mendapatkan nama genre
   const getGenreName = (genre) => {
     if (typeof genre === "string") return genre;
@@ -92,12 +97,19 @@ function LandingPage() {
         film.status.toLowerCase() === selectedStatus.toLowerCase() // Gantilah dengan properti yang benar
       : true;
 
+    const matchesAward = selectedAward
+      ? selectedAward === "yes"
+        ? film.Awards && film.Awards.length > 0 // Cek jika array Awards ada isinya untuk "yes"
+        : film.Awards && film.Awards.length === 0 // Cek jika array Awards kosong untuk "no"
+      : true;
+
     return (
       matchesGenre &&
       matchesYear &&
       matchesCountry &&
       matchesAvailability &&
-      matchesStatus
+      matchesStatus &&
+      matchesAward
     ); // Film akan muncul jika cocok dengan genre, tahun, negara, atau availability
   });
 
@@ -124,6 +136,8 @@ function LandingPage() {
             onAvailabilityChange={handleAvailabilityChange}
             selectedStatus={selectedStatus}
             onStatusChange={handleStatusChange}
+            selectedAward={selectedAward}
+            onAwardChange={handleAwardChange}
           />
 
           <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">

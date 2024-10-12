@@ -11,6 +11,8 @@ function Filter({
   onAvailabilityChange,
   selectedStatus,
   onStatusChange,
+  selectedAward,
+  onAwardChange,
 }) {
   // Fungsi untuk menangani perubahan pada dropdown
   const handleGenreSelect = (event) => {
@@ -34,7 +36,10 @@ function Filter({
     onStatusChange(event.target.value); // Kirim nilai status yang dipilih ke parent
   };
 
-  const [countryId, setCountryId] = useState("");
+  const handleAwardSelect = (event) => {
+    onAwardChange(event.target.value); // Kirim nilai award yang dipilih ke parent
+  };
+
   const [countries, setCountries] = useState([]);
 
   // Fetch countries
@@ -142,7 +147,11 @@ function Filter({
             </select>
           </label>
           <label className="block text-sm">
-            <select className="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray">
+            <select
+              className="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+              onChange={handleAwardSelect}
+              value={selectedAward} // Pastikan ini sesuai dengan props
+            >
               <option value="">-- Award --</option>
               <option value="yes">Yes</option>
               <option value="no">No</option>
