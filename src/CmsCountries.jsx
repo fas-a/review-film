@@ -10,9 +10,19 @@ const CmsCountries = () => {
   const [editableId, setEditableId] = useState(null);
   const [editName, setEditName] = useState("");
   const [alert, setAlert] = useState({ message: "", type: "" });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const countriesPerPage = 10;
 
+  // Fetch countries setiap kali currentPage berubah
   useEffect(() => {
-    fetch("http://localhost:3001/api/countries") // Full URL to the API endpoint
+    fetchCountries(currentPage);
+  }, [currentPage]);
+
+  const fetchCountries = (page) => {
+    fetch(
+      `http://localhost:3001/api/countries?page=${page}&limit=${countriesPerPage}`
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -20,12 +30,13 @@ const CmsCountries = () => {
         return response.json();
       })
       .then((data) => {
-        setCountries(data);
+        setCountries(data.countries);
+        setTotalPages(data.totalPages);
       })
       .catch((error) => {
-        console.error("Error fetching country");
+        console.error("Error fetching countries:", error);
       });
-  }, []);
+  };
 
   const showAlert = (message, type) => {
     setAlert({ message, type });
@@ -50,6 +61,7 @@ const CmsCountries = () => {
         setCountries([...countries, newCountry]);
         setCountryName("");
         showAlert("Data added successfully!", "success");
+        fetchCountries(currentPage); // Refresh data setelah menambahkan country baru
       })
       .catch((error) => {
         console.error("Error adding country:", error);
@@ -100,6 +112,7 @@ const CmsCountries = () => {
         // Remove country from the local state after successful deletion
         setCountries(countries.filter((country) => country.id !== id));
         showAlert("Data deleted successfully.", "error");
+        fetchCountries(currentPage); // Refresh data setelah menghapus country
       })
       .catch((error) => {
         console.error("Error deleting country:", error);
@@ -118,6 +131,8 @@ const CmsCountries = () => {
       setEditName("");
     }
   };
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
@@ -194,9 +209,7 @@ const CmsCountries = () => {
                           className="text-gray-700 dark:text-gray-400"
                         >
                           <td className="px-4 py-3 text-sm">
-                            <div className="flex items-center text-sm">
-                              <div>{index + 1}</div>
-                            </div>
+                            {index + 1 + (currentPage - 1) * countriesPerPage}
                           </td>
                           <td className="px-4 py-3 text-sm">
                             {editableId === country.id ? (
@@ -294,7 +307,11 @@ const CmsCountries = () => {
                     </tbody>
                   </table>
                 </div>
-                <Pagination />
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  paginate={paginate}
+                />
               </div>
             </div>
           </main>

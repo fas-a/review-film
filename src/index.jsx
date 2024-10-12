@@ -29,18 +29,88 @@ root.render(
         <Route path="/detail/:id" element={<DetailFilm />} />
         <Route path="/search" element={<SearchPage />} />
 
-        <Route path="/login" element={<Auth><LoginPage /></Auth>} />
-        <Route path="/register" element={<Auth><RegisterPage /></Auth>} />
-        
+        <Route
+          path="/login"
+          element={
+            <Auth>
+              <LoginPage />
+            </Auth>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <Auth>
+              <RegisterPage />
+            </Auth>
+          }
+        />
+
         {/* Rute yang dilindungi */}
-        <Route path="/cmscountries" element={<ProtectedRoute><CmsCountries /></ProtectedRoute>} />
-        <Route path="/cmsgenres" element={<ProtectedRoute><CmsGenres /></ProtectedRoute>} />
-        <Route path="/cmsawards" element={<ProtectedRoute><CmsAwards /></ProtectedRoute>} />
-        <Route path="/cmsusers" element={<ProtectedRoute><CmsUsers /></ProtectedRoute>} />
-        <Route path="/cmscomments" element={<ProtectedRoute><CmsComments /></ProtectedRoute>} />
-        <Route path="/cmsactors" element={<ProtectedRoute><CmsActors /></ProtectedRoute>} />
-        <Route path="/cmsdramas" element={<ProtectedRoute><CmsDramas /></ProtectedRoute>} />
-        <Route path="/cmsdramainput" element={<ProtectedRoute><CmsDramaInput /></ProtectedRoute>} />
+        <Route
+          path="/cmscountries"
+          element={
+            <ProtectedRoute>
+              <CmsCountries />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cmsgenres"
+          element={
+            <ProtectedRoute>
+              <CmsGenres />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cmsawards"
+          element={
+            <ProtectedRoute>
+              <CmsAwards />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cmsusers"
+          element={
+            <ProtectedRoute>
+              <CmsUsers />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cmscomments"
+          element={
+            <ProtectedRoute>
+              <CmsComments />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cmsactors"
+          element={
+            <ProtectedRoute>
+              <CmsActors />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cmsdramas"
+          element={
+            <ProtectedRoute>
+              <CmsDramas />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/cmsdramainput"
+          element={
+            <ProtectedRoute>
+              <CmsDramaInput />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   </React.StrictMode>

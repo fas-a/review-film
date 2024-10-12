@@ -3,8 +3,8 @@ import Carousel from "./components/Carousel";
 import SweepCard from "./components/SweepCard";
 import Filter from "./components/Filter";
 import FilmCardH from "./components/FilmCardH";
+import PaginationHome from "./components/PaginationHome";
 import Header from "./components/Header";
-
 
 function LandingPage() {
   const [films, setFilms] = useState([]);
@@ -160,6 +160,7 @@ function LandingPage() {
           </div>
         </div>
       </div>
+      <PaginationHome />
     </div>
   );
 }

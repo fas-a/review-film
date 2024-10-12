@@ -1,30 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 
-const Pagination = () => {
-  // State untuk halaman aktif
-  const [activePage, setActivePage] = useState(1);
-
-  // Jumlah total halaman
-  const totalPages = 9;
-
-  // Fungsi untuk menangani klik tombol halaman
-  const handlePageClick = (pageNumber) => {
-    setActivePage(pageNumber);
-  };
-
-  // Fungsi untuk tombol Previous dan Next
-  const handlePreviousClick = () => {
-    if (activePage > 1) setActivePage(activePage - 1);
-  };
-
-  const handleNextClick = () => {
-    if (activePage < totalPages) setActivePage(activePage + 1);
-  };
-
+const Pagination = ({ currentPage, totalPages, paginate }) => {
   return (
     <div className="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
       <span className="flex items-center col-span-3">
-        Showing {activePage * 10 - 9}-{activePage * 10} of 100
+        Showing {currentPage * 10 - 9}-{Math.min(currentPage * 10, 100)} of 100
       </span>
       <span className="col-span-2"></span>
       <span className="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
@@ -33,10 +13,10 @@ const Pagination = () => {
             {/* Tombol Previous */}
             <li>
               <button
-                onClick={handlePreviousClick}
-                disabled={activePage === 1}
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
                 className={`px-3 py-1 rounded-md rounded-l-lg focus:outline-none focus:shadow-outline-purple ${
-                  activePage === 1 ? "cursor-not-allowed opacity-50" : ""
+                  currentPage === 1 ? "cursor-not-allowed opacity-50" : ""
                 }`}
                 aria-label="Previous"
               >
@@ -60,9 +40,9 @@ const Pagination = () => {
               return (
                 <li key={pageNumber}>
                   <button
-                    onClick={() => handlePageClick(pageNumber)}
+                    onClick={() => paginate(pageNumber)}
                     className={`px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple ${
-                      activePage === pageNumber
+                      currentPage === pageNumber
                         ? "text-white transition-colors duration-150 bg-purple-600 border border-r-0 border-purple-600"
                         : ""
                     }`}
@@ -76,10 +56,10 @@ const Pagination = () => {
             {/* Tombol Next */}
             <li>
               <button
-                onClick={handleNextClick}
-                disabled={activePage === totalPages}
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage === totalPages}
                 className={`px-3 py-1 rounded-md rounded-r-lg focus:outline-none focus:shadow-outline-purple ${
-                  activePage === totalPages
+                  currentPage === totalPages
                     ? "cursor-not-allowed opacity-50"
                     : ""
                 }`}

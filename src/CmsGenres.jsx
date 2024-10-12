@@ -10,9 +10,18 @@ const CmsGenres = () => {
   const [editableId, setEditableId] = useState(null);
   const [editName, setEditName] = useState("");
   const [alert, setAlert] = useState({ message: "", type: "" });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const genresPerPage = 10;
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/genres") // Full URL to the API endpoint
+    fetchGenres(currentPage);
+  }, [currentPage]);
+
+  const fetchGenres = (page) => {
+    fetch(
+      `http://localhost:3001/api/genres?page=${page}&limit=${genresPerPage}`
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -20,12 +29,13 @@ const CmsGenres = () => {
         return response.json();
       })
       .then((data) => {
-        setGenres(data);
+        setGenres(data.genres);
+        setTotalPages(data.totalPages);
       })
       .catch((error) => {
-        console.error("Error fetching genre");
+        console.error("Error fetching genres:", error);
       });
-  }, []);
+  };
 
   const showAlert = (message, type) => {
     setAlert({ message, type });
@@ -115,6 +125,8 @@ const CmsGenres = () => {
     }
   };
 
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
       <Sidebar />
@@ -191,7 +203,9 @@ const CmsGenres = () => {
                         >
                           <td className="px-4 py-3 text-sm">
                             <div className="flex items-center text-sm">
-                              <div>{index + 1}</div>
+                              <div>
+                                {index + 1 + (currentPage - 1) * genresPerPage}
+                              </div>
                             </div>
                           </td>
                           <td className="px-4 py-3 text-sm">
@@ -291,7 +305,12 @@ const CmsGenres = () => {
                   </table>
                 </div>
               </div>
-              <Pagination />
+              {/* Pagination Component */}
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                paginate={paginate}
+              />
             </div>
           </main>
         </div>

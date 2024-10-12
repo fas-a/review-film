@@ -135,14 +135,14 @@ function SearchPage() {
           {filteredFilms.length > 0 ? (
             filteredFilms.map((film) => (
               <FilmCardH
-                  key={film.id}
-                  id={film.id}
-                  src={film.poster || "./img/film.jpg"}
-                  title={film.title}
-                  synopsis={film.synopsis}
-                  year={film.year}
-                  genres={film.Genres ? film.Genres : []}
-                />
+                key={film.id}
+                id={film.id}
+                src={film.poster || "./img/film.jpg"}
+                title={film.title}
+                synopsis={film.synopsis}
+                year={film.year}
+                genres={film.Genres ? film.Genres : []}
+              />
             ))
           ) : (
             <p>No films found.</p>

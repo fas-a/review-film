@@ -73,7 +73,7 @@ router.get("/drama/:id", async (req, res) => {
               attributes: ["id", "username"],
             },
           ],
-        }
+        },
       ],
     });
     if (!drama) {
@@ -87,11 +87,25 @@ router.get("/drama/:id", async (req, res) => {
 });
 
 router.get("/countries", async (req, res) => {
+  const { page, limit } = req.query;
+
+  const pageNumber = parseInt(page, 10) || 1; // Halaman saat ini
+  const limitNumber = parseInt(limit, 10) || 10; // Jumlah item per halaman
+  const offset = (pageNumber - 1) * limitNumber; // Hitung offset untuk pagination
+
   try {
-    const countries = await Country.findAll({
-      attributes: ["id", "name"], // Sesuaikan atribut jika ada kolom lain
+    const { count, rows: countries } = await Country.findAndCountAll({
+      attributes: ["id", "name"], // Hanya ambil kolom id dan name
+      limit: limitNumber,
+      offset,
     });
-    res.json(countries);
+
+    res.json({
+      totalItems: count, // Total item di database
+      totalPages: Math.ceil(count / limitNumber), // Total halaman
+      currentPage: pageNumber, // Halaman saat ini
+      countries, // Data Country
+    });
   } catch (error) {
     console.error("Error fetching countries:", error);
     res.status(500).json({ message: "Failed to fetch countries" });
@@ -159,13 +173,27 @@ router.delete("/countries/:id", async (req, res) => {
 });
 
 // GENRES
-// GET /api/genres - Ambil semua genre
+// GET /api/genres - Ambil semua genre dengan pagination
 router.get("/genres", async (req, res) => {
+  const { page, limit } = req.query;
+
+  const pageNumber = parseInt(page, 10) || 1; // Halaman saat ini
+  const limitNumber = parseInt(limit, 10) || 10; // Jumlah item per halaman
+  const offset = (pageNumber - 1) * limitNumber; // Hitung offset untuk pagination
+
   try {
-    const genres = await Genre.findAll({
+    const { count, rows: genres } = await Genre.findAndCountAll({
       attributes: ["id", "name"], // Hanya ambil kolom id dan name
+      limit: limitNumber,
+      offset,
     });
-    res.json(genres);
+
+    res.json({
+      totalItems: count, // Total item di database
+      totalPages: Math.ceil(count / limitNumber), // Total halaman
+      currentPage: pageNumber, // Halaman saat ini
+      genres, // Data genre
+    });
   } catch (error) {
     console.error("Error fetching genres:", error);
     res.status(500).json({ message: "Failed to fetch genres" });
