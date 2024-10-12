@@ -66,7 +66,8 @@ router.get("/drama/:id", async (req, res) => {
         },
         {
           model: Comment,
-          attributes: ["id", "content", "rate"],
+          where: { status: "Approved" },
+          attributes: ["id", "content", "rate" ],
           include: [
             {
               model: User,
@@ -220,6 +221,30 @@ router.post(
     }
   }
 );
+
+router.post("/comment", async (req, res) => {
+  try {
+    const { rating, comment, user, drama } = req.body;
+
+    if (!rating || !comment) {
+      return res.status(400).json({ error: "Rating and comment are required." });
+    }
+
+    // Save the comment to the database (adjust this according to your database setup)
+    const newComment = await Comment.create({
+      rate: rating,
+      content: comment,
+      user_id: user,
+      drama_id: drama,
+      // Add any other fields you might have, like userId, movieId, etc.
+    });
+
+    res.status(201).json(newComment); // Return the saved comment
+  } catch (error) {
+    console.error("Error adding comment:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 // PUT /api/genres/:id - Edit genre berdasarkan ID
 router.put("/genres/:id", async (req, res) => {
