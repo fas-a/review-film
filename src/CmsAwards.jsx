@@ -39,7 +39,7 @@ const CmsAwards = () => {
         if (!response.ok) throw new Error("Failed to fetch countries");
         const data = await response.json();
         console.log(data); // Check the structure of the data here
-        setCountries(data); // Store countries in state
+        setCountries(data.countries); // Store countries in state
       } catch (error) {
         console.error("Error fetching countries:", error);
       }
@@ -122,6 +122,7 @@ const CmsAwards = () => {
     }
   };
 
+  console.log(countries);
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
       <Sidebar />
