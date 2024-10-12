@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import icon from "../img/logo-dramaKu.png";
 
@@ -7,6 +7,45 @@ const Header = () => {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const [hasAccess, setHasAccess] = useState(null);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    getProtectedData();
+  }, []);
+
+  const getProtectedData = async () => {
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      setHasAccess(false);
+      return;
+    }
+    try {
+      const response = await fetch("http://localhost:3001/auth/protected", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+
+        if (data.access) {
+          setHasAccess(true);
+          setUser(data.user);
+        } else {
+          setHasAccess(false);
+        }
+      } else {
+        console.log("Failed to fetch protected data");
+        setHasAccess(false);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setHasAccess(false);
+    }
+  };
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
@@ -24,9 +63,9 @@ const Header = () => {
     }
   };
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    window.location.href = '/';
-};
+    sessionStorage.removeItem("token");
+    window.location.href = "/";
+  };
 
   return (
     <header className="z-10 py-4 w-full bg-white shadow-md fixed top-0">
@@ -106,100 +145,100 @@ const Header = () => {
               )}
             </button>
           </li>
-          <li className="relative">
-            {/* <button className="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-              Log In
-            </button> */}
-            <a
-              className="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-              href="/login"
-            >
-              Log in
-            </a>
-          </li>
-          <li className="relative">
-            <button
-              className="align-middle rounded-full focus:shadow-outline-purple focus:outline-none"
-              onClick={toggleProfileMenu}
-              aria-label="Account"
-              aria-haspopup="true"
-            >
-              <img
-                className="object-cover w-8 h-8 rounded-full"
-                src="https://images.unsplash.com/photo-1502378735452-bc7d86632805?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=aa3a807e1bbdfd4364d1f449eaa96d82"
-                alt="User Avatar"
-                aria-hidden="true"
-              />
-            </button>
-            {isProfileMenuOpen && (
-              <ul
-                className="absolute right-0 w-56 p-2 mt-2 space-y-2 text-gray-600 bg-white border border-gray-100 rounded-md shadow-md dark:border-gray-700 dark:text-gray-300 dark:bg-gray-700"
-                aria-label="submenu"
+          {!hasAccess ? (
+            <li className="relative">
+              <a
+                className="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                href="/login"
               >
-                <li className="flex">
-                  <a
-                    className="inline-flex items-center w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-                    href="#"
-                  >
-                    <svg
-                      className="w-4 h-4 mr-3"
-                      aria-hidden="true"
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
+                Log in
+              </a>
+            </li>
+          ) : (
+            <li className="relative">
+              <button
+                className="align-middle rounded-full focus:shadow-outline-purple focus:outline-none"
+                onClick={toggleProfileMenu}
+                aria-label="Account"
+                aria-haspopup="true"
+              >
+                <img
+                  className="object-cover w-8 h-8 rounded-full"
+                  src="https://images.unsplash.com/photo-1502378735452-bc7d86632805?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=aa3a807e1bbdfd4364d1f449eaa96d82"
+                  alt="User Avatar"
+                  aria-hidden="true"
+                />
+              </button>
+              {isProfileMenuOpen && (
+                <ul
+                  className="absolute right-0 w-56 p-2 mt-2 space-y-2 text-gray-600 bg-white border border-gray-100 rounded-md shadow-md dark:border-gray-700 dark:text-gray-300 dark:bg-gray-700"
+                  aria-label="submenu"
+                >
+                  <li className="flex">
+                    <a
+                      className="inline-flex items-center w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+                      href="#"
                     >
-                      <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                    </svg>
-                    <span>Profile</span>
-                  </a>
-                </li>
-                <li className="flex">
-                  <a
-                    className="inline-flex items-center w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-                    href="#"
-                  >
-                    <svg
-                      className="w-4 h-4 mr-3"
-                      aria-hidden="true"
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
+                      <svg
+                        className="w-4 h-4 mr-3"
+                        aria-hidden="true"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                      </svg>
+                      <span>Profile</span>
+                    </a>
+                  </li>
+                  <li className="flex">
+                    <a
+                      className="inline-flex items-center w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+                      href="#"
                     >
-                      <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.065 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.065c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.065-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z"></path>
-                      <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
-                    <span>Settings</span>
-                  </a>
-                </li>
-                <li className="flex">
-                  <button 
-                    className="inline-flex items-center w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-                    onClick={handleLogout}
-                  >
-                    <svg
-                      className="w-4 h-4 mr-3"
-                      aria-hidden="true"
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
+                      <svg
+                        className="w-4 h-4 mr-3"
+                        aria-hidden="true"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.065 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.065c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.065-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z"></path>
+                        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      </svg>
+                      <span>Settings</span>
+                    </a>
+                  </li>
+                  <li className="flex">
+                    <button
+                      className="inline-flex items-center w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+                      onClick={handleLogout}
                     >
-                      <path d="M17 16l4-4m0 0l-4-4m4 4H7"></path>
-                    </svg>
-                    <span>Log out</span>
-                  </button>
-                </li>
-              </ul>
-            )}
-          </li>
+                      <svg
+                        className="w-4 h-4 mr-3"
+                        aria-hidden="true"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path d="M17 16l4-4m0 0l-4-4m4 4H7"></path>
+                      </svg>
+                      <span>Log out</span>
+                    </button>
+                  </li>
+                </ul>
+              )}
+            </li>
+          )}
         </ul>
       </div>
     </header>

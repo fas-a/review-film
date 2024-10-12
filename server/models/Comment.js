@@ -43,6 +43,18 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: true
     });
     
+    Comment.associate = (models) => {
+      Comment.belongsTo(models.Drama, {
+        foreignKey: 'drama_id',
+        onDelete: 'CASCADE'
+      });
+  
+      Comment.belongsTo(models.User, {
+        foreignKey: 'user_id',
+        onDelete: 'CASCADE'
+      });
+    };
+
     return Comment;
   };
   

@@ -16,6 +16,7 @@ import CmsActors from "./CmsActors";
 import CmsDramas from "./CmsDramas";
 import CmsDramaInput from "./CmsDramaInput";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Auth from "./components/Auth";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./components/tailwind.output.css";
 
@@ -27,8 +28,9 @@ root.render(
         <Route path="/" element={<LandingPage />} />
         <Route path="/detail/:id" element={<DetailFilm />} />
         <Route path="/search" element={<SearchPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+
+        <Route path="/login" element={<Auth><LoginPage /></Auth>} />
+        <Route path="/register" element={<Auth><RegisterPage /></Auth>} />
         
         {/* Rute yang dilindungi */}
         <Route path="/cmscountries" element={<ProtectedRoute><CmsCountries /></ProtectedRoute>} />

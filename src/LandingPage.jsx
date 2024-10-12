@@ -5,6 +5,7 @@ import Filter from "./components/Filter";
 import FilmCardH from "./components/FilmCardH";
 import Header from "./components/Header";
 
+
 function LandingPage() {
   const [films, setFilms] = useState([]);
   const [loading, setLoading] = useState(true);

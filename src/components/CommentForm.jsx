@@ -1,16 +1,15 @@
+import { StarRating } from "star-ratings-react";
+import { useState } from "react";
+
 function CommentForm() {
+  const [rating, setRating] = useState(0);
     return (
       <form action="" method="post">
         <div className="px-4 py-3">
           <label className="block text-sm">
-            <span className="text-gray-700 dark:text-gray-400">Nama</span>
-            <input
-              type="text"
-              className="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-              placeholder="Jane Doe"
-            />
+          <span className="text-gray-700 dark:text-gray-400">Rating</span>
+          <StarRating rating={rating} onSetRating={setRating} size={20} maxRating={5}/>
           </label>
-  
           <label className="block mt-4 text-sm">
             <span className="text-gray-700 dark:text-gray-400">Komen</span>
             <textarea

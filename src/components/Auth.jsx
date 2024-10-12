@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 
-const ProtectedRoute = ({ children }) => {
+const Auth = ({ children }) => {
   const [hasAccess, setHasAccess] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -47,11 +47,11 @@ const ProtectedRoute = ({ children }) => {
     return <div>Loading...</div>;
   }
 
-  if (!hasAccess) {
-    return <Navigate to="/login" replace />;
+  if (hasAccess) {
+    return <Navigate to="/" replace />;
   }
 
   return children;
 };
 
-export default ProtectedRoute;
+export default Auth;

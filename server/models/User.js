@@ -40,6 +40,13 @@ module.exports = (sequelize, DataTypes) => {
       tableName: 'users',
       timestamps: true
     });
+
+    User.associate = (models) => {
+      User.hasMany(models.Comment, {
+        foreignKey: 'user_id',
+        onDelete: 'CASCADE'
+      });
+    };
     
     return User;
   };

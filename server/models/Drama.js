@@ -68,6 +68,15 @@ module.exports = (sequelize, DataTypes) => {
       through: models.AwardDrama,
       foreignKey: 'drama_id'
     });
+
+    Drama.belongsTo(models.Country, {
+      foreignKey: 'country_id'
+    });
+
+    Drama.hasMany(models.Comment, {
+      foreignKey: 'drama_id',
+      onDelete: 'CASCADE'
+    });
   };
 
   return Drama;

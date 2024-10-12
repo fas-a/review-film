@@ -12,6 +12,7 @@ const {
   Award,
   User,
   AwardDrama,
+  Comment,
 } = require("../models"); // Sesuaikan dengan model
 
 // GET /api/dramas - Ambil semua drama beserta aktor dan genre terkait
@@ -54,6 +55,25 @@ router.get("/drama/:id", async (req, res) => {
           through: ActorDrama,
           attributes: ["id", "name", "photo"], // Aktor terkait
         },
+        {
+          model: Award,
+          through: AwardDrama,
+          attributes: ["id", "name"],
+        },
+        {
+          model: Country,
+          attributes: ["id", "name"], // Negara ter
+        },
+        {
+          model: Comment,
+          attributes: ["id", "content", "rate"],
+          include: [
+            {
+              model: User,
+              attributes: ["id", "username"],
+            },
+          ],
+        }
       ],
     });
     if (!drama) {
