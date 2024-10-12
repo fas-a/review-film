@@ -11,11 +11,48 @@ const router = express.Router();
 
 // Register
 router.post("/register", async (req, res) => {
-  const { email, password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const user = new User({ email, password: hashedPassword });
-  await user.save();
-  res.status(201).send("User registered");
+  const { email, username, password, confirmPassword } = req.body;
+
+  // Validasi input
+  if (!email || !username || !password || !confirmPassword) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+  if (password !== confirmPassword) {
+    return res.status(400).json({ message: "Passwords do not match" });
+  }
+
+  // Cek apakah email sudah digunakan
+  const existingUser = await User.findOne({where : { email }});
+  if (existingUser) {
+    return res.status(400).json({ message: "Email already in use" });
+  }
+
+  // Cek apakah username sudah digunakan
+  const existingUsername = await User.findOne({where : { username }});
+  if (existingUsername) {
+    return res.status(400).json({ message: "Username already in use" });
+  }
+
+  try {
+    // Hash password sebelum menyimpan ke database
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Buat pengguna baru
+    const user = new User({
+      username: username,
+      email: email,
+      password: hashedPassword,
+    });
+
+    // Simpan pengguna ke database
+    await user.save();
+
+    // Berikan respons sukses
+    res.status(201).json({ message: "User registered successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error, please try again later" });
+  }
 });
 
 // Login

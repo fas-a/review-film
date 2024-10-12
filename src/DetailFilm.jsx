@@ -34,6 +34,7 @@ function DetailFilm() {
         if (data.access) {
           setHasAccess(true);
           setUser(data.user);
+          
         } else {
           setHasAccess(false);
         }
@@ -62,7 +63,6 @@ function DetailFilm() {
         console.error("Error fetching film", error);
       });
   }, []);
-  console.log(videoId);
   const getVideoId = (url) => {
     const regex =
       /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^&\n]{11})/;
@@ -181,7 +181,10 @@ function DetailFilm() {
             </h2>
           </div>
           {hasAccess ? (
-            <CommentForm />
+            <CommentForm 
+              user={user.id}
+              drama={id}
+            />
           ) : (
             <p>Anda harus login untuk memberikan komentar</p>
           )}
