@@ -25,7 +25,7 @@ function SearchPage() {
         return response.json();
       })
       .then((data) => {
-        setFilms(data);
+        setFilms(data.dramas);
         setLoading(false);
       })
       .catch((error) => {
@@ -68,8 +68,9 @@ function SearchPage() {
   // Filter film berdasarkan genre dan tahun yang dipilih
   const filteredFilms = films.filter((film) => {
     const matchesSearchQuery = searchQuery
-      ? film.title.toLowerCase().includes(searchQuery.toLowerCase())
-      : true;
+    ? film.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      film.Actors.some(actor => actor.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    : true;
 
     const matchesGenre = selectedGenre
       ? film.Genres &&

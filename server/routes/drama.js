@@ -38,6 +38,11 @@ router.get("/dramas", async (req, res) => {
           through: AwardDrama,
           attributes: ["id", "name"],
         },
+        {
+          model: Actor,
+          through: ActorDrama,
+          attributes: ["id", "name"], 
+        }
       ],
     });
 
