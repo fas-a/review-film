@@ -18,7 +18,15 @@ const {
 // GET /api/dramas - Ambil semua drama beserta aktor dan genre terkait
 router.get("/dramas", async (req, res) => {
   try {
-    const dramas = await Drama.findAll({
+    // Ambil query parameter page (default 1) dan limit (default 16)
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12;
+    const offset = (page - 1) * limit;
+
+    // Cari drama dengan pagination
+    const { rows: dramas, count } = await Drama.findAndCountAll({
+      limit,
+      offset,
       include: [
         {
           model: Genre,
@@ -33,7 +41,18 @@ router.get("/dramas", async (req, res) => {
       ],
     });
 
-    res.json(dramas);
+    // Hitung total halaman, jika data habis, pagination berhenti
+    const totalPages = Math.ceil(count / limit);
+
+    // Jika data sudah habis, hanya tampilkan halaman yang ada (contoh sampai 13 halaman)
+    const adjustedTotalPages = totalPages > 13 ? 13 : totalPages;
+
+    // Kirim response ke frontend, berisi data drama, halaman saat ini, dan total halaman
+    res.json({
+      dramas, // Data drama yang ditampilkan
+      currentPage: page, // Halaman saat ini
+      totalPages: adjustedTotalPages, // Total halaman yang dibatasi
+    });
   } catch (error) {
     console.error("Error fetching dramas:", error);
     res.status(500).json({ message: "Failed to fetch dramas" });
@@ -67,7 +86,7 @@ router.get("/drama/:id", async (req, res) => {
         {
           model: Comment,
           where: { status: "Approved" },
-          attributes: ["id", "content", "rate" ],
+          attributes: ["id", "content", "rate"],
           include: [
             {
               model: User,
@@ -227,7 +246,9 @@ router.post("/comment", async (req, res) => {
     const { rating, comment, user, drama } = req.body;
 
     if (!rating || !comment) {
-      return res.status(400).json({ error: "Rating and comment are required." });
+      return res
+        .status(400)
+        .json({ error: "Rating and comment are required." });
     }
 
     // Save the comment to the database (adjust this according to your database setup)

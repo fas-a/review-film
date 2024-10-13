@@ -9,6 +9,8 @@ import Header from "./components/Header";
 function LandingPage() {
   const [films, setFilms] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [selectedGenre, setSelectedGenre] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
@@ -16,8 +18,9 @@ function LandingPage() {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedAward, setSelectedAward] = useState("");
 
+  // Fetch data dari backend, berdasarkan page dan limit
   useEffect(() => {
-    fetch("http://localhost:3001/api/dramas")
+    fetch(`http://localhost:3001/api/dramas?page=${currentPage}&limit=12`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -25,40 +28,54 @@ function LandingPage() {
         return response.json();
       })
       .then((data) => {
-        setFilms(data);
+        setFilms(data.dramas);
+        setTotalPages(data.totalPages); // Set totalPages dari response API
         setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching films", error);
         setLoading(false);
       });
-  }, []);
+  }, [currentPage]); // Tambahkan currentPage sebagai dependency agar fetch ulang saat page berubah
+
+  // Fungsi untuk handle pagination
+  const paginate = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
 
   // Fungsi untuk handle perubahan filter genre
   const handleGenreChange = (genre) => {
     setSelectedGenre(genre);
+    setCurrentPage(1);
   };
 
   // Fungsi untuk handle perubahan filter year
   const handleYearChange = (year) => {
     setSelectedYear(year);
+    setCurrentPage(1);
   };
 
   const handleCountryChange = (country) => {
     setSelectedCountry(country);
     console.log("Selected country ID:", country);
+    setCurrentPage(1);
   };
 
   const handleAvailabilityChange = (availability) => {
     setSelectedAvailability(availability);
+    setCurrentPage(1);
   };
 
   const handleStatusChange = (status) => {
     setSelectedStatus(status);
+    setCurrentPage(1);
   };
 
   const handleAwardChange = (award) => {
-    setSelectedAward(award); // Menangani perubahan award
+    setSelectedAward(award);
+    setCurrentPage(1);
   };
 
   // Fungsi helper untuk mendapatkan nama genre
@@ -85,23 +102,23 @@ function LandingPage() {
       : true;
 
     const matchesCountry = selectedCountry
-      ? film.country_id === Number(selectedCountry) // Pastikan mencocokkan ID negara
+      ? film.country_id === Number(selectedCountry)
       : true;
 
     const matchesAvailability = selectedAvailability
       ? film.availability &&
-        film.availability.toLowerCase() === selectedAvailability.toLowerCase() // Gantilah dengan properti yang benar
+        film.availability.toLowerCase() === selectedAvailability.toLowerCase()
       : true;
 
     const matchesStatus = selectedStatus
       ? film.status &&
-        film.status.toLowerCase() === selectedStatus.toLowerCase() // Gantilah dengan properti yang benar
+        film.status.toLowerCase() === selectedStatus.toLowerCase()
       : true;
 
     const matchesAward = selectedAward
       ? selectedAward === "yes"
-        ? film.Awards && film.Awards.length > 0 // Cek jika array Awards ada isinya untuk "yes"
-        : film.Awards && film.Awards.length === 0 // Cek jika array Awards kosong untuk "no"
+        ? film.Awards && film.Awards.length > 0
+        : film.Awards && film.Awards.length === 0
       : true;
 
     return (
@@ -111,7 +128,7 @@ function LandingPage() {
       matchesAvailability &&
       matchesStatus &&
       matchesAward
-    ); // Film akan muncul jika cocok dengan genre, tahun, negara, atau availability
+    );
   });
 
   if (loading) {
@@ -160,7 +177,11 @@ function LandingPage() {
           </div>
         </div>
       </div>
-      <PaginationHome />
+      <PaginationHome
+        currentPage={currentPage}
+        totalPages={totalPages}
+        paginate={paginate}
+      />
     </div>
   );
 }
