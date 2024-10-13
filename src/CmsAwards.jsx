@@ -363,6 +363,7 @@ const CmsAwards = () => {
                     </tbody>
                   </table>
                 </div>
+                <Pagination />
               </div>
             </div>
           </main>

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import posterImage from "../img/ourblues.jpg";
+import actorImage from "../img/song-jongki.jpeg";
 
 const DramaPopup = ({ drama, actors = [], onClose, onUpdateStatus }) => {
   const [status, setStatus] = useState("");
@@ -46,7 +48,7 @@ const DramaPopup = ({ drama, actors = [], onClose, onUpdateStatus }) => {
           {/* Drama Poster */}
           <div className="flex-shrink-0">
             <img
-              src={drama.poster}
+              src={posterImage}
               alt="Drama Poster"
               className="h-64 w-48 rounded-lg object-cover bg-gray-200"
             />
@@ -54,57 +56,54 @@ const DramaPopup = ({ drama, actors = [], onClose, onUpdateStatus }) => {
 
           {/* Drama Details */}
           <div>
-            <h2 className="text-xl font-bold mb-2">{drama.title}</h2>
+            <h2 className="text-xl font-bold mb-2">
+              Title of the drama 1 that makes two lines
+            </h2>
             <p className="text-sm text-gray-800 mb-2">
-              Other titles: {ensureArray(drama.otherTitles).join(", ") || "N/A"}
-              <br />
-              Year: {drama.year}
+              Other titles: Title 2, Title 3, Title 4<br />
+              Year: Spring 2024
             </p>
             <p className="text-sm text-gray-800 mb-2">
-              Synopsis: {drama.synopsis}
+              Synopsis: Sometimes subjective, I don't read it thoroughly. But
+              what helps me is the genres. I need to see genres and actors. That
+              is what I need.
             </p>
             <p className="text-sm text-gray-800 mb-2">
-              Genre: {ensureArray(drama.genre).join(", ") || "N/A"}
+              Genre: Genre 1, Genre 2, Genre 3
             </p>
+            <p className="text-sm text-gray-800 mb-2">Rating: 3.5/5</p>
             <p className="text-sm text-gray-800 mb-2">
-              Rating: {drama.rating}/5
-            </p>
-            <p className="text-sm text-gray-800 mb-2">
-              Availability: {drama.availability}
+              Availability: Fansub: @aoisub on X
             </p>
           </div>
         </div>
 
         {/* Actors List */}
         <div className="flex justify-between space-x-4 mt-4">
-          {actors.length > 0 ? (
-            actors.map((actor, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center justify-center w-full p-2 rounded-lg bg-gray-700 border border-gray-600"
-              >
-                <img
-                  src={actor.photo}
-                  alt={actor.name}
-                  className="w-10 h-10 rounded-full mb-1"
-                />
-                <span className="text-gray-200 text-sm">{actor.name}</span>
-              </div>
-            ))
-          ) : (
-            <p className="text-sm text-gray-800">No actors available</p>
-          )}
+          {[1, 2, 3, 4, 5, 6].map((actorNum) => (
+            <div
+              key={actorNum}
+              className="flex flex-col items-center justify-center w-full p-2 rounded-lg bg-gray-700 border border-gray-600"
+            >
+              <img
+                src={actorImage}
+                alt="Actor Name"
+                className="w-10 h-10 rounded-full mb-1"
+              />
+              <span className="text-gray-200 text-sm">Actor {actorNum}</span>
+            </div>
+          ))}
         </div>
 
         {/* Trailer Video */}
         <div className="w-full mt-4">
           <div
             className="relative"
-            style={{ paddingBottom: "56.25%", height: 0 }}
+            style={{ paddingBottom: "56.25%", height: 0, overflow: "hidden" }}
           >
             <iframe
               className="absolute top-0 left-0 w-full h-full"
-              src={drama.trailerUrl}
+              src="https://www.youtube.com/embed/1C7Nph5gFxQ?si=jSL9El7ZG7wbJFO9"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen

@@ -304,13 +304,12 @@ const CmsGenres = () => {
                     </tbody>
                   </table>
                 </div>
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  paginate={paginate}
+                />
               </div>
-              {/* Pagination Component */}
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                paginate={paginate}
-              />
             </div>
           </main>
         </div>
