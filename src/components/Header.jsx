@@ -62,9 +62,23 @@ const Header = () => {
       navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
     }
   };
-  const handleLogout = () => {
-    sessionStorage.removeItem("token");
-    window.location.href = "/";
+  const handleLogout = async () => {
+    try {
+      // Memanggil rute logout di server
+      await fetch('http://localhost:3001/logout', {
+        method: 'GET',
+        credentials: 'include', // Pastikan untuk mengirimkan cookies jika diperlukan
+      });
+  
+      // Hapus token dari sessionStorage
+      sessionStorage.removeItem("token");
+  
+      // Redirect ke halaman utama
+      window.location.href = "/";
+    } catch (error) {
+      console.error('Error during logout:', error);
+      // Anda bisa menampilkan pesan kesalahan kepada pengguna
+    }
   };
 
   return (

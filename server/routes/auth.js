@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const { User } = require("../models");
 const { Op } = require('sequelize');
+const dotenv = require("dotenv");
 const authenticateToken = require('../midleware/authMiddleware');
 
 
@@ -78,7 +79,7 @@ router.post("/login", async (req, res) => {
         username: user.username,
         email: user.email,
       },
-      'rahasia',
+      process.env.JWT_SECRET,
       {
         expiresIn: "1h",
       }

@@ -38,6 +38,22 @@ function LandingPage() {
       });
   }, [currentPage]); // Tambahkan currentPage sebagai dependency agar fetch ulang saat page berubah
 
+  useEffect(() => {
+    fetch("http://localhost:3001/session", {
+      method: "GET",
+      credentials: "include", // Pastikan untuk menyertakan cookies/session
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.token) {
+          // Simpan token ke localStorage atau state
+          sessionStorage.setItem("token", data.token);
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
+  }, []);
   // Fungsi untuk handle pagination
   const paginate = (pageNumber) => {
     if (pageNumber >= 1 && pageNumber <= totalPages) {
