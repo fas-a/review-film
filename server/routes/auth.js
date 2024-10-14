@@ -78,6 +78,7 @@ router.post("/login", async (req, res) => {
         id: user.id,
         username: user.username,
         email: user.email,
+        role: user.role,
       },
       process.env.JWT_SECRET,
       {
@@ -99,11 +100,6 @@ router.get(
     scope: ["profile", "email"],
   })
 );
-
-router.get("/google/callback", passport.authenticate("google"), (req, res) => {
-  const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET);
-  res.redirect(`http://localhost:3000/?token=${token}`);
-});
 
 router.get('/protected', authenticateToken, (req, res) => {
   res.json({ access: true, message: 'You have access!', user: req.user });

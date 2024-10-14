@@ -17,6 +17,7 @@ import CmsDramas from "./CmsDramas";
 import CmsDramaInput from "./CmsDramaInput";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Auth from "./components/Auth";
+import User from "./components/User";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./components/tailwind.output.css";
 
@@ -106,9 +107,9 @@ root.render(
         <Route
           path="/cmsdramainput"
           element={
-            <ProtectedRoute>
+            <User>
               <CmsDramaInput />
-            </ProtectedRoute>
+            </User>
           }
         />
       </Routes>

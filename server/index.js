@@ -96,7 +96,7 @@ app.get(
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
     const token = jwt.sign(
-      { id: req.user.id, email: req.user.email },
+      { id: req.user.id, email: req.user.email, role: req.user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );

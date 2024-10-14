@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 
-const ProtectedRoute = ({ children }) => {
+const User = ({ children }) => {
   const [hasAccess, setHasAccess] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -24,7 +24,7 @@ const ProtectedRoute = ({ children }) => {
         const data = await response.json();
         
         if (data.access) {
-          if(data.user.role === 'Admin'){
+          if(data.user.role === 'User' || data.user.role === 'Admin'){
             setHasAccess(true);
           } else {
             setHasAccess(false);
@@ -58,4 +58,4 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
-export default ProtectedRoute;
+export default User;
