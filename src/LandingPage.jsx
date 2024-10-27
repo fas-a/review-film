@@ -43,14 +43,14 @@ function LandingPage() {
       method: "GET",
       credentials: "include", // Pastikan untuk menyertakan cookies/session
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         if (data.token) {
           // Simpan token ke localStorage atau state
           sessionStorage.setItem("token", data.token);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error:", error);
       });
   }, []);

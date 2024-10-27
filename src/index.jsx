@@ -20,6 +20,7 @@ import Auth from "./components/Auth";
 import User from "./components/User";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./components/tailwind.output.css";
+import VerifyEmail from "./VerifyEmail";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -29,6 +30,15 @@ root.render(
         <Route path="/" element={<LandingPage />} />
         <Route path="/detail/:id" element={<DetailFilm />} />
         <Route path="/search" element={<SearchPage />} />
+
+        <Route
+          path="/verify-email"
+          element={
+            <Auth>
+              <VerifyEmail />
+            </Auth>
+          }
+        />
 
         <Route
           path="/login"

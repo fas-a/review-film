@@ -15,12 +15,28 @@ function RegisterPage() {
     });
     const data = await response.json();
     if (response.ok) {
-      console.log(data);
+      alert("Silakan periksa email Anda untuk verifikasi.");
       window.location.href = "/login";
     } else {
       console.error(data.message);
     }
   };
+
+  // const handleRegister = async (e) => {
+  //   e.preventDefault();
+  //   const response = await fetch("http://localhost:3001/auth/register", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ email, username, password, confirmPassword }),
+  //   });
+  //   const data = await response.json();
+  //   if (response.ok) {
+  //     console.log(data);
+  //     window.location.href = "/login";
+  //   } else {
+  //     console.error(data.message);
+  //   }
+  // };
 
   return (
     <>
