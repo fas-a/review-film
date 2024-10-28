@@ -14,64 +14,89 @@ function Filter({
   selectedAward,
   onAwardChange,
 }) {
-  // Fungsi untuk menangani perubahan pada dropdown
+  // Function to handle dropdown changes
   const handleGenreSelect = (event) => {
-    onGenreChange(event.target.value); // Kirim nilai genre yang dipilih ke parent
+    const genre = event.target.value;
+    onGenreChange(genre);
+    localStorage.setItem("selectedGenre", genre); // Save to localStorage
   };
 
-  // Fungsi untuk menangani perubahan pada dropdown year
   const handleYearSelect = (event) => {
-    onYearChange(event.target.value); // Kirim nilai year yang dipilih ke parent
+    const year = event.target.value;
+    onYearChange(year);
+    localStorage.setItem("selectedYear", year); // Save to localStorage
   };
 
   const handleCountrySelect = (event) => {
-    onCountryChange(event.target.value); // Kirim nilai country yang dipilih ke parent
+    const country = event.target.value;
+    onCountryChange(country);
+    localStorage.setItem("selectedCountry", country); // Save to localStorage
   };
 
   const handleAvailabilitySelect = (event) => {
-    onAvailabilityChange(event.target.value); // Kirim nilai availability yang dipilih ke parent
+    const availability = event.target.value;
+    onAvailabilityChange(availability);
+    localStorage.setItem("selectedAvailability", availability); // Save to localStorage
   };
 
   const handleStatusSelect = (event) => {
-    onStatusChange(event.target.value); // Kirim nilai status yang dipilih ke parent
+    const status = event.target.value;
+    onStatusChange(status);
+    localStorage.setItem("selectedStatus", status); // Save to localStorage
   };
 
   const handleAwardSelect = (event) => {
-    onAwardChange(event.target.value); // Kirim nilai award yang dipilih ke parent
+    const award = event.target.value;
+    onAwardChange(award);
+    localStorage.setItem("selectedAward", award); // Save to localStorage
   };
 
   const [countries, setCountries] = useState([]);
 
   // Fetch countries
   useEffect(() => {
-    // Fetch countries
     const fetchCountries = async () => {
       try {
         const response = await fetch("http://localhost:3001/api/countries");
         if (!response.ok) throw new Error("Failed to fetch countries");
         const data = await response.json();
-        console.log(data); // Check the structure of the data here
-        setCountries(data.countries); // Store countries in state
+        setCountries(data.countries);
       } catch (error) {
         console.error("Error fetching countries:", error);
       }
     };
 
-    fetchCountries(); // Call fetchCountries inside useEffect
-  }, []); // Empty dependency array to run only on component mount
+    fetchCountries();
+  }, []);
+
+  // Load filter values from localStorage on component mount
+  useEffect(() => {
+    const savedGenre = localStorage.getItem("selectedGenre");
+    const savedYear = localStorage.getItem("selectedYear");
+    const savedCountry = localStorage.getItem("selectedCountry");
+    const savedAvailability = localStorage.getItem("selectedAvailability");
+    const savedStatus = localStorage.getItem("selectedStatus");
+    const savedAward = localStorage.getItem("selectedAward");
+
+    if (savedGenre) onGenreChange(savedGenre);
+    if (savedYear) onYearChange(savedYear);
+    if (savedCountry) onCountryChange(savedCountry);
+    if (savedAvailability) onAvailabilityChange(savedAvailability);
+    if (savedStatus) onStatusChange(savedStatus);
+    if (savedAward) onAwardChange(savedAward);
+  }, [onGenreChange, onYearChange, onCountryChange, onAvailabilityChange, onStatusChange, onAwardChange]);
 
   return (
     <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
       <div className="flex justify-between flex-wrap items-center">
         <div className="flex justify-between flex-wrap items-center gap-6">
-          <h4 className="text-lg font-semibold text-gray-600 dark:text-gray-300">
-            Filter:
-          </h4>
+          <h4 className="text-lg font-semibold text-gray-600 dark:text-gray-300">Filter:</h4>
+          
           <label className="block text-sm">
             <select
-              className="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+              className="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select"
               onChange={handleCountrySelect}
-              value={selectedCountry} // Pastikan ini sesuai dengan props
+              value={selectedCountry}
             >
               <option value="">-- Country --</option>
               {countries.map((country) => (
@@ -81,9 +106,10 @@ function Filter({
               ))}
             </select>
           </label>
+          
           <label className="block text-sm">
             <select
-              className="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+              className="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select"
               onChange={handleYearSelect}
               value={selectedYear}
             >
@@ -98,9 +124,10 @@ function Filter({
               <option value={2017}>2017</option>
             </select>
           </label>
+
           <label className="block text-sm">
             <select
-              className="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+              className="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select"
               onChange={handleGenreSelect}
               value={selectedGenre}
             >
@@ -115,7 +142,7 @@ function Filter({
 
           <label className="block text-sm">
             <select
-              className="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+              className="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select"
               onChange={handleStatusSelect}
               value={selectedStatus}
             >
@@ -125,15 +152,15 @@ function Filter({
             </select>
           </label>
         </div>
+        
         <div className="flex justify-between flex-wrap items-center gap-6">
-          <h4 className="text-lg font-semibold text-gray-600 dark:text-gray-300">
-            Sorted By:
-          </h4>
+          <h4 className="text-lg font-semibold text-gray-600 dark:text-gray-300">Sorted By:</h4>
+
           <label className="block text-sm">
             <select
-              className="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+              className="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select"
               onChange={handleAvailabilitySelect}
-              value={selectedAvailability} // Pastikan ini sesuai dengan props
+              value={selectedAvailability}
             >
               <option value="">-- Availability --</option>
               <option value="netflix">Netflix</option>
@@ -146,11 +173,12 @@ function Filter({
               <option value="crunchyroll">Crunchyroll</option>
             </select>
           </label>
+
           <label className="block text-sm">
             <select
-              className="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+              className="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select"
               onChange={handleAwardSelect}
-              value={selectedAward} // Pastikan ini sesuai dengan props
+              value={selectedAward}
             >
               <option value="">-- Award --</option>
               <option value="yes">Yes</option>

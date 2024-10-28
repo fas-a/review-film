@@ -64,6 +64,37 @@ router.get("/dramas", async (req, res) => {
   }
 });
 
+router.get("/dramas2", async (req, res) => {
+  try {
+
+    // Cari drama dengan pagination
+    const dramas = await Drama.findAll({
+      include: [
+        {
+          model: Genre,
+          through: DramaGenre,
+          attributes: ["id", "name"], // Genre terkait
+        },
+        {
+          model: Award,
+          through: AwardDrama,
+          attributes: ["id", "name"],
+        },
+        {
+          model: Actor,
+          through: ActorDrama,
+          attributes: ["id", "name"], 
+        }
+      ],
+    });
+
+    res.json(dramas);
+  } catch (error) {
+    console.error("Error fetching dramas:", error);
+    res.status(500).json({ message: "Failed to fetch dramas" });
+  }
+});
+
 router.get("/drama/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -246,6 +277,27 @@ router.post(
   }
 );
 
+router.get("/comments", async (req, res) => {
+  try {
+    const comments = await Comment.findAll({
+      include: [
+        {
+          model: User,
+          attributes: ["id", "username"],
+        },
+        {
+          model: Drama,
+          attributes: ["id", "title"],
+        },
+      ],
+    });
+    res.json(comments);
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    res.status(500).json({ message: "Failed to fetch comments" });
+  }
+});
+
 router.post("/comment", async (req, res) => {
   try {
     const { rating, comment, user, drama } = req.body;
@@ -269,6 +321,25 @@ router.post("/comment", async (req, res) => {
   } catch (error) {
     console.error("Error adding comment:", error);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.put('/update-status', async (req, res) => {
+  const { commentIds, newStatus } = req.body;
+
+  if (!Array.isArray(commentIds) || typeof newStatus !== 'string') {
+    return res.status(400).json({ message: 'Invalid data format.' });
+  }
+
+  try {
+    await Comment.update(
+      { status: newStatus },
+      { where: { id: commentIds } }
+    );
+    res.status(200).json({ message: 'Status updated successfully.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to update status.' });
   }
 });
 

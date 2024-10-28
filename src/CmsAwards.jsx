@@ -15,10 +15,12 @@ const CmsAwards = () => {
   const [editYear, setEditYear] = useState("");
   const [editCountryId, setEditCountryId] = useState("");
   const [alert, setAlert] = useState({ message: "", type: "" });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
 
   useEffect(() => {
     // Fetch awards
-    fetch("http://localhost:3001/api/awards") // Full URL to the API endpoint
+    fetch("http://localhost:3001/api/awards")
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -38,15 +40,14 @@ const CmsAwards = () => {
         const response = await fetch("http://localhost:3001/api/countries");
         if (!response.ok) throw new Error("Failed to fetch countries");
         const data = await response.json();
-        console.log(data); // Check the structure of the data here
-        setCountries(data.countries); // Store countries in state
+        setCountries(data.countries);
       } catch (error) {
         console.error("Error fetching countries:", error);
       }
     };
 
-    fetchCountries(); // Call fetchCountries inside useEffect
-  }, []); // Empty dependency array to run only on component mount
+    fetchCountries();
+  }, []);
 
   const showAlert = (message, type) => {
     setAlert({ message, type });
@@ -77,6 +78,7 @@ const CmsAwards = () => {
   };
 
   const editAward = (id) => {
+    // Include country_id in the update
     fetch(`http://localhost:3001/api/awards/${id}`, {
       method: "PUT",
       headers: {
@@ -85,12 +87,17 @@ const CmsAwards = () => {
       body: JSON.stringify({
         name: editName,
         year: editYear,
+        country_id: editCountryId, // Keep the existing country_id
       }),
     })
       .then((response) => response.json())
       .then((updatedAward) => {
         setAwards(
-          awards.map((award) => (award.id === id ? updatedAward : award))
+          awards.map((award) =>
+            award.id === id
+              ? { ...updatedAward, country_id: editCountryId } // Ensure country_id is preserved
+              : award
+          )
         );
         setEditableId(null);
         showAlert("Award updated successfully!", "info");
@@ -113,7 +120,7 @@ const CmsAwards = () => {
     setEditableId(id);
     setEditName(name);
     setEditYear(year);
-    setEditCountryId(countryId);
+    setEditCountryId(countryId); // Store the country_id when editing starts
   };
 
   const handleSaveClick = (id) => {
@@ -122,7 +129,13 @@ const CmsAwards = () => {
     }
   };
 
-  console.log(countries);
+  // Pagination calculations
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentAwards = awards.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
       <Sidebar />
@@ -134,7 +147,6 @@ const CmsAwards = () => {
                 Awards Table
               </h2>
 
-              {/* Alert Section */}
               {alert.message && (
                 <Alert
                   message={alert.message}
@@ -143,7 +155,6 @@ const CmsAwards = () => {
                 />
               )}
 
-              {/* Form untuk menambahkan award baru */}
               <div className="w-full overflow-hidden rounded-lg shadow-xs mb-8">
                 <div className="w-full overflow-x-auto">
                   <form
@@ -224,7 +235,6 @@ const CmsAwards = () => {
                 </div>
               </div>
 
-              {/* Tabel daftar awards */}
               <div className="w-full overflow-hidden rounded-lg shadow-xs mt-8">
                 <div className="w-full overflow-x-auto">
                   <table className="w-full whitespace-no-wrap">
@@ -238,9 +248,9 @@ const CmsAwards = () => {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                      {awards.map((award, index) => (
+                      {currentAwards.map((award, index) => (
                         <tr
-                          key={award?.id} // Safe access to award.id
+                          key={award?.id}
                           className="text-gray-700 dark:text-gray-400"
                         >
                           <td className="px-4 py-3 text-sm">
@@ -267,7 +277,6 @@ const CmsAwards = () => {
                                 type="number"
                                 value={editYear}
                                 onChange={(e) => setEditYear(e.target.value)}
-                                autoFocus
                                 className="w-[80px] px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
                               />
                             ) : (
@@ -276,6 +285,7 @@ const CmsAwards = () => {
                           </td>
 
                           <td className="px-4 py-3 text-sm">
+                            {/* Display country name (not editable) */}
                             {
                               countries.find(
                                 (country) => country.id === award.country_id
@@ -283,7 +293,6 @@ const CmsAwards = () => {
                             }
                           </td>
 
-                          {/* Save & Delete Buttons */}
                           <td className="px-4 py-3">
                             <div className="flex items-center space-x-4 text-sm">
                               {editableId === award.id ? (
@@ -363,7 +372,12 @@ const CmsAwards = () => {
                     </tbody>
                   </table>
                 </div>
-                <Pagination />
+                <Pagination
+                  itemsPerPage={itemsPerPage}
+                  totalItems={awards.length}
+                  paginate={paginate}
+                  currentPage={currentPage}
+                />
               </div>
             </div>
           </main>

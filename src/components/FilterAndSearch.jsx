@@ -27,6 +27,7 @@ const FilterAndSearch = ({
           <option value="none">None</option>
           <option value="approved">Approved</option>
           <option value="unapproved">Unapproved</option>
+          <option value="pending">Pending</option>
         </select>
       </div>
 

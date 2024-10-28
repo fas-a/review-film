@@ -15,9 +15,10 @@ function SearchPage() {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedAvailability, setSelectedAvailability] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedAward, setSelectedAward] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/dramas")
+    fetch("http://localhost:3001/api/dramas2")
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -25,7 +26,7 @@ function SearchPage() {
         return response.json();
       })
       .then((data) => {
-        setFilms(data.dramas);
+        setFilms(data);
         setLoading(false);
       })
       .catch((error) => {
@@ -56,6 +57,10 @@ function SearchPage() {
     setSelectedStatus(status);
   };
 
+  const handleAwardChange = (award) => {
+    setSelectedAward(award); // Kirim nilai award yang dipilih ke parent
+  };
+
   // Fungsi helper untuk mendapatkan nama genre
   const getGenreName = (genre) => {
     if (typeof genre === "string") return genre;
@@ -67,6 +72,7 @@ function SearchPage() {
 
   // Filter film berdasarkan genre dan tahun yang dipilih
   const filteredFilms = films.filter((film) => {
+    if (!film || typeof film !== 'object') return false;
     const matchesSearchQuery = searchQuery
     ? film.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
       film.Actors.some(actor => actor.name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -85,7 +91,7 @@ function SearchPage() {
       : true;
 
     const matchesCountry = selectedCountry
-      ? film.country.toLowerCase() === selectedCountry.toLowerCase() // Gantilah dengan properti yang benar
+      ? film.country_id == selectedCountry // Gantilah dengan properti yang benar
       : true;
 
     const matchesAvailability = selectedAvailability
@@ -98,13 +104,20 @@ function SearchPage() {
         film.status.toLowerCase() === selectedStatus.toLowerCase() // Gantilah dengan properti yang benar
       : true;
 
+      const matchesAward = selectedAward
+      ? selectedAward === "yes"
+        ? film.Awards && film.Awards.length > 0
+        : film.Awards && film.Awards.length === 0
+      : true;
+
     return (
       matchesSearchQuery &&
       matchesGenre &&
       matchesYear &&
       matchesCountry &&
       matchesAvailability &&
-      matchesStatus
+      matchesStatus &&
+      matchesAward
     ); // Film akan muncul jika cocok dengan genre, tahun, negara, atau availability
   });
 
@@ -131,6 +144,8 @@ function SearchPage() {
           onAvailabilityChange={handleAvailabilityChange}
           selectedStatus={selectedStatus}
           onStatusChange={handleStatusChange}
+          selectedAward={selectedAward}
+          onAwardChange={handleAwardChange}
         />
         <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
           {filteredFilms.length > 0 ? (

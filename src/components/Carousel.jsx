@@ -26,8 +26,8 @@ export default function App() {
         className=""
       >
         
-        <SwiperSlide><img className='w-full img-carousel' src="img/banner-film/film1.jpg" /></SwiperSlide>
         <SwiperSlide><img className='w-full img-carousel' src="img/banner-film/film2.jpg" /></SwiperSlide>
+        <SwiperSlide><img className='w-full img-carousel' src="img/banner-film/film1.jpg" /></SwiperSlide>
         <SwiperSlide><img className='w-full img-carousel' src="img/banner-film/film3.jpg" /></SwiperSlide>
         <SwiperSlide><img className='w-full img-carousel' src="img/banner-film/film4.jpg" /></SwiperSlide>
       </Swiper>
