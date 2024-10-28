@@ -1,52 +1,62 @@
 // models/User.js
 module.exports = (sequelize, DataTypes) => {
-    const User = sequelize.define('User', {
+  const User = sequelize.define(
+    "User",
+    {
       id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
-        allowNull: false
+        allowNull: false,
       },
       photo: {
-        type: DataTypes.TEXT
+        type: DataTypes.TEXT,
       },
       googleId: { type: DataTypes.TEXT },
       username: {
         type: DataTypes.STRING(50),
         allowNull: false,
-        unique: true
+        unique: true,
       },
       email: {
         type: DataTypes.STRING(100),
         allowNull: false,
-        unique: true
+        unique: true,
       },
       password: {
-        type: DataTypes.STRING(100)
+        type: DataTypes.STRING(100),
       },
       role: {
-        type: DataTypes.ENUM('Admin', 'User'),
-        defaultValue: 'User'
+        type: DataTypes.ENUM("Admin", "User"),
+        defaultValue: "User",
+      },
+      is_verified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      verification_token: {
+        type: DataTypes.STRING,
       },
       createdAt: {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
+        defaultValue: DataTypes.NOW,
       },
       updatedAt: {
-        type: DataTypes.DATE
-      }
-    }, {
-      tableName: 'users',
-      timestamps: true
-    });
+        type: DataTypes.DATE,
+      },
+    },
+    {
+      tableName: "users",
+      timestamps: true,
+    }
+  );
 
-    User.associate = (models) => {
-      User.hasMany(models.Comment, {
-        foreignKey: 'user_id',
-        onDelete: 'CASCADE'
-      });
-    };
-    
-    return User;
+  User.associate = (models) => {
+    User.hasMany(models.Comment, {
+      foreignKey: "user_id",
+      onDelete: "CASCADE",
+    });
   };
-  
+
+  return User;
+};

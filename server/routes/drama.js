@@ -41,8 +41,8 @@ router.get("/dramas", async (req, res) => {
         {
           model: Actor,
           through: ActorDrama,
-          attributes: ["id", "name"], 
-        }
+          attributes: ["id", "name"],
+        },
       ],
     });
 
@@ -542,3 +542,90 @@ router.delete("/users/:id", async (req, res) => {
 });
 
 module.exports = router;
+
+// Actor
+// GET /api/actors - Ambil semua actor beserta negara terkait
+router.get("/actors", async (req, res) => {
+  try {
+    const actors = await Actor.findAll({});
+    res.json(actors);
+  } catch (error) {
+    console.error("Error fetching actors:", error);
+    res.status(500).json({ message: "Failed to fetch actors" });
+  }
+});
+
+// POST /api/actors - Tambah actor baru
+router.post(
+  "/actors",
+  [
+    check("name").not().isEmpty().withMessage("Actor name is required"),
+    check("birth_date").isDate().withMessage("Birth date must be a valid date"),
+    check("country_id")
+      .isInt()
+      .withMessage("Country ID must be a valid integer"),
+    // Tambahkan validasi untuk photo jika perlu, misalnya, bisa menggunakan regex untuk URL
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const { name, birth_date, photo, country_id } = req.body;
+      const newActor = await Actor.create({
+        name,
+        birth_date,
+        photo,
+        country_id,
+      });
+      res.status(201).json(newActor);
+    } catch (error) {
+      console.error("Error adding actor:", error);
+      res.status(500).json({ message: "Failed to add actor" });
+    }
+  }
+);
+
+// PUT /api/actors/:id - Edit actor berdasarkan ID
+router.put("/actors/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, birth_date, photo, country_id } = req.body;
+
+    const actor = await Actor.findByPk(id);
+    if (!actor) {
+      return res.status(404).json({ message: "Actor not found" });
+    }
+
+    actor.name = name;
+    actor.birth_date = birth_date;
+    actor.photo = photo;
+    actor.country_id = country_id;
+    await actor.save();
+
+    res.json(actor);
+  } catch (error) {
+    console.error("Error updating actor:", error);
+    res.status(500).json({ message: "Failed to update actor" });
+  }
+});
+
+// DELETE /api/actors/:id - Hapus actor berdasarkan ID
+router.delete("/actors/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const actor = await Actor.findByPk(id);
+    if (!actor) {
+      return res.status(404).json({ message: "Actor not found" });
+    }
+
+    await actor.destroy();
+    res.json({ message: "Actor deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting actor:", error);
+    res.status(500).json({ message: "Failed to delete actor" });
+  }
+});

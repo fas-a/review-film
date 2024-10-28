@@ -1,82 +1,180 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Pagination from "./components/Pagination.jsx";
+import Alert from "./components/Alert";
 
 const CmsActors = () => {
   const [actors, setActors] = useState([]);
+  const [actorName, setActorName] = useState("");
+  const [actorBirthDate, setActorBirthDate] = useState("");
+  const [actorPhoto, setActorPhoto] = useState("");
+  const [countryId, setCountryId] = useState("");
+  const [countries, setCountries] = useState([]);
+  const [editableId, setEditableId] = useState(null);
+  const [editName, setEditName] = useState("");
+  const [editBirthDate, setEditBirthDate] = useState("");
+  const [editPhoto, setEditPhoto] = useState("");
+  const [editCountryId, setEditCountryId] = useState("");
+  const [alert, setAlert] = useState({ message: "", type: "" });
   const [newActor, setNewActor] = useState({
     countries: "",
     actorName: "",
     birthDate: "",
-    photos: null,
-  });
-  const [editableId, setEditableId] = useState(null);
-  const [editActor, setEditActor] = useState({
-    countries: "",
-    actorName: "",
-    birthDate: "",
-    photos: null,
+    photos: "",
   });
 
-  const addActor = () => {
-    const newActorData = {
-      id: actors.length + 1,
-      ...newActor,
-      photos: URL.createObjectURL(newActor.photos),
-    };
-    setActors([...actors, newActorData]);
-    setNewActor({ countries: "", actorName: "", birthDate: "", photos: null });
+  // Fungsi untuk mengambil data actors
+  const fetchActors = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/api/actors");
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log("Actors data:", data);
+      setActors(data); // Assuming the response data is an array of objects
+    } catch (error) {
+      console.error("Error fetching actors:", error);
+      showAlert("Failed to fetch actors data", "error");
+    }
   };
 
-  const editActorEntry = (id, updatedActor) => {
-    setActors(
-      actors.map((actor) =>
-        actor.id === id ? { ...actor, ...updatedActor } : actor
-      )
-    );
+  // Fungsi untuk mengambil data countries
+  const fetchCountries = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/api/countries");
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log("Countries data:", data); // Debugging
+      setCountries(data.countries || data); // Handle both {countries: [...]} or direct array response
+    } catch (error) {
+      console.error("Error fetching countries:", error);
+      showAlert("Failed to fetch countries data", "error");
+    }
+  };
+
+  useEffect(() => {
+    fetchActors();
+    fetchCountries();
+  }, []);
+
+  const showAlert = (message, type) => {
+    setAlert({ message, type });
+    setTimeout(() => setAlert({ message: "", type: "" }), 3000);
+  };
+
+  const addActor = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/api/actors", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: actorName,
+          birth_date: actorBirthDate,
+          photo: actorPhoto,
+          country_id: countryId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const newActor = await response.json();
+      setActors([...actors, newActor]);
+      // Reset form
+      setActorName("");
+      setActorBirthDate("");
+      setActorPhoto("");
+      setCountryId("");
+      showAlert("Actor added successfully!", "success");
+      // Refresh actors list
+      fetchActors();
+    } catch (error) {
+      console.error("Error adding actor:", error);
+      showAlert("Failed to add actor", "error");
+    }
+  };
+
+  const editActor = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/actors/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: editName,
+          birth_date: editBirthDate,
+          photo: editPhoto,
+          country_id: editCountryId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const updatedActor = await response.json();
+      setActors(
+        actors.map((actor) => (actor.id === id ? updatedActor : actor))
+      );
+      setEditableId(null);
+      showAlert("Actor updated successfully!", "success");
+      // Refresh actors list
+      fetchActors();
+    } catch (error) {
+      console.error("Error updating actor:", error);
+      showAlert("Failed to update actor", "error");
+    }
   };
 
   const deleteActor = (id) => {
-    setActors(actors.filter((actor) => actor.id !== id));
+    fetch(`http://localhost:3001/api/actors/${id}`, {
+      method: "DELETE",
+    })
+      .then(() => {
+        setActors(actors.filter((actor) => actor.id !== id));
+        showAlert("Actor deleted successfully.", "error");
+      })
+      .catch((error) => console.error("Error deleting actor:", error));
   };
 
-  const handleEditClick = (actor) => {
-    setEditableId(actor.id);
-    setEditActor({
-      countries: actor.countries,
-      actorName: actor.actorName,
-      birthDate: actor.birthDate,
-      photos: actor.photos,
-    });
+  const handleEditClick = (id, name, birth_date, photo, country_id) => {
+    setEditableId(id);
+    setEditName(name);
+    setEditBirthDate(birth_date);
+    setEditPhoto(photo);
+    setEditCountryId(country_id);
   };
 
   const handleSaveClick = (id) => {
     if (window.confirm("Are you sure you want to save changes?")) {
-      const updatedActor = {
-        ...editActor,
-        photos:
-          editActor.photos instanceof File
-            ? URL.createObjectURL(editActor.photos)
-            : editActor.photos,
-      };
-      editActorEntry(id, updatedActor);
-      setEditableId(null);
-      setEditActor({
-        countries: "",
-        actorName: "",
-        birthDate: "",
-        photos: null,
-      });
+      editActor(id);
     }
   };
 
-  const handleEditChange = (e) => {
-    const { name, value, files } = e.target;
-    setEditActor((prev) => ({
-      ...prev,
-      [name]: name === "photos" ? files[0] : value,
-    }));
+  // Modifikasi bagian form countries menjadi select dropdown
+  const CountrySelect = ({ value, onChange, className }) => (
+    <select value={value} onChange={onChange} className={className} required>
+      <option value="">Select a country</option>
+      {countries.map((country) => (
+        <option key={country.id} value={country.id}>
+          {country.name}
+        </option>
+      ))}
+    </select>
+  );
+
+  // Render country name berdasarkan country_id
+  const getCountryName = (countryId) => {
+    const country = countries.find((c) => c.id === countryId);
+    return country ? country.name : "Unknown";
   };
 
   return (
@@ -87,8 +185,17 @@ const CmsActors = () => {
           <main className="flex-1 pb-16 overflow-y-auto">
             <div className="container grid px-6 mx-auto">
               <h2 className="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
-                Tables Actors
+                Actors Table
               </h2>
+
+              {alert.message && (
+                <Alert
+                  message={alert.message}
+                  type={alert.type}
+                  onClose={() => setAlert({ message: "", type: "" })}
+                />
+              )}
+
               <div className="w-full overflow-hidden rounded-lg shadow-xs">
                 <div className="w-full overflow-x-auto">
                   <form
@@ -203,180 +310,116 @@ const CmsActors = () => {
                 </div>
               </div>
 
+              {/* Table */}
               <div className="w-full overflow-hidden rounded-lg shadow-xs mt-8">
                 <div className="w-full overflow-x-auto">
                   <table className="w-full whitespace-no-wrap">
                     <thead>
                       <tr className="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
                         <th className="px-4 py-3">#</th>
-                        <th className="px-4 py-3">Countries</th>
+                        <th className="px-4 py-3">Country</th>
                         <th className="px-4 py-3">Actor Name</th>
                         <th className="px-4 py-3">Birth Date</th>
-                        <th className="px-4 py-3">Photos</th>
+                        <th className="px-4 py-3">Photo</th>
                         <th className="px-4 py-3">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
                       {actors.map((actor, index) => (
                         <tr
-                          key={actor.id}
+                          key={actor?.id}
                           className="text-gray-700 dark:text-gray-400"
                         >
-                          {editableId === actor.id ? (
-                            <>
-                              <td className="px-4 py-3 text-sm">{index + 1}</td>
-                              <td className="px-4 py-3 text-sm">
-                                <input
-                                  type="text"
-                                  name="countries"
-                                  value={editActor.countries}
-                                  onChange={handleEditChange}
-                                  className="w-full px-3 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
-                                />
-                              </td>
-                              <td className="px-4 py-3 text-sm">
-                                <input
-                                  type="text"
-                                  name="actorName"
-                                  value={editActor.actorName}
-                                  onChange={handleEditChange}
-                                  className="w-full px-3 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
-                                />
-                              </td>
-                              <td className="px-4 py-3 text-sm">
-                                <input
-                                  type="date"
-                                  name="birthDate"
-                                  value={editActor.birthDate}
-                                  onChange={handleEditChange}
-                                  className="w-full px-3 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
-                                />
-                              </td>
-                              <td className="px-4 py-3 text-sm">
-                                <input
-                                  type="file"
-                                  name="photos"
-                                  onChange={handleEditChange}
-                                  className="w-full text-sm text-gray-700 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-                                />
-                              </td>
-                              <td className="px-4 py-3 text-sm flex space-x-4">
+                          <td className="px-4 py-3 text-sm">{index + 1}</td>
+                          <td className="px-4 py-3 text-sm">
+                            {getCountryName(actor.country_id)}
+                          </td>
+                          <td className="px-4 py-3 text-sm">
+                            {editableId === actor?.id ? (
+                              <input
+                                type="text"
+                                value={editName}
+                                onChange={(e) => setEditName(e.target.value)}
+                                className="w-[100px] px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
+                              />
+                            ) : (
+                              actor.name
+                            )}
+                          </td>
+                          <td className="px-4 py-3 text-sm">
+                            {editableId === actor?.id ? (
+                              <input
+                                type="date"
+                                value={editBirthDate}
+                                onChange={(e) =>
+                                  setEditBirthDate(e.target.value)
+                                }
+                                className="w-[130px] px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
+                              />
+                            ) : (
+                              actor.birth_date
+                            )}
+                          </td>
+                          <td className="px-4 py-3">
+                            {actor.photo ? (
+                              <img
+                                src={actor.photo}
+                                alt={`${actor.name}'s photo`}
+                                className="w-10 h-10 rounded-full"
+                              />
+                            ) : (
+                              <span className="text-gray-500">No photo</span>
+                            )}
+                          </td>
+
+                          <td className="px-4 py-3">
+                            <div className="flex items-center space-x-4 text-sm">
+                              {editableId === actor.id ? (
                                 <button
                                   className="save-btn flex items-center justify-between w-[100px] px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
                                   aria-label="Save"
                                   onClick={() => handleSaveClick(actor.id)}
                                 >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="w-5 h-5"
-                                    aria-hidden="true"
-                                    fill="currentColor"
-                                    viewBox="0 0 512 512"
-                                  >
-                                    <path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z" />
-                                  </svg>
-                                  <span className="ml-2">Save</span>
+                                  Save
                                 </button>
-                                <button
-                                  className="delete-btn flex items-center justify-between w-[100px] px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
-                                  aria-label="Delete"
-                                  onClick={() => {
-                                    if (
-                                      window.confirm(
-                                        "Are you sure you want to delete this item?"
-                                      )
-                                    ) {
-                                      deleteActor(actor.id);
-                                    }
-                                  }}
-                                >
-                                  <svg
-                                    className="w-5 h-5"
-                                    aria-hidden="true"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                  >
-                                    <path
-                                      fillRule="evenodd"
-                                      d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                      clipRule="evenodd"
-                                    ></path>
-                                  </svg>
-                                  <span className="ml-2">Delete</span>
-                                </button>
-                              </td>
-                            </>
-                          ) : (
-                            <>
-                              <td className="px-4 py-3 text-sm">{index + 1}</td>
-                              <td className="px-4 py-3 text-sm">
-                                {actor.countries}
-                              </td>
-                              <td className="px-4 py-3 text-sm">
-                                {actor.actorName}
-                              </td>
-                              <td className="px-4 py-3 text-sm">
-                                {actor.birthDate}
-                              </td>
-                              <td className="px-4 py-3 text-sm">
-                                <img
-                                  src={actor.photos}
-                                  alt={actor.actorName}
-                                  className="w-12 h-12 rounded-full"
-                                />
-                              </td>
-                              <td className="px-4 py-3 text-sm flex space-x-4">
+                              ) : (
                                 <button
                                   className="edit-btn flex items-center justify-between w-[100px] px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
                                   aria-label="Edit"
-                                  onClick={() => handleEditClick(actor)}
+                                  onClick={() =>
+                                    handleEditClick(
+                                      actor.id,
+                                      actor.name,
+                                      actor.birthDate,
+                                      actor.photo
+                                    )
+                                  }
                                 >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="w-5 h-5"
-                                    aria-hidden="true"
-                                    fill="currentColor"
-                                    viewBox="0 0 512 512"
-                                  >
-                                    <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32L64 160c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z" />
-                                  </svg>
-                                  <span className="ml-2">Edit</span>
+                                  Edit
                                 </button>
-                                <button
-                                  className="delete-btn flex items-center justify-between w-[100px] px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
-                                  aria-label="Delete"
-                                  onClick={() => {
-                                    if (
-                                      window.confirm(
-                                        "Are you sure you want to delete this item?"
-                                      )
-                                    ) {
-                                      deleteActor(actor.id);
-                                    }
-                                  }}
-                                >
-                                  <svg
-                                    className="w-5 h-5"
-                                    aria-hidden="true"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                  >
-                                    <path
-                                      fillRule="evenodd"
-                                      d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                      clipRule="evenodd"
-                                    ></path>
-                                  </svg>
-                                  <span className="ml-2">Delete</span>
-                                </button>
-                              </td>
-                            </>
-                          )}
+                              )}
+
+                              <button
+                                className="delete-btn flex items-center justify-between w-[100px] px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
+                                aria-label="Delete"
+                                onClick={() => {
+                                  if (
+                                    window.confirm(
+                                      "Are you sure you want to delete this actor?"
+                                    )
+                                  ) {
+                                    deleteActor(actor.id);
+                                  }
+                                }}
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
-                  <Pagination />
                 </div>
               </div>
             </div>
