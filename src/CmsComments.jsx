@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Pagination from "./components/Pagination";
@@ -6,32 +6,7 @@ import FilterAndSearch from "./components/FilterAndSearch";
 
 const CmsComments = () => {
   // Data statis untuk ditampilkan (bisa diganti dengan data dari database)
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      username: "user123",
-      rate: 4,
-      drama: "Lovely Runner",
-      comment: "Great drama!",
-      status: "Pending",
-    },
-    {
-      id: 2,
-      username: "user456",
-      rate: 5,
-      drama: "True Beauty",
-      comment: "Loved it!",
-      status: "Pending",
-    },
-    {
-      id: 3,
-      username: "user789",
-      rate: 3,
-      drama: "Sky Castle",
-      comment: "It was okay.",
-      status: "Pending",
-    },
-  ]);
+  const [comments, setComments] = useState([]);
 
   // State untuk filter, show, search, dan checkbox yang dipilih
   const [filterValue, setFilterValue] = useState("none");
@@ -39,42 +14,64 @@ const CmsComments = () => {
   const [searchValue, setSearchValue] = useState("");
   const [selectedComments, setSelectedComments] = useState(new Set());
 
-  const renderStars = (rate) => {
-    return [...Array(5)].map((_, i) => (
-      <span key={i} className={i < rate ? "text-yellow-400" : "text-gray-300"}>
-        ★
-      </span>
-    ));
-  };
+  // Filtering safely with a fallback in case comments are undefined
+const filteredComments = (comments || []).filter((comment) => {
+  if (filterValue === "none") return true;
+  return comment.status.toLowerCase() === filterValue.toLowerCase();
+});
 
-  // Filter comments berdasarkan status
-  const filteredComments = comments.filter((comment) => {
-    if (filterValue === "none") return true;
-    return comment.status.toLowerCase() === filterValue.toLowerCase();
-  });
-
-  // Handle search
-  const searchedComments = filteredComments.filter(
-    (comment) =>
-      comment.username.toLowerCase().includes(searchValue.toLowerCase()) ||
-      comment.drama.toLowerCase().includes(searchValue.toLowerCase()) ||
-      comment.comment.toLowerCase().includes(searchValue.toLowerCase())
-  );
+// Search safely with a fallback in case filteredComments are undefined
+const searchedComments = (filteredComments || []).filter(
+  (comment) =>
+    comment.User.username.toLowerCase().includes(searchValue.toLowerCase()) ||
+    comment.Drama.title.toLowerCase().includes(searchValue.toLowerCase()) ||
+    comment.content.toLowerCase().includes(searchValue.toLowerCase())
+);
 
   // Limit the number of displayed comments based on showValue
   const displayedComments = searchedComments.slice(0, parseInt(showValue));
 
   // Fungsi untuk mengubah status komentar
-  const updateStatus = (newStatus) => {
-    setComments((prevComments) =>
-      prevComments.map((comment) =>
-        selectedComments.has(comment.id)
-          ? { ...comment, status: newStatus }
-          : comment
-      )
-    );
-    setSelectedComments(new Set()); // Reset selected comments after updating
+  // const updateStatus = (newStatus) => {
+  //   setComments((prevComments) =>
+  //     prevComments.map((comment) =>
+  //       selectedComments.has(comment.id)
+  //         ? { ...comment, status: newStatus }
+  //         : comment
+  //     )
+  //   );
+  //   setSelectedComments(new Set()); // Reset selected comments after updating
+  // };
+
+  const updateStatus = async (selectedCommentIds, newStatus) => {
+    try {
+      const response = await fetch('http://localhost:3001/api/update-status', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          commentIds: Array.from(selectedCommentIds),
+          newStatus: newStatus,
+        }),
+      });
+  
+      if (!response.ok) throw new Error('Failed to update status.');
+  
+      const data = await response.json();
+      console.log(data.message); // "Status updated successfully."
+      setComments((prevComments) =>
+            prevComments.map((comment) =>
+              selectedComments.has(comment.id)
+                ? { ...comment, status: newStatus }
+                : comment
+            )
+          );
+    } catch (error) {
+      console.error('Error updating comment status:', error);
+    }
   };
+  
 
   // Handle select all checkbox
   const handleSelectAll = (event) => {
@@ -98,6 +95,21 @@ const CmsComments = () => {
       return newSelected;
     });
   };
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/api/comments");
+        if (!response.ok) throw new Error("Failed to fetch comments");
+        const data = await response.json();
+        setComments(data);
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      }
+    };
+
+    fetchComments(); 
+  }
+  , []);
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
@@ -144,67 +156,30 @@ const CmsComments = () => {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                      {displayedComments.map((comment) => (
-                        <tr
-                          key={comment.id}
-                          className="text-gray-700 dark:text-gray-400"
-                        >
-                          <td className="px-4 py-3 text-sm">
+                      {comments && displayedComments.map((comment) => (
+                        <tr key={comment.id} className="text-gray-700 dark:text-gray-400">
+                          <td className="px-4 py-3">
                             <input
                               type="checkbox"
                               className="form-checkbox h-5 w-5 text-indigo-600"
-                              checked={selectedComments.has(comment.id)}
                               onChange={() => handleCheckboxChange(comment.id)}
+                              checked={selectedComments.has(comment.id)}
                             />
                           </td>
-
-                          <td className="px-4 py-3 text-sm">
-                            <span className="w-[100px] inline-block">
-                              {comment.username}
-                            </span>
-                          </td>
-
-                          <td className="px-4 py-3 text-sm">
-                            <span className="w-[100px] inline-block">
-                              {renderStars(comment.rate)}
-                            </span>
-                          </td>
-
-                          <td className="px-4 py-3 text-sm">
-                            <span className="w-[100px] inline-block">
-                              {comment.drama}
-                            </span>
-                          </td>
-
-                          <td className="px-4 py-3 text-sm">
-                            <span className="w-[150px] inline-block">
-                              {comment.comment}
-                            </span>
-                          </td>
-
-                          <td className="px-4 py-3 text-sm">
-                            <button
-                              className={`statusBtn px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue ${
-                                comment.status === "Pending"
-                                  ? "bg-blue-500"
-                                  : comment.status === "Approved"
-                                  ? "bg-green-600"
-                                  : "bg-red-600"
+                          <td className="px-4 py-3">{comment.User.username}</td>
+                          <td className="px-4 py-3">{comment.rate}</td>
+                          <td className="px-4 py-3">{comment.Drama.title}</td>
+                          <td className="px-4 py-3">{comment.content}</td>
+                          <td className="px-4 py-3">
+                            <span
+                              className={`px-2 py-1 font-semibold leading-tight rounded-full ${
+                                comment.status === "Approved"
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-red-100 text-red-800"
                               }`}
-                              style={{
-                                backgroundColor:
-                                  comment.status === "Pending"
-                                    ? "hsl(211, 19%, 44%)"
-                                    : comment.status === "Approved"
-                                    ? "hsl(142, 74%, 30%)"
-                                    : "hsl(0, 78%, 52%)",
-                                color: "white",
-                                padding: "8px 16px",
-                                margin: "4px",
-                              }}
                             >
                               {comment.status}
-                            </button>
+                            </span>
                           </td>
                         </tr>
                       ))}
@@ -234,7 +209,7 @@ const CmsComments = () => {
                           color: "white",
                           width: "auto",
                         }}
-                        onClick={() => updateStatus("Approved")}
+                        onClick={() => updateStatus(selectedComments, "Approved")}
                       >
                         Approved
                       </button>
@@ -245,7 +220,7 @@ const CmsComments = () => {
                         type="button"
                         className="px-3 py-1 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
                         style={{ width: "auto" }}
-                        onClick={() => updateStatus("Unapproved")}
+                        onClick={() => updateStatus(selectedComments, "Unapproved")}
                       >
                         Unapproved
                       </button>

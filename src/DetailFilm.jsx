@@ -69,6 +69,16 @@ function DetailFilm() {
     const match = url.match(regex);
     return match ? match[1] : null;
   };
+  const rateFilm = () => {
+    // Check if Comments exists and has entries
+    if (!Array.isArray(film.Comments) || film.Comments.length === 0) {
+      return 0; // Return 0 or any other fallback value if no comments
+    }
+  
+    let total = film.Comments.reduce((accumulator, current) => accumulator + current.rate, 0);
+    return total / film.Comments.length; // Use film.Comments.length instead of film.length
+  };
+
 
   return (
     <div>
@@ -107,7 +117,7 @@ function DetailFilm() {
               : "No genres available"}
           </p>
           <p className="mb-4 font-semibold text-gray-800 dark:text-gray-300">
-            Rating
+            Rate {rateFilm()}/5
           </p>
           <p className="mb-4 text-gray-800 dark:text-gray-300">
             {film.availability}
