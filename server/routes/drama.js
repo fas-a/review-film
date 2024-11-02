@@ -2,6 +2,7 @@
 const express = require("express");
 const { check, validationResult } = require("express-validator");
 const router = express.Router();
+const { multerUploads, uploadToCloudinary } = require("../midleware/upload");
 const {
   Drama,
   Actor,
@@ -541,8 +542,6 @@ router.delete("/users/:id", async (req, res) => {
   }
 });
 
-module.exports = router;
-
 // Actor
 // GET /api/actors - Ambil semua actor beserta negara terkait
 router.get("/actors", async (req, res) => {
@@ -556,37 +555,24 @@ router.get("/actors", async (req, res) => {
 });
 
 // POST /api/actors - Tambah actor baru
-router.post(
-  "/actors",
-  [
-    check("name").not().isEmpty().withMessage("Actor name is required"),
-    check("birth_date").isDate().withMessage("Birth date must be a valid date"),
-    check("country_id")
-      .isInt()
-      .withMessage("Country ID must be a valid integer"),
-    // Tambahkan validasi untuk photo jika perlu, misalnya, bisa menggunakan regex untuk URL
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+router.post("/actors", multerUploads, uploadToCloudinary, async (req, res) => {
+  try {
+    const { name, birth_date, country_id } = req.body;
+    const photo = req.body.photo; // This will contain the Cloudinary URL from middleware
 
-    try {
-      const { name, birth_date, photo, country_id } = req.body;
-      const newActor = await Actor.create({
-        name,
-        birth_date,
-        photo,
-        country_id,
-      });
-      res.status(201).json(newActor);
-    } catch (error) {
-      console.error("Error adding actor:", error);
-      res.status(500).json({ message: "Failed to add actor" });
-    }
+    const newActor = await Actor.create({
+      name,
+      birth_date,
+      country_id,
+      photo, // Cloudinary URL
+    });
+
+    res.status(201).json(newActor);
+  } catch (error) {
+    console.error("Error adding actor:", error);
+    res.status(500).json({ message: "Failed to add actor" });
   }
-);
+});
 
 // PUT /api/actors/:id - Edit actor berdasarkan ID
 router.put("/actors/:id", async (req, res) => {
@@ -629,3 +615,5 @@ router.delete("/actors/:id", async (req, res) => {
     res.status(500).json({ message: "Failed to delete actor" });
   }
 });
+
+module.exports = router;

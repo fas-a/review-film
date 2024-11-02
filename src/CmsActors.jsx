@@ -6,10 +6,6 @@ import Alert from "./components/Alert";
 
 const CmsActors = () => {
   const [actors, setActors] = useState([]);
-  const [actorName, setActorName] = useState("");
-  const [actorBirthDate, setActorBirthDate] = useState("");
-  const [actorPhoto, setActorPhoto] = useState("");
-  const [countryId, setCountryId] = useState("");
   const [countries, setCountries] = useState([]);
   const [editableId, setEditableId] = useState(null);
   const [editName, setEditName] = useState("");
@@ -18,7 +14,7 @@ const CmsActors = () => {
   const [editCountryId, setEditCountryId] = useState("");
   const [alert, setAlert] = useState({ message: "", type: "" });
   const [newActor, setNewActor] = useState({
-    countries: "",
+    countryId: "",
     actorName: "",
     birthDate: "",
     photos: "",
@@ -61,44 +57,83 @@ const CmsActors = () => {
     fetchCountries();
   }, []);
 
-  const showAlert = (message, type) => {
-    setAlert({ message, type });
-    setTimeout(() => setAlert({ message: "", type: "" }), 3000);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewActor({
+      ...newActor,
+      [name]: value,
+    });
   };
 
-  const addActor = async () => {
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("name", newActor.actorName);
+    formData.append("birth_date", newActor.birthDate);
+    formData.append("country_id", newActor.countryId);
+
+    if (newActor.photos) {
+      formData.append("photo", newActor.photos);
+    }
+
     try {
       const response = await fetch("http://localhost:3001/api/actors", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: actorName,
-          birth_date: actorBirthDate,
-          photo: actorPhoto,
-          country_id: countryId,
-        }),
+        body: formData,
       });
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      const newActor = await response.json();
-      setActors([...actors, newActor]);
+      const addedActor = await response.json();
+
       // Reset form
-      setActorName("");
-      setActorBirthDate("");
-      setActorPhoto("");
-      setCountryId("");
+      setNewActor({
+        countryId: "",
+        actorName: "",
+        birthDate: "",
+        photos: "",
+      });
+
+      // Reset file input
+      const fileInput = document.getElementById("photos");
+      if (fileInput) fileInput.value = "";
+
+      // Show success message
       showAlert("Actor added successfully!", "success");
-      // Refresh actors list
-      fetchActors();
+
+      // Fetch updated data after successful addition
+      try {
+        const actorsResponse = await fetch("http://localhost:3001/api/actors");
+        if (!actorsResponse.ok) {
+          console.error("Error refreshing actors list");
+          return; // Silent fail on refresh - don't show error to user
+        }
+        const actorsData = await actorsResponse.json();
+        setActors(actorsData);
+      } catch (fetchError) {
+        console.error("Error refreshing actors list:", fetchError);
+        // Don't show error to user for refresh failure
+      }
     } catch (error) {
       console.error("Error adding actor:", error);
       showAlert("Failed to add actor", "error");
     }
+  };
+
+  // Update showAlert function to clear any existing timeout
+  const showAlert = (message, type) => {
+    // Clear any existing timeout
+    if (window.alertTimeout) {
+      clearTimeout(window.alertTimeout);
+    }
+
+    setAlert({ message, type });
+    window.alertTimeout = setTimeout(() => {
+      setAlert({ message: "", type: "" });
+    }, 3000);
   };
 
   const editActor = async (id) => {
@@ -199,36 +234,22 @@ const CmsActors = () => {
               <div className="w-full overflow-hidden rounded-lg shadow-xs">
                 <div className="w-full overflow-x-auto">
                   <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      if (
-                        newActor.countries &&
-                        newActor.actorName &&
-                        newActor.birthDate &&
-                        newActor.photos
-                      ) {
-                        addActor();
-                      }
-                    }}
+                    onSubmit={handleFormSubmit}
                     className="p-6 bg-white rounded-lg shadow-md dark:bg-gray-800 grid grid-cols-2 gap-6"
                   >
                     <div className="mb-4">
                       <label
-                        htmlFor="countries"
+                        htmlFor="countryId"
                         className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2"
                       >
                         Country
                       </label>
-                      <input
-                        type="text"
-                        id="countries"
-                        name="countries"
-                        required
-                        value={newActor.countries}
+                      <CountrySelect
+                        value={newActor.countryId}
                         onChange={(e) =>
                           setNewActor({
                             ...newActor,
-                            countries: e.target.value,
+                            countryId: e.target.value,
                           })
                         }
                         className="w-full px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
@@ -247,12 +268,7 @@ const CmsActors = () => {
                         name="actorName"
                         required
                         value={newActor.actorName}
-                        onChange={(e) =>
-                          setNewActor({
-                            ...newActor,
-                            actorName: e.target.value,
-                          })
-                        }
+                        onChange={handleInputChange}
                         className="w-full px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
                       />
                     </div>
@@ -269,12 +285,7 @@ const CmsActors = () => {
                         name="birthDate"
                         required
                         value={newActor.birthDate}
-                        onChange={(e) =>
-                          setNewActor({
-                            ...newActor,
-                            birthDate: e.target.value,
-                          })
-                        }
+                        onChange={handleInputChange}
                         className="w-full px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
                       />
                     </div>
@@ -290,10 +301,11 @@ const CmsActors = () => {
                         id="photos"
                         name="photos"
                         required
+                        accept="image/*"
                         onChange={(e) =>
                           setNewActor({
                             ...newActor,
-                            photos: e.target.files[0],
+                            photos: e.target.files[0], // mengambil file yang dipilih
                           })
                         }
                         className="w-full px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
@@ -380,7 +392,16 @@ const CmsActors = () => {
                                   aria-label="Save"
                                   onClick={() => handleSaveClick(actor.id)}
                                 >
-                                  Save
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="w-5 h-5"
+                                    aria-hidden="true"
+                                    fill="currentColor"
+                                    viewBox="0 0 512 512"
+                                  >
+                                    <path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z" />
+                                  </svg>
+                                  <span className="ml-2">Save</span>
                                 </button>
                               ) : (
                                 <button
@@ -395,7 +416,16 @@ const CmsActors = () => {
                                     )
                                   }
                                 >
-                                  Edit
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="w-5 h-5"
+                                    aria-hidden="true"
+                                    fill="currentColor"
+                                    viewBox="0 0 512 512"
+                                  >
+                                    <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32L64 160c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z" />
+                                  </svg>
+                                  <span className="ml-2">Edit</span>
                                 </button>
                               )}
 
@@ -412,7 +442,19 @@ const CmsActors = () => {
                                   }
                                 }}
                               >
-                                Delete
+                                <svg
+                                  className="w-5 h-5"
+                                  aria-hidden="true"
+                                  fill="currentColor"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                    clipRule="evenodd"
+                                  ></path>
+                                </svg>
+                                <span className="ml-2">Delete</span>
                               </button>
                             </div>
                           </td>
