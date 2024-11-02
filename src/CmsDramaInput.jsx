@@ -1,11 +1,179 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import { useNavigate } from "react-router-dom";
+import Select from "react-select";
 
 const CmsDramaInput = () => {
   const [bannerPreview, setBannerPreview] = useState(null);
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [awards, setAwards] = useState([]);
+  const [selectedAwards, setSelectedAwards] = useState([]);
+  const [genres, setGenres] = useState([]);
+  const [selectedGenres, setSelectedGenres] = useState([]);
+  const [actors, setActors] = useState([]);
+  const [selectedActors, setSelectedActors] = useState([]);
+
   const navigate = useNavigate(); // Definisikan navigate
+  useEffect(() => {
+    fetchCountries();
+    fetchAwards();
+    fetchGenres();
+    fetchActors();
+  }, []);
+
+  useEffect(() => {
+    console.log(actors);
+  }, [actors]);
+
+  const fetchActors = async () => {
+    fetch(`http://localhost:3001/api/actors`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setActors(data);
+        const transformedData = data.map((actor) => ({
+          value: actor.id,
+          label: actor.name,
+          photo: actor.photo,
+        }));
+
+        setActors(transformedData);
+      })
+      .catch((error) => {
+        console.error("Error fetching awards:", error);
+      });
+    // const limit = 10; // Tentukan limit data per halaman
+    // let page = 1;
+    // let hasMoreData = true;
+
+    // try {
+    //   while (hasMoreData) {
+    //     const response = await fetch(
+    //       `http://localhost:3001/api/actors?page=${page}&limit=${limit}`
+    //     );
+    //     const data = await response.json();
+    //     setActors((prevActors) => {
+    //       const newActors = data.genres.filter(
+    //         (newActor) => !prevActors.some((actor) => actor.id === newActor.id)
+    //       );
+    //       const transformedData = [
+    //         ...prevActors,
+    //         ...newActors.map((actor) => ({
+    //           value: actor.id,
+    //           label: actor.name,
+    //           img: actor.photo,
+    //         })),
+    //       ];
+    //       return transformedData;
+    //     });
+
+    //     // Cek apakah masih ada data yang perlu diambil
+    //     hasMoreData = data.genres.length === limit;
+    //     page += 1;
+    //   }
+    // } catch (error) {
+    //   console.error("Error fetching genres:", error);
+    // }
+  };
+
+  const fetchGenres = async () => {
+    const limit = 10; // Tentukan limit data per halaman
+    let page = 1;
+    let hasMoreData = true;
+
+    try {
+      while (hasMoreData) {
+        const response = await fetch(
+          `http://localhost:3001/api/genres?page=${page}&limit=${limit}`
+        );
+        const data = await response.json();
+        setGenres((prevGenres) => {
+          const newGenres = data.genres.filter(
+            (newGenre) => !prevGenres.some((genre) => genre.id === newGenre.id)
+          );
+          const transformedData = [
+            ...prevGenres,
+            ...newGenres.map((genre) => ({
+              value: genre.id,
+              label: genre.name,
+            })),
+          ];
+          return transformedData;
+        });
+
+        // Cek apakah masih ada data yang perlu diambil
+        hasMoreData = data.genres.length === limit;
+        page += 1;
+      }
+    } catch (error) {
+      console.error("Error fetching genres:", error);
+    }
+  };
+
+  const fetchAwards = () => {
+    fetch(`http://localhost:3001/api/awards`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setAwards(data);
+        const transformedData = data.map((award) => ({
+          value: award.id,
+          label: award.name + " - " + award.year,
+        }));
+
+        setAwards(transformedData);
+      })
+      .catch((error) => {
+        console.error("Error fetching awards:", error);
+      });
+  };
+
+  const fetchCountries = async () => {
+    const limit = 10; // Tentukan limit data per halaman
+    let page = 1;
+    let hasMoreData = true;
+
+    try {
+      while (hasMoreData) {
+        const response = await fetch(
+          `http://localhost:3001/api/countries?page=${page}&limit=${limit}`
+        );
+        const data = await response.json();
+        setCountries((prevCountries) => {
+          const newCountries = data.countries.filter(
+            (newCountry) =>
+              !prevCountries.some((country) => country.id === newCountry.id)
+          );
+
+          const transformedData = [
+            ...prevCountries,
+            ...newCountries.map((country) => ({
+              value: country.id,
+              label: country.name,
+            })),
+          ];
+
+          return transformedData;
+        });
+
+        // Cek apakah masih ada data yang perlu diambil
+        hasMoreData = data.countries.length === limit;
+        page += 1;
+      }
+    } catch (error) {
+      console.error("Error fetching genres:", error);
+    }
+  };
 
   const handleBannerChange = (event) => {
     const file = event.target.files[0];
@@ -20,8 +188,7 @@ const CmsDramaInput = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Proses submit data di sini, setelah selesai:
-    navigate("/cmsdramas"); // Arahkan ke cmsdramas
+    navigate("/cmsdramas");
   };
 
   return (
@@ -110,26 +277,42 @@ const CmsDramaInput = () => {
                             Year
                           </label>
                           <input
-                            type="number"
+                            type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
                             id="year"
                             name="year"
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700"
+                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700 h-10"
+                            autoComplete="off"
+                            placeholder="Enter the year"
+                            onKeyPress={(e) => {
+                              if (!/[0-9]/.test(e.key)) {
+                                e.preventDefault();
+                              }
+                            }}
                           />
                         </div>
                         <div className="col-span-6">
                           <label
                             htmlFor="country"
-                            className="block text-sm font-medium text-gray-600"
+                            className="block text-sm font-medium text-gray-600 mb-1"
                           >
                             Country
                           </label>
-                          <input
-                            type="text"
-                            id="country"
-                            name="country"
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700"
-                            placeholder="Enter the country of origin"
-                          />
+                          {countries.length > 0 ? (
+                            <Select
+                              defaultValue={selectedCountry}
+                              onChange={setSelectedCountry}
+                              options={countries}
+                              placeholder="Select a country"
+                            />
+                          ) : (
+                            <Select
+                              placeholder="Select a country"
+                              isLoading="true"
+                              isDisabled="true"
+                            />
+                          )}
                         </div>
 
                         {/* Synopsis */}
@@ -145,12 +328,12 @@ const CmsDramaInput = () => {
                             name="synopsis"
                             rows="4"
                             className="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700"
-                            defaultValue="Ex:  Synopsis sometimes unhelpful. I don’t read it thoroughly. But what helps me is the genres. I need to see genres and actors. That’s what I want."
+                            placeholder="Ex:  Synopsis sometimes unhelpful. I don’t read it thoroughly. But what helps me is the genres. I need to see genres and actors. That’s what I want."
                           ></textarea>
                         </div>
 
                         {/* Availability */}
-                        <div className="col-span-12">
+                        <div className="col-span-6">
                           <label
                             htmlFor="availability"
                             className="block text-sm font-medium text-gray-600"
@@ -182,93 +365,87 @@ const CmsDramaInput = () => {
                             placeholder="Enter the trailer link"
                           />
                         </div>
-                        <div className="col-span-6">
+                        <div className="col-span-12">
                           <label
                             htmlFor="award"
-                            className="block text-sm font-medium text-gray-600"
+                            className="block text-sm font-medium text-gray-600 mb-1"
                           >
                             Award
                           </label>
-                          <select
-                            id="award"
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700"
-                          >
-                            <option value="">Select award</option>
-                            <option value="award1">Award 1</option>
-                            <option value="award2">Award 2</option>
-                          </select>
+                          {awards.length > 0 ? (
+                            <Select
+                              defaultValue={selectedAwards}
+                              onChange={setSelectedAwards}
+                              isMulti="true"
+                              options={awards}
+                              placeholder="Select Awards"
+                            />
+                          ) : (
+                            <Select
+                              placeholder="Select Awards"
+                              isLoading="true"
+                              isDisabled="true"
+                            />
+                          )}
                         </div>
 
                         {/* Genres */}
                         <div className="col-span-12">
                           <label
                             htmlFor="genres"
-                            className="block text-sm font-medium text-gray-600"
+                            className="block mb-1 text-sm font-medium text-gray-600"
                           >
                             Add Genres
                           </label>
-                          <div className="grid grid-cols-6 gap-4 mt-2">
-                            {/* Genre checkboxes */}
-                            {[
-                              "Drama",
-                              "Horror",
-                              "Comedy",
-                              "Romance",
-                              "Fantasy",
-                              "Action",
-                              "Thriller",
-                              "Biography",
-                              "Documentary",
-                              "Reality",
-                              "Family",
-                              "Animation",
-                              "Anime",
-                              "War",
-                            ].map((genre) => (
-                              <div key={genre} className="flex items-center">
-                                <input
-                                  id={`genre-${genre.toLowerCase()}`}
-                                  name="genres"
-                                  type="checkbox"
-                                  className="h-4 w-4 text-orange-600 border-gray-300 rounded"
-                                />
-                                <label
-                                  htmlFor={`genre-${genre.toLowerCase()}`}
-                                  className="ml-2 block text-sm text-gray-900"
-                                >
-                                  {genre}
-                                </label>
-                              </div>
-                            ))}
-                          </div>
+                          {genres.length > 0 ? (
+                            <Select
+                              defaultValue={selectedGenres}
+                              onChange={setSelectedGenres}
+                              isMulti="true"
+                              options={genres}
+                              placeholder="Select Genres"
+                            />
+                          ) : (
+                            <Select
+                              placeholder="Select Genres"
+                              isLoading="true"
+                              isDisabled="true"
+                            />
+                          )}
                         </div>
 
                         {/* Add Actors */}
                         <div className="col-span-12">
                           <label
                             htmlFor="actors"
-                            className="block text-sm font-medium text-gray-600"
+                            className="block mb-1 text-sm font-medium text-gray-600"
                           >
                             Add Actors (Up to 9)
                           </label>
-                          <input
-                            type="text"
-                            id="actors"
-                            name="actors"
-                            placeholder="Search Actor Names"
-                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700 mb-4"
-                          />
+                          {actors.length > 0 ? (
+                            <Select
+                              defaultValue={selectedActors}
+                              onChange={setSelectedActors}
+                              isMulti="true"
+                              options={actors}
+                              placeholder="Select Actors"
+                            />
+                          ) : (
+                            <Select
+                              placeholder="Select Actors"
+                              isLoading="true"
+                              isDisabled="true"
+                            />
+                          )}
 
-                          <div className="grid grid-cols-3 gap-4">
-                            {/* Actor Images */}
-                            {[...Array(9)].map((_, index) => (
+                          <div className="grid grid-cols-10 mt-1 gap-4">
+                            {selectedActors.map((actor) => (
                               <div
-                                key={index}
-                                className="w-40 h-40 rounded-full overflow-hidden"
+                                className="w-20 h-40 rounded-full overflow-hidden"
                               >
                                 <img
-                                  src="/img/song-jongki.jpeg"
-                                  alt="Actor"
+                                  src={actor.photo}
+                                  alt={actor.label}
                                   className="w-full h-full object-cover"
                                 />
                               </div>
