@@ -8,7 +8,7 @@ const {
   Actor,
   Genre,
   ActorDrama,
-  DramaGenre,
+  GenreDrama,
   Country,
   Award,
   User,
@@ -19,7 +19,6 @@ const {
 // GET /api/dramas - Ambil semua drama beserta aktor dan genre terkait
 router.get("/dramas", async (req, res) => {
   try {
-    // Ambil query parameter page (default 1) dan limit (default 16)
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 12;
     const offset = (page - 1) * limit;
@@ -31,7 +30,7 @@ router.get("/dramas", async (req, res) => {
       include: [
         {
           model: Genre,
-          through: DramaGenre,
+          through: GenreDrama,
           attributes: ["id", "name"], // Genre terkait
         },
         {
@@ -46,18 +45,13 @@ router.get("/dramas", async (req, res) => {
         },
       ],
     });
-
-    // Hitung total halaman, jika data habis, pagination berhenti
     const totalPages = Math.ceil(count / limit);
-
-    // Jika data sudah habis, hanya tampilkan halaman yang ada (contoh sampai 13 halaman)
     const adjustedTotalPages = totalPages > 13 ? 13 : totalPages;
-
-    // Kirim response ke frontend, berisi data drama, halaman saat ini, dan total halaman
     res.json({
-      dramas, // Data drama yang ditampilkan
-      currentPage: page, // Halaman saat ini
-      totalPages: adjustedTotalPages, // Total halaman yang dibatasi
+      dramas,
+      totalItems: count,
+      currentPage: page,
+      totalPages: adjustedTotalPages,
     });
   } catch (error) {
     console.error("Error fetching dramas:", error);
@@ -72,7 +66,7 @@ router.get("/dramas2", async (req, res) => {
       include: [
         {
           model: Genre,
-          through: DramaGenre,
+          through: GenreDrama,
           attributes: ["id", "name"], // Genre terkait
         },
         {
@@ -95,6 +89,86 @@ router.get("/dramas2", async (req, res) => {
   }
 });
 
+router.post("/dramas", multerUploads, uploadToCloudinary, async (req, res) => {
+  try {
+    const {
+      title,
+      alt_title,
+      year,
+      country_id,
+      synopsis,
+      availability,
+      link_trailer,
+      awards,
+      genres,
+      actors,
+    } = req.body;
+
+    const poster = req.body.photo;
+
+    const newDrama = await Drama.create({
+      title,
+      alt_title,
+      year,
+      country_id,
+      synopsis,
+      availability,
+      link_trailer,
+      poster,
+    });
+
+    if (newDrama && awards) {
+      // Pastikan `awards` selalu berupa array
+      const awardsArray = JSON.parse(awards);
+    
+      // Hanya eksekusi jika awardsArray berisi setidaknya satu elemen yang valid
+      if (awardsArray.length > 0) {
+        await Promise.all(
+          awardsArray.map(async (award_id) => {
+            await AwardDrama.create({
+              award_id,
+              drama_id: newDrama.id,
+            });
+          })
+        );
+      }
+    }
+
+    if (newDrama && genres) {
+      const genresArray = JSON.parse(genres);
+      if (genresArray.length > 0) {
+        await Promise.all(
+          genresArray.map(async (genre_id) => {
+            await GenreDrama.create({
+              genre_id,
+              drama_id: newDrama.id,
+            });
+          })
+        );
+      }
+    }
+
+    if (newDrama && actors) {
+      const actorsArray = JSON.parse(actors);
+      if (actorsArray.length > 0) {
+        await Promise.all(
+          actorsArray.map(async (actor_id) => {
+            await ActorDrama.create({
+              actor_id,
+              drama_id: newDrama.id,
+            });
+          })
+        );
+      }
+    }
+
+    res.status(201).json(newDrama);
+  } catch (error) {
+    console.error("Error adding drama:", error);
+    res.status(500).json({ message: "Failed to add drama" });
+  }
+});
+
 router.get("/drama/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -102,22 +176,26 @@ router.get("/drama/:id", async (req, res) => {
       include: [
         {
           model: Genre,
-          through: DramaGenre,
-          attributes: ["id", "name"], // Genre terkait
+          through: GenreDrama,
+          attributes: ["id", "name"],
+          required: false, // Tetap return meskipun Genre tidak ada
         },
         {
           model: Actor,
           through: ActorDrama,
-          attributes: ["id", "name", "photo"], // Aktor terkait
+          attributes: ["id", "name", "photo"],
+          required: false, // Tetap return meskipun Actor tidak ada
         },
         {
           model: Award,
           through: AwardDrama,
           attributes: ["id", "name"],
+          required: false, // Tetap return meskipun Award tidak ada
         },
         {
           model: Country,
-          attributes: ["id", "name"], // Negara ter
+          attributes: ["id", "name"],
+          required: false, // Tetap return meskipun Country tidak ada
         },
         {
           model: Comment,
@@ -129,6 +207,7 @@ router.get("/drama/:id", async (req, res) => {
               attributes: ["id", "username"],
             },
           ],
+          required: false, // Tetap return meskipun Comment tidak ada
         },
       ],
     });
@@ -141,6 +220,22 @@ router.get("/drama/:id", async (req, res) => {
     res.status(500).json({ message: "Failed to fetching drama" });
   }
 });
+
+router.delete("/dramas/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const drama = await Drama.findByPk(id);
+    if (!drama) {
+      return res.status(404).json({ message: "Drama not found" });
+    }
+    await drama.destroy();
+    res.json({ message: "Drama deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting drama:", error);
+    res.status(500).json({ message: "Failed to delete drama" });
+  }
+});
+
 
 router.get("/countries", async (req, res) => {
   const { page, limit } = req.query;

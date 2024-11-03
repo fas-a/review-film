@@ -12,6 +12,7 @@ module.exports = {
         email: 'admin@example.com',
         password: await bcrypt.hash('12345678', 10), // Gunakan await di sini
         role: 'Admin',
+        is_verified: true,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -21,6 +22,7 @@ module.exports = {
         email: 'faris@example.com',
         password: await bcrypt.hash('12345678', 10), // Gunakan await di sini
         role: 'User',
+        is_verified: true,
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -30,6 +32,7 @@ module.exports = {
         email: 'sabil@example.com',
         password: await bcrypt.hash('12345678', 10), // Gunakan await di sini
         role: 'User',
+        is_verified: true,
         createdAt: new Date(),
         updatedAt: new Date()
       },

@@ -68,6 +68,10 @@ const CmsActors = () => {
     });
   };
 
+  useEffect(() => {
+    console.log(newActor);
+  }, [newActor]);
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
