@@ -14,6 +14,19 @@ const CmsDramaInput = () => {
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [actors, setActors] = useState([]);
   const [selectedActors, setSelectedActors] = useState([]);
+  const [newDrama, setNewDrama] = useState({
+    title: "",
+    altTitle: "",
+    year: "",
+    country: "",
+    synopsis: "",
+    availability: "",
+    trailer: "",
+    awards: [],
+    genres: [], 
+    actors: [],
+    photo: "",
+  });
 
   const navigate = useNavigate(); // Definisikan navigate
   useEffect(() => {
@@ -24,8 +37,33 @@ const CmsDramaInput = () => {
   }, []);
 
   useEffect(() => {
-    console.log(actors);
-  }, [actors]);
+    setNewDrama({
+      ...newDrama,
+      actors: selectedActors.map((actor) => actor.value),
+    });
+  }, [selectedActors]);
+  useEffect(() => {
+    setNewDrama({
+      ...newDrama,
+      awards: selectedAwards.map((award) => award.value),
+    });
+  }, [selectedAwards]);
+  useEffect(() => {
+    setNewDrama({
+      ...newDrama,
+      genres: selectedGenres.map((genre) => genre.value),
+    });
+  }, [selectedGenres]);
+  useEffect(() => {
+    setNewDrama({
+      ...newDrama,
+      country: selectedCountry?.value,
+    });
+  }, [selectedCountry]);
+  useEffect(() => {
+    console.log(newDrama); // Ini akan dijalankan setiap kali newDrama berubah
+  }, [newDrama]);
+  
 
   const fetchActors = async () => {
     fetch(`http://localhost:3001/api/actors`)
@@ -93,18 +131,19 @@ const CmsDramaInput = () => {
           `http://localhost:3001/api/genres?page=${page}&limit=${limit}`
         );
         const data = await response.json();
+
         setGenres((prevGenres) => {
-          const newGenres = data.genres.filter(
-            (newGenre) => !prevGenres.some((genre) => genre.id === newGenre.id)
-          );
-          const transformedData = [
-            ...prevGenres,
-            ...newGenres.map((genre) => ({
-              value: genre.id,
-              label: genre.name,
-            })),
-          ];
-          return transformedData;
+          // Menggabungkan genre baru dengan genre sebelumnya tanpa duplikat
+          const genreMap = new Map(prevGenres.map(genre => [genre.value, genre]));
+
+          data.genres.forEach((newGenre) => {
+            if (!genreMap.has(newGenre.id)) {
+              genreMap.set(newGenre.id, { value: newGenre.id, label: newGenre.name });
+            }
+          });
+
+          // Ubah Map kembali menjadi array
+          return Array.from(genreMap.values());
         });
 
         // Cek apakah masih ada data yang perlu diambil
@@ -115,6 +154,7 @@ const CmsDramaInput = () => {
       console.error("Error fetching genres:", error);
     }
   };
+
 
   const fetchAwards = () => {
     fetch(`http://localhost:3001/api/awards`)
@@ -186,10 +226,62 @@ const CmsDramaInput = () => {
     }
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    navigate("/cmsdramas");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("title", newDrama.title);
+    formData.append("alt_title", newDrama.altTitle);
+    formData.append("year", newDrama.year);
+    formData.append("country_id", newDrama.country);
+    formData.append("synopsis", newDrama.synopsis);
+    formData.append("availability", newDrama.availability);
+    formData.append("link_trailer", newDrama.trailer);
+    formData.append("awards", JSON.stringify(newDrama.awards));
+    formData.append("genres", JSON.stringify(newDrama.genres));
+    formData.append("actors", JSON.stringify(newDrama.actors));
+
+    if (newDrama.photo) {
+      formData.append("photo", newDrama.photo);
+    }
+
+    try {
+      const response = await fetch("http://localhost:3001/api/dramas", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        alert("Drama added successfully!");
+        resetForm();
+      } else {
+        alert("Failed to add drama!");
+      }
+    } catch (error) {
+      console.error("Error adding drama:", error);
+      alert("Failed to add drama!");
+    }
   };
+
+  const resetForm = () => {
+    setNewDrama({
+      title: "",
+      altTitle: "",
+      year: "",
+      country: "",
+      synopsis: "",
+      availability: "",
+      trailer: "",
+      awards: [],
+      genres: [],
+      actors: [],
+      photo: "",
+    });
+    setBannerPreview(null);
+    setSelectedCountry(null);
+    setSelectedAwards([]);
+    setSelectedGenres([]);
+    setSelectedActors([]);
+  }
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
@@ -222,7 +314,13 @@ const CmsDramaInput = () => {
                           id="banner"
                           className="w-full p-2 rounded-md border border-gray-300 focus:ring focus:ring-blue-500"
                           accept="image/*"
-                          onChange={handleBannerChange}
+                          onChange={(e) => {
+                            handleBannerChange(e);
+                            setNewDrama({
+                              ...newDrama,
+                              photo: e.target.files[0],
+                            });
+                          }}
                         />
                         {bannerPreview && (
                           <img
@@ -250,6 +348,12 @@ const CmsDramaInput = () => {
                             name="title"
                             className="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700"
                             placeholder="Enter the drama title"
+                            onChange={(e) => {
+                              setNewDrama({
+                                ...newDrama,
+                                title: e.target.value,
+                              });
+                            }}
                           />
                         </div>
                         <div className="col-span-6">
@@ -265,6 +369,12 @@ const CmsDramaInput = () => {
                             name="altTitle"
                             className="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700"
                             placeholder="Enter the alternative title"
+                            onChange={(e) => {
+                              setNewDrama({
+                                ...newDrama,
+                                altTitle: e.target.value,
+                              });
+                            }}
                           />
                         </div>
 
@@ -289,6 +399,12 @@ const CmsDramaInput = () => {
                               if (!/[0-9]/.test(e.key)) {
                                 e.preventDefault();
                               }
+                            }}
+                            onChange={(e) => {
+                              setNewDrama({
+                                ...newDrama,
+                                year: e.target.value,
+                              });
                             }}
                           />
                         </div>
@@ -328,6 +444,12 @@ const CmsDramaInput = () => {
                             name="synopsis"
                             rows="4"
                             className="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700"
+                            onChange={(e) => {
+                              setNewDrama({
+                                ...newDrama,
+                                synopsis: e.target.value,
+                              });
+                            }}
                             placeholder="Ex:  Synopsis sometimes unhelpful. I don’t read it thoroughly. But what helps me is the genres. I need to see genres and actors. That’s what I want."
                           ></textarea>
                         </div>
@@ -346,6 +468,12 @@ const CmsDramaInput = () => {
                             name="availability"
                             className="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700"
                             placeholder="Ex: Fansub: @xxosub on X"
+                            onChange={(e) => {
+                              setNewDrama({
+                                ...newDrama,
+                                availability: e.target.value,
+                              });
+                            }}
                           />
                         </div>
 
@@ -363,6 +491,12 @@ const CmsDramaInput = () => {
                             name="trailer"
                             className="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700"
                             placeholder="Enter the trailer link"
+                            onChange={(e) => {
+                              setNewDrama({
+                                ...newDrama,
+                                trailer: e.target.value,
+                              });
+                            }}
                           />
                         </div>
                         <div className="col-span-12">

@@ -1001,6 +1001,17 @@ video {
 .text-right {
   text-align: right;
 }
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.text-ellipsis {
+  text-overflow: ellipsis;
+}
+.text-clip {
+  text-overflow: clip;
+}
 .leading-5 {
   line-height: 1.25rem;
 }

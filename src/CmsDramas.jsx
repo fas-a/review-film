@@ -1,29 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Pagination from "./components/Pagination";
 import DramaPopup from "./components/DramaPopup";
 
 const CmsDramas = () => {
-  const [dramas, setDramas] = useState([
-    {
-      id: 1,
-      drama: "Crash Landing on You",
-      actor: "Hyun Bin, Son Ye-jin",
-      genre: "Romance, Comedy",
-      synopsis: "A South Korean heiress crashes in North Korea...",
-      status: "Pending",
-    },
-    {
-      id: 2,
-      drama: "Goblin",
-      actor: "Gong Yoo, Kim Go-eun",
-      genre: "Fantasy, Drama",
-      synopsis: "A goblin and a bride with a tragic fate...",
-      status: "Pending",
-    },
-  ]);
-
+  const [dramas, setDramas] = useState([]);
+  useEffect(() => {
+    fetchDramas();
+  }, []);
+  const fetchDramas = async () => {
+    const limit = 10;
+    let page = 1;
+    let hasMoreData = true;
+    try {
+      while (hasMoreData) {
+        const response = await fetch(
+          `http://localhost:3001/api/dramas?page=${page}&limit=${limit}`
+        );
+        const data = await response.json();
+        setDramas((prevDramas) => {
+          const newDramas = data.dramas.filter((drama) => !prevDramas.some((prevDrama) => prevDrama.id === drama.id));
+          return [...prevDramas, ...newDramas];
+      });
+        hasMoreData = data.dramas.length === limit;
+        page++;
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
   const [editableId, setEditableId] = useState(null);
   const [editDrama, setEditDrama] = useState({
     drama: "",
@@ -33,7 +39,7 @@ const CmsDramas = () => {
     status: "",
   });
 
-  // State untuk mengatur modal dan drama yang sedang diubah statusnya
+  
   const [showModal, setShowModal] = useState(false);
   const [currentDrama, setCurrentDrama] = useState(null);
 
@@ -118,7 +124,7 @@ const CmsDramas = () => {
                     <thead>
                       <tr className="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
                         <th className="px-4 py-3">#</th>
-                        <th className="px-4 py-3">Drama</th>
+                        <th className="px-4 py-3" style={{ width: "150px" }}>Drama</th>
                         <th className="px-4 py-3">Actor</th>
                         <th className="px-4 py-3">Genre</th>
                         <th className="px-4 py-3">Synopsis</th>
@@ -135,7 +141,7 @@ const CmsDramas = () => {
                           <td className="px-4 py-3 text-sm">{index + 1}</td>
 
                           {/* drama Input */}
-                          <td className="px-4 py-3 text-sm">
+                          <td className="px-4 py-3 text-sm" style={{ width: "150px" }}>
                             {editableId === drama.id ? (
                               <input
                                 type="text"
@@ -146,14 +152,17 @@ const CmsDramas = () => {
                                     drama: e.target.value,
                                   })
                                 }
-                                className="w-[150px] px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
+                                style={{ width: "150px" }}
+                                className="px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
                               />
                             ) : (
                               <span
                                 onDoubleClick={() => handleEditClick(drama)}
-                                className="w-[150px] inline-block"
+                                className="inline-block truncate"
+                                style={{ width: "150px" }}
+                                title={drama.title}
                               >
-                                {drama.drama}
+                                {drama.title}
                               </span>
                             )}
                           </td>
@@ -177,7 +186,11 @@ const CmsDramas = () => {
                                 onDoubleClick={() => handleEditClick(drama)}
                                 className="w-[100px] inline-block"
                               >
-                                {drama.actor}
+                                {
+                                  drama.Actors && drama.Actors.length > 0
+                                    ? drama.Actors.map((actor) => actor.name).join(", ")
+                                    : "No actors available"
+                                }
                               </span>
                             )}
                           </td>
@@ -201,7 +214,11 @@ const CmsDramas = () => {
                                 onDoubleClick={() => handleEditClick(drama)}
                                 className="w-[100px] inline-block"
                               >
-                                {drama.genre}
+                                {
+                                  drama.Genres && drama.Genres.length > 0
+                                    ? drama.Genres.map((genre) => genre.name).join(", ")
+                                    : "No genres available"
+                                }
                               </span>
                             )}
                           </td>
