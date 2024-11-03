@@ -1,9 +1,15 @@
 import React, { useState } from "react";
-import posterImage from "../img/ourblues.jpg";
-import actorImage from "../img/song-jongki.jpeg";
+import FilmCardV from "./FilmCardV";
 
-const DramaPopup = ({ drama, actors = [], onClose, onUpdateStatus }) => {
+
+const DramaPopup = ({ drama, onClose, onUpdateStatus }) => {
   const [status, setStatus] = useState("");
+  const getVideoId = (url) => {
+    const regex =
+      /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^&\n]{11})/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+  };
 
   const updateStatus = (newStatus) => {
     setStatus(newStatus);
@@ -48,7 +54,7 @@ const DramaPopup = ({ drama, actors = [], onClose, onUpdateStatus }) => {
           {/* Drama Poster */}
           <div className="flex-shrink-0">
             <img
-              src={posterImage}
+              src={drama.poster}
               alt="Drama Poster"
               className="h-64 w-48 rounded-lg object-cover bg-gray-200"
             />
@@ -57,42 +63,38 @@ const DramaPopup = ({ drama, actors = [], onClose, onUpdateStatus }) => {
           {/* Drama Details */}
           <div>
             <h2 className="text-xl font-bold mb-2">
-              Title of the drama 1 that makes two lines
+              {drama.title}
             </h2>
             <p className="text-sm text-gray-800 mb-2">
-              Other titles: Title 2, Title 3, Title 4<br />
-              Year: Spring 2024
+              Other titles: {drama.alt_title}<br />
+              Year: {drama.year}
             </p>
             <p className="text-sm text-gray-800 mb-2">
-              Synopsis: Sometimes subjective, I don't read it thoroughly. But
-              what helps me is the genres. I need to see genres and actors. That
-              is what I need.
+              Synopsis: {drama.synopsis}.
             </p>
             <p className="text-sm text-gray-800 mb-2">
-              Genre: Genre 1, Genre 2, Genre 3
+              Genre: {ensureArray(drama.Genres).map((genre) => genre.name).join(", ")}
             </p>
-            <p className="text-sm text-gray-800 mb-2">Rating: 3.5/5</p>
             <p className="text-sm text-gray-800 mb-2">
-              Availability: Fansub: @aoisub on X
+              Availability: {drama.availability}
             </p>
           </div>
         </div>
 
         {/* Actors List */}
         <div className="flex justify-between space-x-4 mt-4">
-          {[1, 2, 3, 4, 5, 6].map((actorNum) => (
-            <div
-              key={actorNum}
-              className="flex flex-col items-center justify-center w-full p-2 rounded-lg bg-gray-700 border border-gray-600"
-            >
-              <img
-                src={actorImage}
-                alt="Actor Name"
-                className="w-10 h-10 rounded-full mb-1"
-              />
-              <span className="text-gray-200 text-sm">Actor {actorNum}</span>
+          <div className="flex overflow-x-auto hide-scroll-bar">
+            <div className="flex flex-nowrap py-2 lg:ml-40 md:ml-20 ml-10">
+              {drama.Actors && drama.Actors.length > 0 ? (
+                drama.Actors.map((actor) => (
+                  <FilmCardV src={actor.photo} title={actor.name} />
+                ))
+              ) : (
+                <p>No actors available</p> // Fallback message if no actors
+              )}
             </div>
-          ))}
+          </div>
+
         </div>
 
         {/* Trailer Video */}
@@ -103,7 +105,9 @@ const DramaPopup = ({ drama, actors = [], onClose, onUpdateStatus }) => {
           >
             <iframe
               className="absolute top-0 left-0 w-full h-full"
-              src="https://www.youtube.com/embed/1C7Nph5gFxQ?si=jSL9El7ZG7wbJFO9"
+              src={`https://www.youtube.com/embed/${getVideoId(
+                drama.link_trailer
+              )}`}
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
@@ -119,7 +123,7 @@ const DramaPopup = ({ drama, actors = [], onClose, onUpdateStatus }) => {
             type="button"
             className="px-4 py-2 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
             style={{ backgroundColor: "#15803d", color: "white" }}
-            onClick={() => onUpdateStatus("Approved")}
+            onClick={() => onUpdateStatus("Approved", drama.id)}
           >
             Approved
           </button>
@@ -127,7 +131,7 @@ const DramaPopup = ({ drama, actors = [], onClose, onUpdateStatus }) => {
             id="unapproveBtn"
             type="button"
             className="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
-            onClick={() => onUpdateStatus("Unapproved")}
+            onClick={() => onUpdateStatus("Unapproved", drama.id)}
           >
             Unapproved
           </button>

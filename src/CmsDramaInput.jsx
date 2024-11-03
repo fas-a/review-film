@@ -60,10 +60,6 @@ const CmsDramaInput = () => {
       country: selectedCountry?.value,
     });
   }, [selectedCountry]);
-  useEffect(() => {
-    console.log(newDrama); // Ini akan dijalankan setiap kali newDrama berubah
-  }, [newDrama]);
-  
 
   const fetchActors = async () => {
     fetch(`http://localhost:3001/api/actors`)
@@ -154,8 +150,7 @@ const CmsDramaInput = () => {
       console.error("Error fetching genres:", error);
     }
   };
-
-
+  
   const fetchAwards = () => {
     fetch(`http://localhost:3001/api/awards`)
       .then((response) => {
@@ -504,7 +499,7 @@ const CmsDramaInput = () => {
                             htmlFor="award"
                             className="block text-sm font-medium text-gray-600 mb-1"
                           >
-                            Award
+                            Awards
                           </label>
                           {awards.length > 0 ? (
                             <Select
@@ -529,7 +524,7 @@ const CmsDramaInput = () => {
                             htmlFor="genres"
                             className="block mb-1 text-sm font-medium text-gray-600"
                           >
-                            Add Genres
+                            Genres
                           </label>
                           {genres.length > 0 ? (
                             <Select
@@ -554,7 +549,7 @@ const CmsDramaInput = () => {
                             htmlFor="actors"
                             className="block mb-1 text-sm font-medium text-gray-600"
                           >
-                            Add Actors (Up to 9)
+                            Actors (Up to 9)
                           </label>
                           {actors.length > 0 ? (
                             <Select
