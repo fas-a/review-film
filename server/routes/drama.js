@@ -67,7 +67,6 @@ router.get("/dramas", async (req, res) => {
 
 router.get("/dramas2", async (req, res) => {
   try {
-
     // Cari drama dengan pagination
     const dramas = await Drama.findAll({
       include: [
@@ -84,8 +83,8 @@ router.get("/dramas2", async (req, res) => {
         {
           model: Actor,
           through: ActorDrama,
-          attributes: ["id", "name"], 
-        }
+          attributes: ["id", "name"],
+        },
       ],
     });
 
@@ -152,9 +151,13 @@ router.get("/countries", async (req, res) => {
 
   try {
     const { count, rows: countries } = await Country.findAndCountAll({
-      attributes: ["id", "name"], // Hanya ambil kolom id dan name
+      attributes: ["id", "name", "createdAt", "updatedAt"], // Tambahkan createdAt dan updatedAt
       limit: limitNumber,
       offset,
+      order: [
+        ["updatedAt", "DESC"],
+        ["createdAt", "DESC"],
+      ],
     });
 
     res.json({
@@ -240,9 +243,13 @@ router.get("/genres", async (req, res) => {
 
   try {
     const { count, rows: genres } = await Genre.findAndCountAll({
-      attributes: ["id", "name"], // Hanya ambil kolom id dan name
+      attributes: ["id", "name", "createdAt", "updatedAt"],
       limit: limitNumber,
       offset,
+      order: [
+        ["updatedAt", "DESC"],
+        ["createdAt", "DESC"],
+      ],
     });
 
     res.json({
@@ -325,22 +332,19 @@ router.post("/comment", async (req, res) => {
   }
 });
 
-router.put('/update-status', async (req, res) => {
+router.put("/update-status", async (req, res) => {
   const { commentIds, newStatus } = req.body;
 
-  if (!Array.isArray(commentIds) || typeof newStatus !== 'string') {
-    return res.status(400).json({ message: 'Invalid data format.' });
+  if (!Array.isArray(commentIds) || typeof newStatus !== "string") {
+    return res.status(400).json({ message: "Invalid data format." });
   }
 
   try {
-    await Comment.update(
-      { status: newStatus },
-      { where: { id: commentIds } }
-    );
-    res.status(200).json({ message: 'Status updated successfully.' });
+    await Comment.update({ status: newStatus }, { where: { id: commentIds } });
+    res.status(200).json({ message: "Status updated successfully." });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Failed to update status.' });
+    res.status(500).json({ message: "Failed to update status." });
   }
 });
 
@@ -387,7 +391,12 @@ router.delete("/genres/:id", async (req, res) => {
 // GET /api/awards - Ambil semua award beserta negara terkait
 router.get("/awards", async (req, res) => {
   try {
-    const awards = await Award.findAll({});
+    const awards = await Award.findAll({
+      order: [
+        ["updatedAt", "DESC"],
+        ["createdAt", "DESC"],
+      ],
+    });
     res.json(awards);
   } catch (error) {
     console.error("Error fetching awards:", error);
@@ -546,7 +555,12 @@ router.delete("/users/:id", async (req, res) => {
 // GET /api/actors - Ambil semua actor beserta negara terkait
 router.get("/actors", async (req, res) => {
   try {
-    const actors = await Actor.findAll({});
+    const actors = await Actor.findAll({
+      order: [
+        ["updatedAt", "DESC"],
+        ["createdAt", "DESC"],
+      ],
+    });
     res.json(actors);
   } catch (error) {
     console.error("Error fetching actors:", error);

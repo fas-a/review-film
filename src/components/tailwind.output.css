@@ -603,6 +603,21 @@ video {
   background-color: #1c64f2;
   background-color: rgba(28, 100, 242, var(--bg-opacity));
 }
+.bg-yellow-500 {
+  --bg-opacity: 1;
+  background-color: #eab308; /* Warna kuning cerah */
+  background-color: rgba(
+    251,
+    191,
+    36,
+    var(--bg-opacity)
+  ); /* Menggunakan opasitas */
+}
+.bg-yellow-600 {
+  --bg-opacity: 1;
+  background-color: #ca8a04; /* Warna kuning yang lebih gelap */
+  background-color: rgba(245, 158, 11, var(--bg-opacity));
+}
 .bg-purple-600 {
   --bg-opacity: 1;
   background-color: #7e3af2;

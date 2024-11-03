@@ -12,7 +12,8 @@ const CmsCountries = () => {
   const [alert, setAlert] = useState({ message: "", type: "" });
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const countriesPerPage = 10;
+  const [totalItems, setTotalItems] = useState(0);
+  const itemsPerPage = 10;
 
   // Fetch countries setiap kali currentPage berubah
   useEffect(() => {
@@ -21,7 +22,7 @@ const CmsCountries = () => {
 
   const fetchCountries = (page) => {
     fetch(
-      `http://localhost:3001/api/countries?page=${page}&limit=${countriesPerPage}`
+      `http://localhost:3001/api/countries?page=${page}&limit=${itemsPerPage}`
     )
       .then((response) => {
         if (!response.ok) {
@@ -32,6 +33,7 @@ const CmsCountries = () => {
       .then((data) => {
         setCountries(data.countries);
         setTotalPages(data.totalPages);
+        setTotalItems(data.totalItems);
       })
       .catch((error) => {
         console.error("Error fetching countries:", error);
@@ -58,13 +60,14 @@ const CmsCountries = () => {
         return response.json();
       })
       .then((newCountry) => {
-        setCountries([...countries, newCountry]);
         setCountryName("");
         showAlert("Data added successfully!", "success");
-        fetchCountries(currentPage); // Refresh data setelah menambahkan country baru
+        setCurrentPage(1);
+        fetchCountries(1);
       })
       .catch((error) => {
         console.error("Error adding country:", error);
+        showAlert("Error adding country", "error");
       });
   };
 
@@ -83,18 +86,19 @@ const CmsCountries = () => {
         return response.json();
       })
       .then((updatedCountry) => {
-        // Update state with the new country data
         setCountries(
           countries.map((country) =>
             country.id === id ? updatedCountry : country
           )
         );
-        setEditableId(null); // Exit edit mode
-        setEditName(""); // Clear input
+        setEditableId(null);
+        setEditName("");
         showAlert("Data updated successfully!", "info");
+        fetchCountries(currentPage);
       })
       .catch((error) => {
         console.error("Error updating country:", error);
+        showAlert("Error updating country", "error");
       });
   };
 
@@ -109,10 +113,12 @@ const CmsCountries = () => {
         return response.json();
       })
       .then(() => {
-        // Remove country from the local state after successful deletion
-        setCountries(countries.filter((country) => country.id !== id));
         showAlert("Data deleted successfully.", "error");
-        fetchCountries(currentPage); // Refresh data setelah menghapus country
+        if (countries.length === 1 && currentPage > 1) {
+          setCurrentPage(currentPage - 1);
+        } else {
+          fetchCountries(currentPage);
+        }
       })
       .catch((error) => {
         console.error("Error deleting country:", error);
@@ -132,7 +138,16 @@ const CmsCountries = () => {
     }
   };
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const handleCancelClick = () => {
+    setEditableId(null);
+    setEditName("");
+  };
+
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
@@ -142,7 +157,7 @@ const CmsCountries = () => {
           <main className="flex-1 pb-16 overflow-y-auto">
             <div className="container grid px-6 mx-auto">
               <h2 className="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
-                Tables Countries
+                Countries
               </h2>
 
               {/* Tampilkan alert jika ada */}
@@ -209,7 +224,7 @@ const CmsCountries = () => {
                           className="text-gray-700 dark:text-gray-400"
                         >
                           <td className="px-4 py-3 text-sm">
-                            {index + 1 + (currentPage - 1) * countriesPerPage}
+                            {index + 1 + (currentPage - 1) * itemsPerPage}
                           </td>
                           <td className="px-4 py-3 text-sm">
                             {editableId === country.id ? (
@@ -236,22 +251,40 @@ const CmsCountries = () => {
                           <td className="px-4 py-3">
                             <div className="flex items-center space-x-4 text-sm">
                               {editableId === country.id ? (
-                                <button
-                                  className="save-btn flex items-center justify-between w-[100px] px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
-                                  aria-label="Save"
-                                  onClick={() => handleSaveClick(country.id)}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="w-5 h-5"
-                                    aria-hidden="true"
-                                    fill="currentColor"
-                                    viewBox="0 0 512 512"
+                                <>
+                                  <button
+                                    className="save-btn flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
+                                    aria-label="Save"
+                                    onClick={() => handleSaveClick(country.id)}
                                   >
-                                    <path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z" />
-                                  </svg>
-                                  <span className="ml-2">Save</span>
-                                </button>
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="w-5 h-5"
+                                      aria-hidden="true"
+                                      fill="currentColor"
+                                      viewBox="0 0 512 512"
+                                    >
+                                      <path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z" />
+                                    </svg>
+                                    <span className="ml-2">Save</span>
+                                  </button>
+                                  <button
+                                    className="cancel-btn flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white bg-yellow-500 rounded-lg hover:bg-yellow-600 focus:outline-none focus:shadow-outline-yellow"
+                                    aria-label="Cancel"
+                                    onClick={handleCancelClick}
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="w-5 h-5"
+                                      aria-hidden="true"
+                                      fill="currentColor"
+                                      viewBox="0 0 512 512"
+                                    >
+                                      <path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c-9.4 9.4-9.4 24.6 0 33.9l47 47-47 47c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l47-47 47 47c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-47-47 47-47c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-47 47-47-47c-9.4-9.4-24.6-9.4-33.9 0z" />
+                                    </svg>
+                                    <span className="ml-2">Cancel</span>
+                                  </button>
+                                </>
                               ) : (
                                 <button
                                   className="edit-btn flex items-center justify-between w-[100px] px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
@@ -310,7 +343,9 @@ const CmsCountries = () => {
                 <Pagination
                   currentPage={currentPage}
                   totalPages={totalPages}
-                  paginate={paginate}
+                  totalItems={totalItems}
+                  itemsPerPage={itemsPerPage}
+                  paginate={handlePageChange}
                 />
               </div>
             </div>

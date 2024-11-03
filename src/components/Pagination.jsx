@@ -1,16 +1,61 @@
 import React from "react";
 
-const Pagination = ({ currentPage, totalPages, paginate }) => {
+const Pagination = ({
+  currentPage,
+  totalPages,
+  totalItems,
+  itemsPerPage,
+  paginate,
+}) => {
+  // Calculate the range of pages to display (5 at a time)
+  const getPageRange = () => {
+    const delta = 2; // Number of pages to show before and after current page
+    let range = [];
+
+    // Calculate start and end page numbers
+    let start = Math.max(1, currentPage - delta);
+    let end = Math.min(totalPages, currentPage + delta);
+
+    // Adjust range if we're near the beginning or end
+    if (currentPage <= delta) {
+      end = Math.min(5, totalPages);
+    }
+    if (currentPage > totalPages - delta) {
+      start = Math.max(1, totalPages - 4);
+    }
+
+    // Generate page numbers
+    for (let i = start; i <= end; i++) {
+      range.push(i);
+    }
+
+    // Add dots and first/last page if necessary
+    if (start > 1) {
+      range.unshift("...");
+      range.unshift(1);
+    }
+    if (end < totalPages) {
+      range.push("...");
+      range.push(totalPages);
+    }
+
+    return range;
+  };
+
+  // Calculate the range of items being displayed
+  const startItem = (currentPage - 1) * itemsPerPage + 1;
+  const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+
   return (
     <div className="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9 dark:text-gray-400 dark:bg-gray-800">
       <span className="flex items-center col-span-3">
-        Showing {currentPage * 10 - 9}-{Math.min(currentPage * 10, 100)} of 100
+        Showing {startItem}-{endItem} of {totalItems}
       </span>
       <span className="col-span-2"></span>
       <span className="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
         <nav aria-label="Table navigation">
           <ul className="inline-flex items-center">
-            {/* Tombol Previous */}
+            {/* Previous Button */}
             <li>
               <button
                 onClick={() => paginate(currentPage - 1)}
@@ -34,9 +79,15 @@ const Pagination = ({ currentPage, totalPages, paginate }) => {
               </button>
             </li>
 
-            {/* Tombol Halaman */}
-            {[...Array(totalPages)].map((_, index) => {
-              const pageNumber = index + 1;
+            {/* Page Numbers */}
+            {getPageRange().map((pageNumber, index) => {
+              if (pageNumber === "...") {
+                return (
+                  <li key={`ellipsis-${index}`}>
+                    <span className="px-3 py-1">...</span>
+                  </li>
+                );
+              }
               return (
                 <li key={pageNumber}>
                   <button
@@ -53,7 +104,7 @@ const Pagination = ({ currentPage, totalPages, paginate }) => {
               );
             })}
 
-            {/* Tombol Next */}
+            {/* Next Button */}
             <li>
               <button
                 onClick={() => paginate(currentPage + 1)}

@@ -13,6 +13,8 @@ const CmsActors = () => {
   const [editPhoto, setEditPhoto] = useState("");
   const [editCountryId, setEditCountryId] = useState("");
   const [alert, setAlert] = useState({ message: "", type: "" });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
   const [newActor, setNewActor] = useState({
     countryId: "",
     actorName: "",
@@ -29,7 +31,8 @@ const CmsActors = () => {
       }
       const data = await response.json();
       console.log("Actors data:", data);
-      setActors(data); // Assuming the response data is an array of objects
+      setActors(data);
+      setCurrentPage(1);
     } catch (error) {
       console.error("Error fetching actors:", error);
       showAlert("Failed to fetch actors data", "error");
@@ -105,18 +108,7 @@ const CmsActors = () => {
       showAlert("Actor added successfully!", "success");
 
       // Fetch updated data after successful addition
-      try {
-        const actorsResponse = await fetch("http://localhost:3001/api/actors");
-        if (!actorsResponse.ok) {
-          console.error("Error refreshing actors list");
-          return; // Silent fail on refresh - don't show error to user
-        }
-        const actorsData = await actorsResponse.json();
-        setActors(actorsData);
-      } catch (fetchError) {
-        console.error("Error refreshing actors list:", fetchError);
-        // Don't show error to user for refresh failure
-      }
+      await fetchActors();
     } catch (error) {
       console.error("Error adding actor:", error);
       showAlert("Failed to add actor", "error");
@@ -125,7 +117,6 @@ const CmsActors = () => {
 
   // Update showAlert function to clear any existing timeout
   const showAlert = (message, type) => {
-    // Clear any existing timeout
     if (window.alertTimeout) {
       clearTimeout(window.alertTimeout);
     }
@@ -155,29 +146,32 @@ const CmsActors = () => {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      const updatedActor = await response.json();
-      setActors(
-        actors.map((actor) => (actor.id === id ? updatedActor : actor))
-      );
       setEditableId(null);
       showAlert("Actor updated successfully!", "success");
       // Refresh actors list
-      fetchActors();
+      await fetchActors();
     } catch (error) {
       console.error("Error updating actor:", error);
       showAlert("Failed to update actor", "error");
     }
   };
 
-  const deleteActor = (id) => {
-    fetch(`http://localhost:3001/api/actors/${id}`, {
-      method: "DELETE",
-    })
-      .then(() => {
-        setActors(actors.filter((actor) => actor.id !== id));
-        showAlert("Actor deleted successfully.", "error");
-      })
-      .catch((error) => console.error("Error deleting actor:", error));
+  const deleteActor = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/actors/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      showAlert("Actor deleted successfully.", "error");
+      await fetchActors();
+    } catch (error) {
+      console.error("Error deleting actor:", error);
+      showAlert("Failed to delete actor", "error");
+    }
   };
 
   const handleEditClick = (id, name, birth_date, photo, country_id) => {
@@ -192,6 +186,11 @@ const CmsActors = () => {
     if (window.confirm("Are you sure you want to save changes?")) {
       editActor(id);
     }
+  };
+
+  const handleCancelClick = () => {
+    setEditableId(null);
+    setEditName("");
   };
 
   // Modifikasi bagian form countries menjadi select dropdown
@@ -210,6 +209,20 @@ const CmsActors = () => {
   const getCountryName = (countryId) => {
     const country = countries.find((c) => c.id === countryId);
     return country ? country.name : "Unknown";
+  };
+
+  // Hitung total halaman berdasarkan jumlah data
+  const totalPages = Math.ceil(actors.length / itemsPerPage);
+
+  // Pagination calculations
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentActors = actors.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
   };
 
   return (
@@ -337,12 +350,14 @@ const CmsActors = () => {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                      {actors.map((actor, index) => (
+                      {currentActors.map((actor, index) => (
                         <tr
                           key={actor?.id}
                           className="text-gray-700 dark:text-gray-400"
                         >
-                          <td className="px-4 py-3 text-sm">{index + 1}</td>
+                          <td className="px-4 py-3 text-sm">
+                            {(currentPage - 1) * itemsPerPage + index + 1}
+                          </td>
                           <td className="px-4 py-3 text-sm">
                             {getCountryName(actor.country_id)}
                           </td>
@@ -387,22 +402,40 @@ const CmsActors = () => {
                           <td className="px-4 py-3">
                             <div className="flex items-center space-x-4 text-sm">
                               {editableId === actor.id ? (
-                                <button
-                                  className="save-btn flex items-center justify-between w-[100px] px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
-                                  aria-label="Save"
-                                  onClick={() => handleSaveClick(actor.id)}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="w-5 h-5"
-                                    aria-hidden="true"
-                                    fill="currentColor"
-                                    viewBox="0 0 512 512"
+                                <>
+                                  <button
+                                    className="save-btn flex items-center justify-between w-[100px] px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
+                                    aria-label="Save"
+                                    onClick={() => handleSaveClick(actor.id)}
                                   >
-                                    <path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z" />
-                                  </svg>
-                                  <span className="ml-2">Save</span>
-                                </button>
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="w-5 h-5"
+                                      aria-hidden="true"
+                                      fill="currentColor"
+                                      viewBox="0 0 512 512"
+                                    >
+                                      <path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z" />
+                                    </svg>
+                                    <span className="ml-2">Save</span>
+                                  </button>
+                                  <button
+                                    className="cancel-btn flex items-center justify-between w-[100px] px-4 py-2 text-sm font-medium leading-5 text-white bg-yellow-500 rounded-lg hover:bg-yellow-600 focus:outline-none focus:shadow-outline-yellow"
+                                    aria-label="Cancel"
+                                    onClick={handleCancelClick}
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="w-5 h-5"
+                                      aria-hidden="true"
+                                      fill="currentColor"
+                                      viewBox="0 0 512 512"
+                                    >
+                                      <path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c-9.4 9.4-9.4 24.6 0 33.9l47 47-47 47c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l47-47 47 47c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-47-47 47-47c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-47 47-47-47c-9.4-9.4-24.6-9.4-33.9 0z" />
+                                    </svg>
+                                    <span className="ml-2">Cancel</span>
+                                  </button>
+                                </>
                               ) : (
                                 <button
                                   className="edit-btn flex items-center justify-between w-[100px] px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
@@ -463,6 +496,15 @@ const CmsActors = () => {
                     </tbody>
                   </table>
                 </div>
+                {actors.length > 0 && (
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={Math.ceil(actors.length / itemsPerPage)}
+                    totalItems={actors.length}
+                    itemsPerPage={itemsPerPage}
+                    paginate={paginate}
+                  />
+                )}
               </div>
             </div>
           </main>
