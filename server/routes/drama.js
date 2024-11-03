@@ -120,7 +120,7 @@ router.post("/dramas", multerUploads, uploadToCloudinary, async (req, res) => {
     if (newDrama && awards) {
       // Pastikan `awards` selalu berupa array
       const awardsArray = JSON.parse(awards);
-    
+
       // Hanya eksekusi jika awardsArray berisi setidaknya satu elemen yang valid
       if (awardsArray.length > 0) {
         await Promise.all(
@@ -235,7 +235,6 @@ router.delete("/dramas/:id", async (req, res) => {
     res.status(500).json({ message: "Failed to delete drama" });
   }
 });
-
 
 router.get("/countries", async (req, res) => {
   const { page, limit } = req.query;
@@ -569,11 +568,29 @@ router.delete("/awards/:id", async (req, res) => {
 
 // GET /api/users - Ambil semua user
 router.get("/users", async (req, res) => {
+  const { page, limit } = req.query;
+
+  const pageNumber = parseInt(page, 10) || 1; // Halaman saat ini
+  const limitNumber = parseInt(limit, 10) || 10; // Jumlah item per halaman
+  const offset = (pageNumber - 1) * limitNumber; // Hitung offset untuk pagination
+
   try {
-    const users = await User.findAll({
-      attributes: ["id", "username", "email", "role"], // Hanya ambil atribut yang diperlukan
+    const { count, rows: users } = await User.findAndCountAll({
+      attributes: ["id", "username", "email", "role"],
+      limit: limitNumber,
+      offset,
+      order: [
+        ["updatedAt", "DESC"],
+        ["createdAt", "DESC"],
+      ],
     });
-    res.json(users);
+
+    res.json({
+      totalItems: count, // Total item di database
+      totalPages: Math.ceil(count / limitNumber), // Total halaman
+      currentPage: pageNumber, // Halaman saat ini
+      users, // Data users
+    });
   } catch (error) {
     console.error("Error fetching users:", error);
     res.status(500).json({ message: "Failed to fetch users" });

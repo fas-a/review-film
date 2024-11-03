@@ -160,4 +160,33 @@ router.get("/protected", authenticateToken, (req, res) => {
   res.json({ access: true, message: "You have access!", user: req.user });
 });
 
+// In your users route file
+router.put("/users/:id/suspend", authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findByPk(req.params.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.is_suspended = true;
+    await user.save();
+
+    res.json({ message: "User suspended successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error suspending user" });
+  }
+});
+
+router.put("/users/:id/activate", authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findByPk(req.params.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.is_suspended = false;
+    await user.save();
+
+    res.json({ message: "User activated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error activating user" });
+  }
+});
+
 module.exports = router;

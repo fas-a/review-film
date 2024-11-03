@@ -7,29 +7,32 @@ import FilterAndSearch from "./components/FilterAndSearch";
 const CmsComments = () => {
   // Data statis untuk ditampilkan (bisa diganti dengan data dari database)
   const [comments, setComments] = useState([]);
-
-  // State untuk filter, show, search, dan checkbox yang dipilih
   const [filterValue, setFilterValue] = useState("none");
   const [showValue, setShowValue] = useState("10");
   const [searchValue, setSearchValue] = useState("");
   const [selectedComments, setSelectedComments] = useState(new Set());
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = parseInt(showValue);
 
   // Filtering safely with a fallback in case comments are undefined
-const filteredComments = (comments || []).filter((comment) => {
-  if (filterValue === "none") return true;
-  return comment.status.toLowerCase() === filterValue.toLowerCase();
-});
+  const filteredComments = (comments || []).filter((comment) => {
+    if (filterValue === "none") return true;
+    return comment.status.toLowerCase() === filterValue.toLowerCase();
+  });
 
-// Search safely with a fallback in case filteredComments are undefined
-const searchedComments = (filteredComments || []).filter(
-  (comment) =>
-    comment.User.username.toLowerCase().includes(searchValue.toLowerCase()) ||
-    comment.Drama.title.toLowerCase().includes(searchValue.toLowerCase()) ||
-    comment.content.toLowerCase().includes(searchValue.toLowerCase())
-);
+  // Search safely with a fallback in case filteredComments are undefined
+  const searchedComments = (filteredComments || []).filter(
+    (comment) =>
+      comment.User.username.toLowerCase().includes(searchValue.toLowerCase()) ||
+      comment.Drama.title.toLowerCase().includes(searchValue.toLowerCase()) ||
+      comment.content.toLowerCase().includes(searchValue.toLowerCase())
+  );
+
+  const totalItems = searchedComments.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   // Limit the number of displayed comments based on showValue
-  const displayedComments = searchedComments.slice(0, parseInt(showValue));
+  // const displayedComments = searchedComments.slice(0, parseInt(showValue));
 
   // Fungsi untuk mengubah status komentar
   // const updateStatus = (newStatus) => {
@@ -43,35 +46,39 @@ const searchedComments = (filteredComments || []).filter(
   //   setSelectedComments(new Set()); // Reset selected comments after updating
   // };
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterValue, searchValue, showValue]);
+
   const updateStatus = async (selectedCommentIds, newStatus) => {
     try {
-      const response = await fetch('http://localhost:3001/api/update-status', {
-        method: 'PUT',
+      const response = await fetch("http://localhost:3001/api/update-status", {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           commentIds: Array.from(selectedCommentIds),
           newStatus: newStatus,
         }),
       });
-  
-      if (!response.ok) throw new Error('Failed to update status.');
-  
+
+      if (!response.ok) throw new Error("Failed to update status.");
+
       const data = await response.json();
-      console.log(data.message); // "Status updated successfully."
+      console.log(data.message);
       setComments((prevComments) =>
-            prevComments.map((comment) =>
-              selectedComments.has(comment.id)
-                ? { ...comment, status: newStatus }
-                : comment
-            )
-          );
+        prevComments.map((comment) =>
+          selectedComments.has(comment.id)
+            ? { ...comment, status: newStatus }
+            : comment
+        )
+      );
+      setSelectedComments(new Set());
     } catch (error) {
-      console.error('Error updating comment status:', error);
+      console.error("Error updating comment status:", error);
     }
   };
-  
 
   // Handle select all checkbox
   const handleSelectAll = (event) => {
@@ -95,6 +102,7 @@ const searchedComments = (filteredComments || []).filter(
       return newSelected;
     });
   };
+
   useEffect(() => {
     const fetchComments = async () => {
       try {
@@ -107,9 +115,22 @@ const searchedComments = (filteredComments || []).filter(
       }
     };
 
-    fetchComments(); 
-  }
-  , []);
+    fetchComments();
+  }, []);
+
+  const indexOfLastComment = currentPage * itemsPerPage;
+  const indexOfFirstComment = indexOfLastComment - itemsPerPage;
+  const displayedComments = searchedComments.slice(
+    indexOfFirstComment,
+    indexOfLastComment
+  );
+
+  const paginate = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+      setSelectedComments(new Set());
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
@@ -156,33 +177,41 @@ const searchedComments = (filteredComments || []).filter(
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                      {comments && displayedComments.map((comment) => (
-                        <tr key={comment.id} className="text-gray-700 dark:text-gray-400">
-                          <td className="px-4 py-3">
-                            <input
-                              type="checkbox"
-                              className="form-checkbox h-5 w-5 text-indigo-600"
-                              onChange={() => handleCheckboxChange(comment.id)}
-                              checked={selectedComments.has(comment.id)}
-                            />
-                          </td>
-                          <td className="px-4 py-3">{comment.User.username}</td>
-                          <td className="px-4 py-3">{comment.rate}</td>
-                          <td className="px-4 py-3">{comment.Drama.title}</td>
-                          <td className="px-4 py-3">{comment.content}</td>
-                          <td className="px-4 py-3">
-                            <span
-                              className={`px-2 py-1 font-semibold leading-tight rounded-full ${
-                                comment.status === "Approved"
-                                  ? "bg-green-100 text-green-800"
-                                  : "bg-red-100 text-red-800"
-                              }`}
-                            >
-                              {comment.status}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
+                      {comments &&
+                        displayedComments.map((comment) => (
+                          <tr
+                            key={comment.id}
+                            className="text-gray-700 dark:text-gray-400"
+                          >
+                            <td className="px-4 py-3">
+                              <input
+                                type="checkbox"
+                                className="form-checkbox h-5 w-5 text-indigo-600"
+                                onChange={() =>
+                                  handleCheckboxChange(comment.id)
+                                }
+                                checked={selectedComments.has(comment.id)}
+                              />
+                            </td>
+                            <td className="px-4 py-3">
+                              {comment.User.username}
+                            </td>
+                            <td className="px-4 py-3">{comment.rate}</td>
+                            <td className="px-4 py-3">{comment.Drama.title}</td>
+                            <td className="px-4 py-3">{comment.content}</td>
+                            <td className="px-4 py-3">
+                              <span
+                                className={`px-2 py-1 font-semibold leading-tight rounded-full ${
+                                  comment.status === "Approved"
+                                    ? "bg-green-100 text-green-800"
+                                    : "bg-red-100 text-red-800"
+                                }`}
+                              >
+                                {comment.status}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 </div>
@@ -209,7 +238,9 @@ const searchedComments = (filteredComments || []).filter(
                           color: "white",
                           width: "auto",
                         }}
-                        onClick={() => updateStatus(selectedComments, "Approved")}
+                        onClick={() =>
+                          updateStatus(selectedComments, "Approved")
+                        }
                       >
                         Approved
                       </button>
@@ -220,14 +251,22 @@ const searchedComments = (filteredComments || []).filter(
                         type="button"
                         className="px-3 py-1 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
                         style={{ width: "auto" }}
-                        onClick={() => updateStatus(selectedComments, "Unapproved")}
+                        onClick={() =>
+                          updateStatus(selectedComments, "Unapproved")
+                        }
                       >
                         Unapproved
                       </button>
                     </div>
                   </div>
                 </div>
-                <Pagination />
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={totalItems}
+                  itemsPerPage={itemsPerPage}
+                  paginate={paginate}
+                />
               </div>
             </div>
           </main>

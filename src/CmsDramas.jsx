@@ -6,30 +6,37 @@ import DramaPopup from "./components/DramaPopup";
 
 const CmsDramas = () => {
   const [dramas, setDramas] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const itemsPerPage = 10;
+
   useEffect(() => {
-    fetchDramas();
-  }, []);
-  const fetchDramas = async () => {
-    const limit = 10;
-    let page = 1;
-    let hasMoreData = true;
+    fetchDramas(currentPage);
+  }, [currentPage]);
+
+  const fetchDramas = async (page) => {
     try {
-      while (hasMoreData) {
-        const response = await fetch(
-          `http://localhost:3001/api/dramas?page=${page}&limit=${limit}`
-        );
-        const data = await response.json();
-        setDramas((prevDramas) => {
-          const newDramas = data.dramas.filter((drama) => !prevDramas.some((prevDrama) => prevDrama.id === drama.id));
-          return [...prevDramas, ...newDramas];
-      });
-        hasMoreData = data.dramas.length === limit;
-        page++;
-      }
+      const response = await fetch(
+        `http://localhost:3001/api/dramas?page=${page}&limit=${itemsPerPage}`
+      );
+      const data = await response.json();
+      setDramas(data.dramas);
+      setTotalItems(data.totalItems || data.dramas.length);
+      setTotalPages(
+        Math.ceil((data.totalItems || data.dramas.length) / itemsPerPage)
+      );
     } catch (error) {
       console.error("Error:", error);
     }
   };
+
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
   const [editableId, setEditableId] = useState(null);
   const [editDrama, setEditDrama] = useState({
     drama: "",
@@ -39,20 +46,49 @@ const CmsDramas = () => {
     status: "",
   });
 
-  
   const [showModal, setShowModal] = useState(false);
   const [currentDrama, setCurrentDrama] = useState(null);
 
-  const editDramaEntry = (id, updatedDrama) => {
-    setDramas(
-      dramas.map((drama) =>
-        drama.id === id ? { ...drama, ...updatedDrama } : drama
-      )
-    );
+  const editDramaEntry = async (id, updatedDrama) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/dramas/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedDrama),
+      });
+
+      if (response.ok) {
+        setDramas(
+          dramas.map((drama) =>
+            drama.id === id ? { ...drama, ...updatedDrama } : drama
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error updating drama:", error);
+    }
   };
 
-  const deleteDrama = (id) => {
-    setDramas(dramas.filter((drama) => drama.id !== id));
+  const deleteDrama = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/dramas/${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        setDramas(dramas.filter((drama) => drama.id !== id));
+        // Refetch current page if it's the last item on the page
+        if (dramas.length === 1 && currentPage > 1) {
+          setCurrentPage(currentPage - 1);
+        } else {
+          fetchDramas(currentPage);
+        }
+      }
+    } catch (error) {
+      console.error("Error deleting drama:", error);
+    }
   };
 
   const handleEditClick = (drama) => {
@@ -124,7 +160,9 @@ const CmsDramas = () => {
                     <thead>
                       <tr className="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
                         <th className="px-4 py-3">#</th>
-                        <th className="px-4 py-3" style={{ width: "150px" }}>Drama</th>
+                        <th className="px-4 py-3" style={{ width: "150px" }}>
+                          Drama
+                        </th>
                         <th className="px-4 py-3">Actor</th>
                         <th className="px-4 py-3">Genre</th>
                         <th className="px-4 py-3">Synopsis</th>
@@ -138,10 +176,15 @@ const CmsDramas = () => {
                           key={drama.id}
                           className="text-gray-700 dark:text-gray-400"
                         >
-                          <td className="px-4 py-3 text-sm">{index + 1}</td>
+                          <td className="px-4 py-3 text-sm">
+                            {(currentPage - 1) * itemsPerPage + index + 1}
+                          </td>
 
                           {/* drama Input */}
-                          <td className="px-4 py-3 text-sm" style={{ width: "150px" }}>
+                          <td
+                            className="px-4 py-3 text-sm"
+                            style={{ width: "150px" }}
+                          >
                             {editableId === drama.id ? (
                               <input
                                 type="text"
@@ -186,11 +229,11 @@ const CmsDramas = () => {
                                 onDoubleClick={() => handleEditClick(drama)}
                                 className="w-[100px] inline-block"
                               >
-                                {
-                                  drama.Actors && drama.Actors.length > 0
-                                    ? drama.Actors.map((actor) => actor.name).join(", ")
-                                    : "No actors available"
-                                }
+                                {drama.Actors && drama.Actors.length > 0
+                                  ? drama.Actors.map(
+                                      (actor) => actor.name
+                                    ).join(", ")
+                                  : "No actors available"}
                               </span>
                             )}
                           </td>
@@ -214,11 +257,11 @@ const CmsDramas = () => {
                                 onDoubleClick={() => handleEditClick(drama)}
                                 className="w-[100px] inline-block"
                               >
-                                {
-                                  drama.Genres && drama.Genres.length > 0
-                                    ? drama.Genres.map((genre) => genre.name).join(", ")
-                                    : "No genres available"
-                                }
+                                {drama.Genres && drama.Genres.length > 0
+                                  ? drama.Genres.map(
+                                      (genre) => genre.name
+                                    ).join(", ")
+                                  : "No genres available"}
                               </span>
                             )}
                           </td>
@@ -347,7 +390,13 @@ const CmsDramas = () => {
                     </tbody>
                   </table>
                 </div>
-                <Pagination />
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={totalItems}
+                  itemsPerPage={itemsPerPage}
+                  paginate={handlePageChange}
+                />
               </div>
             </div>
           </main>

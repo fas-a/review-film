@@ -1,4 +1,3 @@
-// migrations/20240915009000-create-user.js
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("users", {
@@ -28,6 +27,10 @@ module.exports = {
       role: {
         type: Sequelize.ENUM("Admin", "User"),
         defaultValue: "User",
+      },
+      is_suspended: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
       },
       is_verified: {
         type: Sequelize.BOOLEAN,

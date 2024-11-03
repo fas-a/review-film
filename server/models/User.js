@@ -30,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM("Admin", "User"),
         defaultValue: "User",
       },
+      is_suspended: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
       is_verified: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,

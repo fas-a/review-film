@@ -6,7 +6,6 @@ import Alert from "./components/Alert";
 
 const CmsUsers = () => {
   const [users, setUsers] = useState([]);
-
   const [newUser, setNewUser] = useState({
     username: "",
     email: "",
@@ -18,11 +17,18 @@ const CmsUsers = () => {
     email: "",
     role: "",
   });
-
   const [alert, setAlert] = useState({ message: "", type: "" });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const itemsPerPage = 10;
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/users") // Full URL to the API endpoint
+    fetchUsers(currentPage);
+  }, [currentPage]);
+
+  const fetchUsers = (page) => {
+    fetch(`http://localhost:3001/api/users?page=${page}&limit=${itemsPerPage}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -30,26 +36,27 @@ const CmsUsers = () => {
         return response.json();
       })
       .then((data) => {
-        const sortedData = data.sort((a, b) => a.id - b.id);
-        setUsers(data);
+        setUsers(data.users);
+        setTotalPages(data.totalPages);
+        setTotalItems(data.totalItems);
       })
       .catch((error) => {
-        console.error("Error fetching country");
+        console.error("Error fetching users:", error);
       });
-  }, []);
+  };
 
   const showAlert = (message, type) => {
     setAlert({ message, type });
-    setTimeout(() => setAlert({ message: "", type: "" }), 3000); // Alert hilang setelah 3 detik
+    setTimeout(() => setAlert({ message: "", type: "" }), 3000);
   };
 
-  const addUser = (newUser) => {
+  const addUser = (userData) => {
     fetch("http://localhost:3001/api/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(newUser), // Mengirim seluruh object newUser
+      body: JSON.stringify(userData),
     })
       .then((response) => {
         if (!response.ok) {
@@ -57,25 +64,25 @@ const CmsUsers = () => {
         }
         return response.json();
       })
-      .then((newUserData) => {
-        setUsers([...users, newUserData]); // Menggunakan data yang dikembalikan
-        setNewUser({ username: "", email: "", role: "" }); // Reset form input
+      .then((newUser) => {
+        setNewUser({ username: "", email: "", role: "" });
         showAlert("Data added successfully!", "success");
+        setCurrentPage(1);
+        fetchUsers(1);
       })
       .catch((error) => {
         console.error("Error adding user:", error);
-        showAlert("Failed to add user!", "error");
+        showAlert("Error adding user", "error");
       });
   };
 
-  // Ganti nama fungsi dari editUser menjadi updateUser
-  const updateUser = (id, updatedUser) => {
+  const updateUser = (id, userData) => {
     fetch(`http://localhost:3001/api/users/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(updatedUser),
+      body: JSON.stringify(userData),
     })
       .then((response) => {
         if (!response.ok) {
@@ -83,17 +90,16 @@ const CmsUsers = () => {
         }
         return response.json();
       })
-      .then((updatedUserData) => {
-        // Update state dengan data user yang baru
-        setUsers(
-          users.map((user) => (user.id === id ? updatedUserData : user))
-        );
-        setEditableId(null); // Keluar dari mode edit
-        setEditUser({ username: "", email: "", role: "" }); // Kosongkan input
+      .then((updatedUser) => {
+        setUsers(users.map((user) => (user.id === id ? updatedUser : user)));
+        setEditableId(null);
+        setEditUser({ username: "", email: "", role: "" });
         showAlert("Data updated successfully!", "info");
+        fetchUsers(currentPage);
       })
       .catch((error) => {
         console.error("Error updating user:", error);
+        showAlert("Error updating user", "error");
       });
   };
 
@@ -108,9 +114,12 @@ const CmsUsers = () => {
         return response.json();
       })
       .then(() => {
-        // Hapus user dari state setelah berhasil delete
-        setUsers(users.filter((user) => user.id !== id));
         showAlert("Data deleted successfully.", "error");
+        if (users.length === 1 && currentPage > 1) {
+          setCurrentPage(currentPage - 1);
+        } else {
+          fetchUsers(currentPage);
+        }
       })
       .catch((error) => {
         console.error("Error deleting user:", error);
@@ -129,11 +138,21 @@ const CmsUsers = () => {
   const handleSaveClick = (id) => {
     if (window.confirm("Are you sure you want to save changes?")) {
       updateUser(id, editUser);
-      setEditableId(null);
-      setEditUser({ username: "", email: "", role: "" });
     }
   };
 
+  const handleCancelClick = () => {
+    setEditableId(null);
+    setEditUser({ username: "", email: "", role: "" });
+  };
+
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
+  // Rest of the component remains the same...
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
       <Sidebar />
@@ -145,7 +164,6 @@ const CmsUsers = () => {
                 Users Management
               </h2>
 
-              {/* Tampilkan alert jika ada */}
               {alert.message && (
                 <Alert
                   message={alert.message}
@@ -160,14 +178,14 @@ const CmsUsers = () => {
                     onSubmit={(e) => {
                       e.preventDefault();
                       if (newUser.username && newUser.email && newUser.role) {
-                        addUser(newUser); // Kirim newUser sebagai parameter
+                        addUser(newUser);
                       }
                     }}
                     className="p-6 bg-white rounded-lg shadow-md dark:bg-gray-800"
                   >
                     <div className="mb-4">
                       <label
-                        htmlFor="name"
+                        htmlFor="username"
                         className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2"
                       >
                         Username
@@ -231,6 +249,7 @@ const CmsUsers = () => {
                   </form>
                 </div>
               </div> */}
+
               <div className="w-full overflow-hidden rounded-lg shadow-xs mt-8">
                 <div className="w-full overflow-x-auto">
                   <table className="w-full whitespace-no-wrap">
@@ -249,9 +268,9 @@ const CmsUsers = () => {
                           key={user.id}
                           className="text-gray-700 dark:text-gray-400"
                         >
-                          <td className="px-4 py-3 text-sm">{index + 1}</td>
-
-                          {/* Name Input */}
+                          <td className="px-4 py-3 text-sm">
+                            {index + 1 + (currentPage - 1) * itemsPerPage}
+                          </td>
                           <td className="px-4 py-3 text-sm">
                             {editableId === user.id ? (
                               <input
@@ -263,19 +282,17 @@ const CmsUsers = () => {
                                     username: e.target.value,
                                   })
                                 }
-                                className="w-[100px] px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
+                                className="w-[150px] px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
                               />
                             ) : (
                               <span
                                 onDoubleClick={() => handleEditClick(user)}
-                                className="w-[100px] inline-block"
+                                className="w-[150px] inline-block"
                               >
                                 {user.username}
                               </span>
                             )}
                           </td>
-
-                          {/* Email Input */}
                           <td className="px-4 py-3 text-sm">
                             {editableId === user.id ? (
                               <input
@@ -287,19 +304,17 @@ const CmsUsers = () => {
                                     email: e.target.value,
                                   })
                                 }
-                                className="w-[150px] px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
+                                className="w-[200px] px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
                               />
                             ) : (
                               <span
                                 onDoubleClick={() => handleEditClick(user)}
-                                className="w-[150px] inline-block"
+                                className="w-[200px] inline-block"
                               >
                                 {user.email}
                               </span>
                             )}
                           </td>
-
-                          {/* Role Input */}
                           <td className="px-4 py-3 text-sm">
                             {editableId === user.id ? (
                               <input
@@ -322,27 +337,43 @@ const CmsUsers = () => {
                               </span>
                             )}
                           </td>
-
-                          {/* Actions */}
-                          <td className="px-4 py-3 text-sm">
-                            <div className="flex gap-4">
+                          <td className="px-4 py-3">
+                            <div className="flex items-center space-x-4 text-sm">
                               {editableId === user.id ? (
-                                <button
-                                  className="save-btn flex items-center justify-between w-[100px] px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
-                                  aria-label="Save"
-                                  onClick={() => handleSaveClick(user.id)}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="w-5 h-5"
-                                    aria-hidden="true"
-                                    fill="currentColor"
-                                    viewBox="0 0 512 512"
+                                <>
+                                  <button
+                                    className="save-btn flex items-center justify-between w-[100px] px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
+                                    aria-label="Save"
+                                    onClick={() => handleSaveClick(user.id)}
                                   >
-                                    <path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z" />
-                                  </svg>
-                                  <span className="ml-2">Save</span>
-                                </button>
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="w-5 h-5"
+                                      aria-hidden="true"
+                                      fill="currentColor"
+                                      viewBox="0 0 512 512"
+                                    >
+                                      <path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z" />
+                                    </svg>
+                                    <span className="ml-2">Save</span>
+                                  </button>
+                                  <button
+                                    className="cancel-btn flex items-center justify-between w-[100px] px-4 py-2 text-sm font-medium leading-5 text-white bg-yellow-500 rounded-lg hover:bg-yellow-600 focus:outline-none focus:shadow-outline-yellow"
+                                    aria-label="Cancel"
+                                    onClick={handleCancelClick}
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="w-5 h-5"
+                                      aria-hidden="true"
+                                      fill="currentColor"
+                                      viewBox="0 0 512 512"
+                                    >
+                                      <path d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c-9.4 9.4-9.4 24.6 0 33.9l47 47-47 47c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l47-47 47 47c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-47-47 47-47c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-47 47-47-47c-9.4-9.4-24.6-9.4-33.9 0z" />
+                                    </svg>
+                                    <span className="ml-2">Cancel</span>
+                                  </button>
+                                </>
                               ) : (
                                 <button
                                   className="edit-btn flex items-center justify-between w-[100px] px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
@@ -396,7 +427,13 @@ const CmsUsers = () => {
                     </tbody>
                   </table>
                 </div>
-                <Pagination totalItems={users.length} itemsPerPage={5} />
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={totalItems}
+                  itemsPerPage={itemsPerPage}
+                  paginate={handlePageChange}
+                />
               </div>
             </div>
           </main>
