@@ -2,26 +2,51 @@ import React, { useState } from "react";
 import LoginForm from "./components/LoginForm";
 
 const LoginPage = () => {
-  const [emailOrUsername, setEmailOrUsername] = useState('');
+  const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:3001/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ emailOrUsername, password }),
-    });
-    console.log(emailOrUsername);
-    const data = await response.json();
-    if (response.ok) {
-      sessionStorage.setItem("token", data.token);
-      console.log(data.token);
-      window.location.href = "/";
-    } else {
-      console.error(data.message);
+    setError(""); // Reset error message
+    try {
+      const response = await fetch("http://localhost:3001/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ emailOrUsername, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        sessionStorage.setItem("token", data.token);
+        window.location.href = "/";
+      } else {
+        setError(data.message || "Login failed");
+      }
+    } catch (error) {
+      setError("An error occurred during login.");
+      console.error(error);
     }
   };
+
+  // const handleLogin = async (e) => {
+  //   e.preventDefault();
+  //   const response = await fetch("http://localhost:3001/auth/login", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ emailOrUsername, password }),
+  //   });
+  //   console.log(emailOrUsername);
+  //   const data = await response.json();
+  //   if (response.ok) {
+  //     sessionStorage.setItem("token", data.token);
+  //     console.log(data.token);
+  //     window.location.href = "/";
+  //   } else {
+  //     console.error(data.message);
+  //   }
+  // };
 
   return (
     <>
@@ -74,6 +99,9 @@ const LoginPage = () => {
                       onChange={(e) => setPassword(e.target.value)}
                     />
                   </label>
+                  {error && (
+                    <div className="mt-2 text-sm text-red-600">{error}</div>
+                  )}
                   <button
                     type="submit"
                     className="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"

@@ -27,23 +27,86 @@ const CmsUsers = () => {
     fetchUsers(currentPage);
   }, [currentPage]);
 
-  const fetchUsers = (page) => {
-    fetch(`http://localhost:3001/api/users?page=${page}&limit=${itemsPerPage}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+  const fetchUsers = async (page) => {
+    try {
+      const response = await fetch(
+        `/api/users?page=${page}&limit=${itemsPerPage}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
         }
-        return response.json();
-      })
-      .then((data) => {
-        setUsers(data.users);
-        setTotalPages(data.totalPages);
-        setTotalItems(data.totalItems);
-      })
-      .catch((error) => {
-        console.error("Error fetching users:", error);
-      });
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch users");
+      }
+      const data = await response.json();
+      setUsers(data.users);
+      setTotalPages(data.totalPages);
+      setTotalItems(data.totalItems);
+    } catch (error) {
+      showAlert(error.message, "error");
+    }
   };
+
+  const suspendUser = async (id) => {
+    try {
+      const response = await fetch(`/api/users/${id}/suspend`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to suspend user");
+      }
+      showAlert("User suspended successfully", "success");
+      fetchUsers(currentPage);
+    } catch (error) {
+      showAlert(error.message, "error");
+    }
+  };
+
+  const activateUser = async (id) => {
+    try {
+      const response = await fetch(`/api/users/${id}/activate`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to activate user");
+      }
+      showAlert("User activated successfully", "success");
+      fetchUsers(currentPage);
+    } catch (error) {
+      showAlert(error.message, "error");
+    }
+  };
+
+  // const fetchUsers = (page) => {
+  //   fetch(`http://localhost:3001/api/users?page=${page}&limit=${itemsPerPage}`)
+  //     .then((response) => {
+  //       if (!response.ok) {
+  //         throw new Error(`HTTP error! Status: ${response.status}`);
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       setUsers(data.users);
+  //       setTotalPages(data.totalPages);
+  //       setTotalItems(data.totalItems);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching users:", error);
+  //     });
+  // };
 
   const showAlert = (message, type) => {
     setAlert({ message, type });
@@ -259,6 +322,7 @@ const CmsUsers = () => {
                         <th className="px-4 py-3">Username</th>
                         <th className="px-4 py-3">Email</th>
                         <th className="px-4 py-3">Role</th>
+                        <th className="px-4 py-3">Status</th>
                         <th className="px-4 py-3">Actions</th>
                       </tr>
                     </thead>
@@ -338,8 +402,46 @@ const CmsUsers = () => {
                             )}
                           </td>
                           <td className="px-4 py-3">
+                            {user.is_suspended ? "Suspended" : "Active"}
+                          </td>
+                          <td className="px-4 py-3">
                             <div className="flex items-center space-x-4 text-sm">
-                              <button
+                              {user.is_suspended ? (
+                                <button
+                                  className="suspend-btn flex items-center justify-between w-[100px] px-4 py-2 text-sm font-medium leading-5 text-white bg-green-500 rounded-lg hover:bg-green-600 focus:outline-none focus:shadow-outline-green"
+                                  aria-label="Activate"
+                                  onClick={() => activateUser(user.id)}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="w-5 h-5"
+                                    aria-hidden="true"
+                                    fill="currentColor"
+                                    viewBox="0 0 640 512"
+                                  >
+                                    <path d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3zM625 177L497 305c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L591 143c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z" />
+                                  </svg>
+                                  <span className="ml-2">Activate</span>
+                                </button>
+                              ) : (
+                                <button
+                                  className="suspend-btn flex items-center justify-between w-[100px] px-4 py-2 text-sm font-medium leading-5 text-white bg-yellow-500 rounded-lg hover:bg-yellow-600 focus:outline-none focus:shadow-outline-yellow"
+                                  aria-label="Suspend"
+                                  onClick={() => suspendUser(user.id)}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="w-5 h-5"
+                                    aria-hidden="true"
+                                    fill="currentColor"
+                                    viewBox="0 0 640 512"
+                                  >
+                                    <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c1.8 0 3.5-.2 5.3-.5c-76.3-55.1-99.8-141-103.1-200.2c-16.1-4.8-33.1-7.3-50.7-7.3l-91.4 0zm308.8-78.3l-120 48C358 277.4 352 286.2 352 296c0 63.3 25.9 168.8 134.8 214.2c5.9 2.5 12.6 2.5 18.5 0C614.1 464.8 640 359.3 640 296c0-9.8-6-18.6-15.1-22.3l-120-48c-5.7-2.3-12.1-2.3-17.8 0zM591.4 312c-3.9 50.7-27.2 116.7-95.4 149.7l0-187.8L591.4 312z" />
+                                  </svg>
+                                  <span className="ml-2">Suspend</span>
+                                </button>
+                              )}
+                              {/* <button
                                 className="suspend-btn flex items-center justify-between w-[100px] px-4 py-2 text-sm font-medium leading-5 text-white bg-yellow-500 rounded-lg hover:bg-yellow-600 focus:outline-none focus:shadow-outline-yellow"
                                 aria-label="Suspend"
                                 onClick={handleCancelClick}
@@ -354,7 +456,7 @@ const CmsUsers = () => {
                                   <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c1.8 0 3.5-.2 5.3-.5c-76.3-55.1-99.8-141-103.1-200.2c-16.1-4.8-33.1-7.3-50.7-7.3l-91.4 0zm308.8-78.3l-120 48C358 277.4 352 286.2 352 296c0 63.3 25.9 168.8 134.8 214.2c5.9 2.5 12.6 2.5 18.5 0C614.1 464.8 640 359.3 640 296c0-9.8-6-18.6-15.1-22.3l-120-48c-5.7-2.3-12.1-2.3-17.8 0zM591.4 312c-3.9 50.7-27.2 116.7-95.4 149.7l0-187.8L591.4 312z" />
                                 </svg>
                                 <span className="ml-2">Suspend</span>
-                              </button>
+                              </button> */}
                               {/* {editableId === user.id ? (
                                 <>
                                   <button

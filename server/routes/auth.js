@@ -115,25 +115,40 @@ router.post("/verify-email", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const { emailOrUsername, password } = req.body;
-    // Cari user berdasarkan email atau username menggunakan Sequelize
+
+    // Cari user berdasarkan email atau username
     const user = await User.findOne({
       where: {
         [Op.or]: [{ email: emailOrUsername }, { username: emailOrUsername }],
       },
     });
 
-    // Jika user tidak ditemukan atau password salah
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).send("Invalid credentials");
+    // Jika user tidak ditemukan
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Generate JWT token dengan user ID
+    // Cek apakah user disuspend
+    if (user.is_suspended) {
+      return res
+        .status(403)
+        .json({ message: "Your account has been suspended." });
+    }
+
+    // Cek password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    // Generate JWT token
     const token = jwt.sign(
       {
         id: user.id,
         username: user.username,
         email: user.email,
         role: user.role,
+        is_suspended: user.is_suspended,
       },
       process.env.JWT_SECRET,
       {
@@ -147,6 +162,41 @@ router.post("/login", async (req, res) => {
     res.status(500).send("Server error");
   }
 });
+// router.post("/login", async (req, res) => {
+//   try {
+//     const { emailOrUsername, password } = req.body;
+//     // Cari user berdasarkan email atau username menggunakan Sequelize
+//     const user = await User.findOne({
+//       where: {
+//         [Op.or]: [{ email: emailOrUsername }, { username: emailOrUsername }],
+//       },
+//     });
+
+//     // Jika user tidak ditemukan atau password salah
+//     if (!user || !(await bcrypt.compare(password, user.password))) {
+//       return res.status(401).send("Invalid credentials");
+//     }
+
+//     // Generate JWT token dengan user ID
+//     const token = jwt.sign(
+//       {
+//         id: user.id,
+//         username: user.username,
+//         email: user.email,
+//         role: user.role,
+//       },
+//       process.env.JWT_SECRET,
+//       {
+//         expiresIn: "1h",
+//       }
+//     );
+
+//     res.json({ token });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send("Server error");
+//   }
+// });
 
 // Google Auth
 router.get(
@@ -158,35 +208,6 @@ router.get(
 
 router.get("/protected", authenticateToken, (req, res) => {
   res.json({ access: true, message: "You have access!", user: req.user });
-});
-
-// In your users route file
-router.put("/users/:id/suspend", authenticateToken, async (req, res) => {
-  try {
-    const user = await User.findByPk(req.params.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    user.is_suspended = true;
-    await user.save();
-
-    res.json({ message: "User suspended successfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Error suspending user" });
-  }
-});
-
-router.put("/users/:id/activate", authenticateToken, async (req, res) => {
-  try {
-    const user = await User.findByPk(req.params.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    user.is_suspended = false;
-    await user.save();
-
-    res.json({ message: "User activated successfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Error activating user" });
-  }
 });
 
 module.exports = router;

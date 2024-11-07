@@ -3,6 +3,7 @@ const express = require("express");
 const { check, validationResult } = require("express-validator");
 const router = express.Router();
 const { multerUploads, uploadToCloudinary } = require("../midleware/upload");
+const authenticateToken = require("../midleware/authMiddleware");
 const {
   Drama,
   Actor,
@@ -738,7 +739,7 @@ router.get("/users", async (req, res) => {
 
   try {
     const { count, rows: users } = await User.findAndCountAll({
-      attributes: ["id", "username", "email", "role"],
+      attributes: ["id", "username", "email", "role", "is_suspended"],
       limit: limitNumber,
       offset,
       order: [
@@ -756,6 +757,46 @@ router.get("/users", async (req, res) => {
   } catch (error) {
     console.error("Error fetching users:", error);
     res.status(500).json({ message: "Failed to fetch users" });
+  }
+});
+
+// Suspend User
+router.put("/users/:id/suspend", authenticateToken, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.is_suspended = true;
+    await user.save();
+
+    res.json({ message: "User has been suspended successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Activate User
+router.put("/users/:id/activate", authenticateToken, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.is_suspended = false;
+    await user.save();
+
+    res.json({ message: "User has been activated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
