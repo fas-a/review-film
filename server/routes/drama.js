@@ -23,10 +23,28 @@ router.get("/dramas", async (req, res) => {
     const limit = parseInt(req.query.limit) || 12;
     const offset = (page - 1) * limit;
 
-    // Cari drama dengan pagination
+    // Parse sort parameter
+    const sortParam = req.query.sort || "";
+    let order = [];
+
+    if (sortParam) {
+      const [field, direction] = sortParam.split("_");
+      const allowedFields = ["title", "year"];
+      const allowedDirections = ["asc", "desc"];
+
+      if (
+        allowedFields.includes(field.toLowerCase()) &&
+        allowedDirections.includes(direction.toLowerCase())
+      ) {
+        order.push([field, direction.toUpperCase()]);
+      }
+    }
+
+    // Cari drama dengan pagination dan sorting
     const { rows: dramas, count } = await Drama.findAndCountAll({
       limit,
       offset,
+      order,
       include: [
         {
           model: Genre,
@@ -45,6 +63,7 @@ router.get("/dramas", async (req, res) => {
         },
       ],
     });
+
     const totalPages = Math.ceil(count / limit);
     const adjustedTotalPages = totalPages > 13 ? 13 : totalPages;
     res.json({
@@ -58,6 +77,48 @@ router.get("/dramas", async (req, res) => {
     res.status(500).json({ message: "Failed to fetch dramas" });
   }
 });
+
+// router.get("/dramas", async (req, res) => {
+//   try {
+//     const page = parseInt(req.query.page) || 1;
+//     const limit = parseInt(req.query.limit) || 12;
+//     const offset = (page - 1) * limit;
+
+//     // Cari drama dengan pagination
+//     const { rows: dramas, count } = await Drama.findAndCountAll({
+//       limit,
+//       offset,
+//       include: [
+//         {
+//           model: Genre,
+//           through: GenreDrama,
+//           attributes: ["id", "name"], // Genre terkait
+//         },
+//         {
+//           model: Award,
+//           through: AwardDrama,
+//           attributes: ["id", "name", "year"],
+//         },
+//         {
+//           model: Actor,
+//           through: ActorDrama,
+//           attributes: ["id", "name"],
+//         },
+//       ],
+//     });
+//     const totalPages = Math.ceil(count / limit);
+//     const adjustedTotalPages = totalPages > 13 ? 13 : totalPages;
+//     res.json({
+//       dramas,
+//       totalItems: count,
+//       currentPage: page,
+//       totalPages: adjustedTotalPages,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching dramas:", error);
+//     res.status(500).json({ message: "Failed to fetch dramas" });
+//   }
+// });
 
 router.get("/dramas2", async (req, res) => {
   try {
@@ -238,7 +299,7 @@ router.delete("/dramas/:id", async (req, res) => {
 
 router.put("/dramas/:id", async (req, res) => {
   try {
-    const { id }= req.params;
+    const { id } = req.params;
     const {
       title,
       alt_title,
@@ -268,12 +329,11 @@ router.put("/dramas/:id", async (req, res) => {
     drama.synopsis = synopsis;
     drama.availability = availability;
     drama.link_trailer = link_trailer;
-    
+
     await drama.save();
-    
+
     // Hapus semua award, genre, dan actor terkait
-    
-    
+
     if (drama && awards) {
       // Pastikan `awards` selalu berupa array
 
@@ -489,6 +549,10 @@ router.get("/comments", async (req, res) => {
           model: Drama,
           attributes: ["id", "title"],
         },
+      ],
+      order: [
+        ["updatedAt", "DESC"],
+        ["createdAt", "DESC"],
       ],
     });
     res.json(comments);

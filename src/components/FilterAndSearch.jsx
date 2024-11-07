@@ -7,6 +7,8 @@ const FilterAndSearch = ({
   setShowValue,
   searchValue,
   setSearchValue,
+  sortValue,
+  setSortValue,
 }) => {
   return (
     <div className="flex items-center space-x-4 justify-center flex-1 lg:mr-32">
@@ -49,6 +51,27 @@ const FilterAndSearch = ({
           <option value="20">20</option>
           <option value="30">30</option>
           <option value="40">40</option>
+        </select>
+      </div>
+
+      <div className="flex items-center space-x-4">
+        <label
+          htmlFor="sort"
+          className="text-sm text-gray-700 dark:text-gray-400"
+        >
+          Sort by:
+        </label>
+        <select
+          id="sort"
+          value={sortValue}
+          onChange={(e) => setSortValue(e.target.value)}
+          className="ml-2 text-sm text-gray-700 bg-gray-100 border-0 rounded-md dark:bg-gray-700 dark:text-gray-200 focus:outline-none focus:shadow-outline-purple form-select"
+        >
+          <option value="">-- Sort --</option>
+          <option value="rate_asc">Rate (Low to High)</option>
+          <option value="rate_desc">Rate (High to Low)</option>
+          <option value="content_asc">Comment (A-Z)</option>
+          <option value="content_desc">Comment (Z-A)</option>
         </select>
       </div>
 

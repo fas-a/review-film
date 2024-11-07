@@ -13,6 +13,8 @@ function Filter({
   onStatusChange,
   selectedAward,
   onAwardChange,
+  selectedSort,
+  onSortChange,
 }) {
   // Function to handle dropdown changes
   const handleGenreSelect = (event) => {
@@ -51,6 +53,12 @@ function Filter({
     localStorage.setItem("selectedAward", award); // Save to localStorage
   };
 
+  const handleSortSelect = (event) => {
+    const sort = event.target.value;
+    onSortChange(sort);
+    localStorage.setItem("selectedSort", sort);
+  };
+
   const [countries, setCountries] = useState([]);
 
   // Fetch countries
@@ -77,6 +85,7 @@ function Filter({
     const savedAvailability = localStorage.getItem("selectedAvailability");
     const savedStatus = localStorage.getItem("selectedStatus");
     const savedAward = localStorage.getItem("selectedAward");
+    const savedSort = localStorage.getItem("selectedSort");
 
     if (savedGenre) onGenreChange(savedGenre);
     if (savedYear) onYearChange(savedYear);
@@ -84,14 +93,25 @@ function Filter({
     if (savedAvailability) onAvailabilityChange(savedAvailability);
     if (savedStatus) onStatusChange(savedStatus);
     if (savedAward) onAwardChange(savedAward);
-  }, [onGenreChange, onYearChange, onCountryChange, onAvailabilityChange, onStatusChange, onAwardChange]);
+    if (savedSort) onSortChange(savedSort);
+  }, [
+    onGenreChange,
+    onYearChange,
+    onCountryChange,
+    onAvailabilityChange,
+    onStatusChange,
+    onAwardChange,
+    onSortChange,
+  ]);
 
   return (
     <div className="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
       <div className="flex justify-between flex-wrap items-center">
         <div className="flex justify-between flex-wrap items-center gap-6">
-          <h4 className="text-lg font-semibold text-gray-600 dark:text-gray-300">Filter:</h4>
-          
+          <h4 className="text-lg font-semibold text-gray-600 dark:text-gray-300">
+            Filter:
+          </h4>
+
           <label className="block text-sm">
             <select
               className="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select"
@@ -106,7 +126,7 @@ function Filter({
               ))}
             </select>
           </label>
-          
+
           <label className="block text-sm">
             <select
               className="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select"
@@ -151,10 +171,6 @@ function Filter({
               <option value="unapproved">Unapproved</option>
             </select>
           </label>
-        </div>
-        
-        <div className="flex justify-between flex-wrap items-center gap-6">
-          <h4 className="text-lg font-semibold text-gray-600 dark:text-gray-300">Sorted By:</h4>
 
           <label className="block text-sm">
             <select
@@ -171,6 +187,26 @@ function Filter({
               <option value="hotstar">Hotstar</option>
               <option value="bstation">Bstation</option>
               <option value="crunchyroll">Crunchyroll</option>
+            </select>
+          </label>
+        </div>
+
+        <div className="flex justify-between flex-wrap items-center gap-6">
+          <h4 className="text-lg font-semibold text-gray-600 dark:text-gray-300">
+            Sorted By:
+          </h4>
+
+          <label className="block text-sm">
+            <select
+              className="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select"
+              onChange={handleSortSelect}
+              value={selectedSort}
+            >
+              <option value="">-- Sort --</option>
+              <option value="title_asc">Title (A-Z)</option>
+              <option value="title_desc">Title (Z-A)</option>
+              <option value="year_desc">Year (Newest)</option>
+              <option value="year_asc">Year (Oldest)</option>
             </select>
           </label>
 

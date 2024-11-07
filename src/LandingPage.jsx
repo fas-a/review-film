@@ -17,26 +17,37 @@ function LandingPage() {
   const [selectedAvailability, setSelectedAvailability] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedAward, setSelectedAward] = useState("");
+  const [sortValue, setSortValue] = useState("");
 
   // Fetch data dari backend, berdasarkan page dan limit
   useEffect(() => {
-    fetch(`http://localhost:3001/api/dramas?page=${currentPage}&limit=12`)
-      .then((response) => {
+    const fetchDramas = async () => {
+      setLoading(true);
+      try {
+        const queryParams = new URLSearchParams({
+          page: currentPage,
+          limit: 12,
+          sort: sortValue, // Include sort parameter
+        });
+
+        const response = await fetch(
+          `http://localhost:3001/api/dramas?${queryParams.toString()}`
+        );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        return response.json();
-      })
-      .then((data) => {
+        const data = await response.json();
         setFilms(data.dramas);
         setTotalPages(data.totalPages); // Set totalPages dari response API
-        setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching films", error);
+      } finally {
         setLoading(false);
-      });
-  }, [currentPage]); // Tambahkan currentPage sebagai dependency agar fetch ulang saat page berubah
+      }
+    };
+
+    fetchDramas();
+  }, [currentPage, sortValue]);
 
   useEffect(() => {
     fetch("http://localhost:3001/session", {
@@ -91,6 +102,12 @@ function LandingPage() {
 
   const handleAwardChange = (award) => {
     setSelectedAward(award);
+    setCurrentPage(1);
+  };
+
+  const handleSortChange = (sort) => {
+    // Added sort change handler
+    setSortValue(sort);
     setCurrentPage(1);
   };
 
@@ -172,6 +189,8 @@ function LandingPage() {
             onStatusChange={handleStatusChange}
             selectedAward={selectedAward}
             onAwardChange={handleAwardChange}
+            selectedSort={sortValue}
+            onSortChange={handleSortChange}
           />
 
           <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">

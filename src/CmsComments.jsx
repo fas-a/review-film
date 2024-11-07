@@ -11,8 +11,29 @@ const CmsComments = () => {
   const [showValue, setShowValue] = useState("10");
   const [searchValue, setSearchValue] = useState("");
   const [selectedComments, setSelectedComments] = useState(new Set());
+  const [sortValue, setSortValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = parseInt(showValue);
+
+  const sortComments = (comments) => {
+    if (!sortValue) return comments;
+
+    return [...comments].sort((a, b) => {
+      switch (sortValue) {
+        case "rate_asc":
+          return a.rate - b.rate;
+        case "rate_desc":
+          return b.rate - a.rate;
+        case "content_asc":
+          return a.content.localeCompare(b.content);
+        case "content_desc":
+          return b.content.localeCompare(a.content);
+        default:
+          // Default sort by newest first
+          return new Date(b.createdAt) - new Date(a.createdAt);
+      }
+    });
+  };
 
   // Filtering safely with a fallback in case comments are undefined
   const filteredComments = (comments || []).filter((comment) => {
@@ -27,6 +48,8 @@ const CmsComments = () => {
       comment.Drama.title.toLowerCase().includes(searchValue.toLowerCase()) ||
       comment.content.toLowerCase().includes(searchValue.toLowerCase())
   );
+
+  const sortedComments = sortComments(searchedComments);
 
   const totalItems = searchedComments.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -48,7 +71,7 @@ const CmsComments = () => {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [filterValue, searchValue, showValue]);
+  }, [filterValue, searchValue, showValue, sortValue]);
 
   const updateStatus = async (selectedCommentIds, newStatus) => {
     try {
@@ -120,7 +143,7 @@ const CmsComments = () => {
 
   const indexOfLastComment = currentPage * itemsPerPage;
   const indexOfFirstComment = indexOfLastComment - itemsPerPage;
-  const displayedComments = searchedComments.slice(
+  const displayedComments = sortedComments.slice(
     indexOfFirstComment,
     indexOfLastComment
   );
@@ -151,6 +174,8 @@ const CmsComments = () => {
                 setShowValue={setShowValue}
                 searchValue={searchValue}
                 setSearchValue={setSearchValue}
+                sortValue={sortValue}
+                setSortValue={setSortValue}
               />
 
               <div className="w-full overflow-hidden rounded-lg shadow-xs mt-8">
