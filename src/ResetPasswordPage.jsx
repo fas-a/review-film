@@ -5,7 +5,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 const ResetPasswordPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [newPassword, setNewPassword] = useState("");
+  const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -14,7 +14,7 @@ const ResetPasswordPage = () => {
     e.preventDefault();
     const token = searchParams.get("token");
 
-    if (newPassword !== confirmPassword) {
+    if (password !== confirmPassword) {
       setMessage("Passwords do not match");
       return;
     }
@@ -26,7 +26,7 @@ const ResetPasswordPage = () => {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token, newPassword }),
+          body: JSON.stringify({ token, password, confirmPassword }),
         }
       );
 
@@ -78,8 +78,8 @@ const ResetPasswordPage = () => {
                   <input
                     className="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                     type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter new password"
                     required
                   />

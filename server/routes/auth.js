@@ -5,11 +5,82 @@ const passport = require("passport");
 const { User } = require("../models");
 const { Op } = require("sequelize");
 const dotenv = require("dotenv");
+const crypto = require("crypto");
 const authenticateToken = require("../midleware/authMiddleware");
 const generateVerificationToken = require("../utils/tokenGenerator");
 const sendVerificationEmail = require("../utils/sendEmail");
+const sendResetPasswordEmail = require("../utils/resetPasswordEmail");
 
 const router = express.Router();
+
+router.post("/forgot-password", async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: "Email is required" });
+  }
+
+  try {
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+    user.reset_password_token = hashedToken;
+    user.reset_password_expires = Date.now() + 300000;
+    await user.save();
+
+    await sendResetPasswordEmail(user.email, resetToken);
+
+    res.json({ message: "Reset password email sent" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error, please try again later" });
+  }
+});
+
+router.post("/reset-password", async (req, res) => {
+  const { token, password, confirmPassword } = req.body;
+
+  if (!token || !password || !confirmPassword) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  if (password !== confirmPassword) {
+    return res.status(400).json({ message: "Passwords do not match" });
+  }
+
+  try {
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    const user = await User.findOne({
+      where: {
+        reset_password_token: hashedToken,
+        reset_password_expires: { [Op.gt]: Date.now() },
+      },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+    user.reset_password_token = null;
+    user.reset_password_expires = null;
+    await user.save();
+
+    res.json({ message: "Password reset successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error, please try again later" });
+  }
+});
+
 
 // Register
 router.post("/register", async (req, res) => {
