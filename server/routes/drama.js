@@ -60,7 +60,7 @@ router.get("/dramas", async (req, res) => {
         {
           model: Actor,
           through: ActorDrama,
-          attributes: ["id", "name"],
+          attributes: ["id", "name", "photo"],
         },
       ],
     });
@@ -78,48 +78,6 @@ router.get("/dramas", async (req, res) => {
     res.status(500).json({ message: "Failed to fetch dramas" });
   }
 });
-
-// router.get("/dramas", async (req, res) => {
-//   try {
-//     const page = parseInt(req.query.page) || 1;
-//     const limit = parseInt(req.query.limit) || 12;
-//     const offset = (page - 1) * limit;
-
-//     // Cari drama dengan pagination
-//     const { rows: dramas, count } = await Drama.findAndCountAll({
-//       limit,
-//       offset,
-//       include: [
-//         {
-//           model: Genre,
-//           through: GenreDrama,
-//           attributes: ["id", "name"], // Genre terkait
-//         },
-//         {
-//           model: Award,
-//           through: AwardDrama,
-//           attributes: ["id", "name", "year"],
-//         },
-//         {
-//           model: Actor,
-//           through: ActorDrama,
-//           attributes: ["id", "name"],
-//         },
-//       ],
-//     });
-//     const totalPages = Math.ceil(count / limit);
-//     const adjustedTotalPages = totalPages > 13 ? 13 : totalPages;
-//     res.json({
-//       dramas,
-//       totalItems: count,
-//       currentPage: page,
-//       totalPages: adjustedTotalPages,
-//     });
-//   } catch (error) {
-//     console.error("Error fetching dramas:", error);
-//     res.status(500).json({ message: "Failed to fetch dramas" });
-//   }
-// });
 
 router.get("/dramas2", async (req, res) => {
   try {
