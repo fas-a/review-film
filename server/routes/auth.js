@@ -67,7 +67,6 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// Endpoint untuk verifikasi email
 router.post("/verify-email", async (req, res) => {
   const { token } = req.body;
 

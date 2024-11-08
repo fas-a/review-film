@@ -16,7 +16,7 @@ function RegisterPage() {
     const data = await response.json();
     if (response.ok) {
       alert("Silakan periksa email Anda untuk verifikasi.");
-      window.location.href = "/login";
+      window.location.href = "/verify-email";
     } else {
       console.error(data.message);
     }

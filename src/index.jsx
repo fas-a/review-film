@@ -21,6 +21,8 @@ import User from "./components/User";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./components/tailwind.output.css";
 import VerifyEmail from "./VerifyEmail";
+import ForgotPasswordPage from "./ForgotPasswordPage";
+import ResetPasswordPage from "./ResetPasswordPage";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -36,6 +38,24 @@ root.render(
           element={
             <Auth>
               <VerifyEmail />
+            </Auth>
+          }
+        />
+
+        <Route
+          path="/forgot-password"
+          element={
+            <Auth>
+              <ForgotPasswordPage />
+            </Auth>
+          }
+        />
+
+        <Route
+          path="/reset-password"
+          element={
+            <Auth>
+              <ResetPasswordPage />
             </Auth>
           }
         />

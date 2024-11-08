@@ -41,6 +41,12 @@ module.exports = (sequelize, DataTypes) => {
       verification_token: {
         type: DataTypes.STRING,
       },
+      reset_password_token: {
+        type: DataTypes.STRING,
+      },
+      reset_password_expires: {
+        type: DataTypes.DATE,
+      },
       createdAt: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
