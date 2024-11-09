@@ -23,6 +23,7 @@ import "./components/tailwind.output.css";
 import VerifyEmail from "./VerifyEmail";
 import ForgotPasswordPage from "./ForgotPasswordPage";
 import ResetPasswordPage from "./ResetPasswordPage";
+import BookmarkPage from "./BookmarkPage";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -32,6 +33,7 @@ root.render(
         <Route path="/" element={<LandingPage />} />
         <Route path="/detail/:id" element={<DetailFilm />} />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/bookmarks" element={<BookmarkPage />} />
 
         <Route
           path="/verify-email"

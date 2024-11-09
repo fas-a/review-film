@@ -66,6 +66,11 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "user_id",
       onDelete: "CASCADE",
     });
+
+    User.belongsToMany(models.Drama, {
+      through: models.Bookmark,
+      foreignKey: "user_id",
+    });
   };
 
   return User;

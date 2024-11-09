@@ -3,6 +3,7 @@ import FilmCardV from "./components/FilmCardV";
 import SweepCard from "./components/SweepCard";
 import { useParams } from "react-router-dom";
 import Header from "./components/Header";
+import BookmarkButton from "./components/BookmarkButton";
 import Comment from "./components/Comment";
 import CommentForm from "./components/CommentForm";
 import { useEffect, useState } from "react";
@@ -34,7 +35,6 @@ function DetailFilm() {
         if (data.access) {
           setHasAccess(true);
           setUser(data.user);
-          
         } else {
           setHasAccess(false);
         }
@@ -74,11 +74,13 @@ function DetailFilm() {
     if (!Array.isArray(film.Comments) || film.Comments.length === 0) {
       return 0; // Return 0 or any other fallback value if no comments
     }
-  
-    let total = film.Comments.reduce((accumulator, current) => accumulator + current.rate, 0);
+
+    let total = film.Comments.reduce(
+      (accumulator, current) => accumulator + current.rate,
+      0
+    );
     return total / film.Comments.length; // Use film.Comments.length instead of film.length
   };
-
 
   return (
     <div>
@@ -95,7 +97,10 @@ function DetailFilm() {
         )}
       </div>
       <div className="w-full px-4 md:px-20 xl:px-40 grid grid-cols-4 gap-4 mt-4">
-        <div className="col-span-1 pr-2">
+        <div className="col-span-1 pr-2 relative">
+          <div className="absolute top-2 right-2">
+            <BookmarkButton dramaId={film.id} />
+          </div>
           <img className="w-full rounded-lg" src={film.poster} alt="" />
         </div>
         <div className="col-span-3 bg-white rounded-lg shadow-md dark:bg-gray-800 p-4">
@@ -191,10 +196,7 @@ function DetailFilm() {
             </h2>
           </div>
           {hasAccess ? (
-            <CommentForm 
-              user={user.id}
-              drama={id}
-            />
+            <CommentForm user={user.id} drama={id} />
           ) : (
             <p>Anda harus login untuk memberikan komentar</p>
           )}

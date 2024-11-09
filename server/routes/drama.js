@@ -15,6 +15,7 @@ const {
   User,
   AwardDrama,
   Comment,
+  Bookmark,
 } = require("../models"); // Sesuaikan dengan model
 
 // GET /api/dramas - Ambil semua drama beserta aktor dan genre terkait
@@ -902,5 +903,93 @@ router.delete("/actors/:id", async (req, res) => {
     res.status(500).json({ message: "Failed to delete actor" });
   }
 });
+
+// Get all bookmarks for a user
+router.get("/bookmarks", authenticateToken, async (req, res) => {
+  try {
+    const bookmarks = await Bookmark.findAll({
+      where: { user_id: req.user.id },
+      include: [
+        {
+          model: Drama,
+          include: ["Genres"], // Include genres if needed
+        },
+      ],
+    });
+    res.json(bookmarks);
+  } catch (error) {
+    console.error("Error fetching bookmarks:", error);
+    res.status(500).json({ message: "Failed to fetch bookmarks" });
+  }
+});
+
+// Add a bookmark
+router.post("/bookmarks", authenticateToken, async (req, res) => {
+  try {
+    const { drama_id } = req.body;
+    const user_id = req.user.id;
+
+    // Check if bookmark already exists
+    const existingBookmark = await Bookmark.findOne({
+      where: { user_id, drama_id },
+    });
+
+    if (existingBookmark) {
+      return res.status(400).json({ message: "Drama already bookmarked" });
+    }
+
+    const bookmark = await Bookmark.create({
+      user_id,
+      drama_id,
+    });
+
+    res.status(201).json(bookmark);
+  } catch (error) {
+    console.error("Error adding bookmark:", error);
+    res.status(500).json({ message: "Failed to add bookmark" });
+  }
+});
+
+// Remove a bookmark
+router.delete("/bookmarks/:drama_id", authenticateToken, async (req, res) => {
+  try {
+    const { drama_id } = req.params;
+    const user_id = req.user.id;
+
+    const deleted = await Bookmark.destroy({
+      where: { user_id, drama_id },
+    });
+
+    if (!deleted) {
+      return res.status(404).json({ message: "Bookmark not found" });
+    }
+
+    res.json({ message: "Bookmark removed successfully" });
+  } catch (error) {
+    console.error("Error removing bookmark:", error);
+    res.status(500).json({ message: "Failed to remove bookmark" });
+  }
+});
+
+// Check if a drama is bookmarked
+router.get(
+  "/bookmarks/check/:drama_id",
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const { drama_id } = req.params;
+      const user_id = req.user.id;
+
+      const bookmark = await Bookmark.findOne({
+        where: { user_id, drama_id },
+      });
+
+      res.json({ isBookmarked: !!bookmark });
+    } catch (error) {
+      console.error("Error checking bookmark:", error);
+      res.status(500).json({ message: "Failed to check bookmark status" });
+    }
+  }
+);
 
 module.exports = router;

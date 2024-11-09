@@ -50,18 +50,18 @@ export default function Sidebar() {
   const handleLogout = async () => {
     try {
       // Memanggil rute logout di server
-      await fetch('http://localhost:3001/logout', {
-        method: 'GET',
-        credentials: 'include', // Pastikan untuk mengirimkan cookies jika diperlukan
+      await fetch("http://localhost:3001/logout", {
+        method: "GET",
+        credentials: "include", // Pastikan untuk mengirimkan cookies jika diperlukan
       });
-  
+
       // Hapus token dari sessionStorage
       sessionStorage.removeItem("token");
-  
+
       // Redirect ke halaman utama
       window.location.href = "/";
     } catch (error) {
-      console.error('Error during logout:', error);
+      console.error("Error during logout:", error);
       // Anda bisa menampilkan pesan kesalahan kepada pengguna
     }
   };
@@ -389,22 +389,54 @@ export default function Sidebar() {
                   to="/cmsdramainput"
                 >
                   <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-5 h-5"
-                      aria-hidden="true"
-                      fill="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      viewBox="0 0 640 512"
-                      stroke="currentColor"
-                    >
-                      <path d="M256 0L576 0c35.3 0 64 28.7 64 64l0 224c0 35.3-28.7 64-64 64l-320 0c-35.3 0-64-28.7-64-64l0-224c0-35.3 28.7-64 64-64zM476 106.7C471.5 100 464 96 456 96s-15.5 4-20 10.7l-56 84L362.7 169c-4.6-5.7-11.5-9-18.7-9s-14.2 3.3-18.7 9l-64 80c-5.8 7.2-6.9 17.1-2.9 25.4s12.4 13.6 21.6 13.6l80 0 48 0 144 0c8.9 0 17-4.9 21.2-12.7s3.7-17.3-1.2-24.6l-96-144zM336 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zM64 128l96 0 0 256 0 32c0 17.7 14.3 32 32 32l128 0c17.7 0 32-14.3 32-32l0-32 160 0 0 64c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 192c0-35.3 28.7-64 64-64zm8 64c-8.8 0-16 7.2-16 16l0 16c0 8.8 7.2 16 16 16l16 0c8.8 0 16-7.2 16-16l0-16c0-8.8-7.2-16-16-16l-16 0zm0 104c-8.8 0-16 7.2-16 16l0 16c0 8.8 7.2 16 16 16l16 0c8.8 0 16-7.2 16-16l0-16c0-8.8-7.2-16-16-16l-16 0zm0 104c-8.8 0-16 7.2-16 16l0 16c0 8.8 7.2 16 16 16l16 0c8.8 0 16-7.2 16-16l0-16c0-8.8-7.2-16-16-16l-16 0zm336 16l0 16c0 8.8 7.2 16 16 16l16 0c8.8 0 16-7.2 16-16l0-16c0-8.8-7.2-16-16-16l-16 0c-8.8 0-16 7.2-16 16z"></path>
-                    </svg>
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-5 h-5"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    viewBox="0 0 640 512"
+                    stroke="currentColor"
+                  >
+                    <path d="M256 0L576 0c35.3 0 64 28.7 64 64l0 224c0 35.3-28.7 64-64 64l-320 0c-35.3 0-64-28.7-64-64l0-224c0-35.3 28.7-64 64-64zM476 106.7C471.5 100 464 96 456 96s-15.5 4-20 10.7l-56 84L362.7 169c-4.6-5.7-11.5-9-18.7-9s-14.2 3.3-18.7 9l-64 80c-5.8 7.2-6.9 17.1-2.9 25.4s12.4 13.6 21.6 13.6l80 0 48 0 144 0c8.9 0 17-4.9 21.2-12.7s3.7-17.3-1.2-24.6l-96-144zM336 96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zM64 128l96 0 0 256 0 32c0 17.7 14.3 32 32 32l128 0c17.7 0 32-14.3 32-32l0-32 160 0 0 64c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 192c0-35.3 28.7-64 64-64zm8 64c-8.8 0-16 7.2-16 16l0 16c0 8.8 7.2 16 16 16l16 0c8.8 0 16-7.2 16-16l0-16c0-8.8-7.2-16-16-16l-16 0zm0 104c-8.8 0-16 7.2-16 16l0 16c0 8.8 7.2 16 16 16l16 0c8.8 0 16-7.2 16-16l0-16c0-8.8-7.2-16-16-16l-16 0zm0 104c-8.8 0-16 7.2-16 16l0 16c0 8.8 7.2 16 16 16l16 0c8.8 0 16-7.2 16-16l0-16c0-8.8-7.2-16-16-16l-16 0zm336 16l0 16c0 8.8 7.2 16 16 16l16 0c8.8 0 16-7.2 16-16l0-16c0-8.8-7.2-16-16-16l-16 0c-8.8 0-16 7.2-16 16z"></path>
+                  </svg>
                   <span className="ml-4">Input New Drama</span>
                 </Link>
               </li>
- 
+
+              <li className="relative px-6 py-4">
+                {location.pathname === "/bookmarks" && (
+                  <span
+                    className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
+                    aria-hidden="true"
+                  ></span>
+                )}
+                <Link
+                  className={`inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200 dark:text-gray-100 ${
+                    location.pathname === "/bookmarks"
+                      ? "text-gray-800 dark:text-gray-100"
+                      : "text-gray-600"
+                  }`}
+                  to="/bookmarks"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-5 h-5"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    viewBox="0 0 384 512"
+                    stroke="currentColor"
+                  >
+                    <path d="M384 68.6C384 30.7 353.3 0 315.4 0H68.6C30.7 0 0 30.7 0 68.6v376.8c0 37.9 30.7 68.6 68.6 68.6h246.8c37.9 0 68.6-30.7 68.6-68.6V68.6zM192 367.6l-83.1 51.8c-4.5 2.8-10.1 2.8-14.6 0L96 367.6V48h96v319.6z" />
+                  </svg>
+                  <span className="ml-4">Bookmark</span>
+                </Link>
+              </li>
+
               <li className="relative px-6 py-4">
                 {location.pathname === "/" && (
                   <span

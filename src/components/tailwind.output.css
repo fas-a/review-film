@@ -1551,6 +1551,42 @@ video {
   color: #7e3af2;
   color: rgba(126, 58, 242, var(--text-opacity));
 }
+
+.text-yellow-300 {
+  --text-opacity: 1;
+  color: #FCD34D;
+  color: rgba(252, 211, 77, var(--text-opacity));
+}
+
+.text-yellow-400 {
+  --text-opacity: 1;
+  color: #FBBF24;
+  color: rgba(251, 191, 36, var(--text-opacity));
+}
+
+.text-yellow-500 {
+  --text-opacity: 1;
+  color: #eab308;
+  color: rgba(234, 179, 8, var(--text-opacity));
+}
+
+.text-yellow-600 {
+  --text-opacity: 1;
+  color: #ca8a04;
+  color: rgba(202, 138, 4, var(--text-opacity));
+}
+
+.text-yellow-700 {
+  --text-opacity: 1;
+  color: #a16207;
+  color: rgba(161, 98, 7, var(--text-opacity));
+}
+
+.text-yellow-800 {
+  --text-opacity: 1;
+  color: #854d0e;
+  color: rgba(133, 77, 14, var(--text-opacity));
+}
 .focus-within\:text-purple-500:focus-within {
   --text-opacity: 1;
   color: #9061f9;
