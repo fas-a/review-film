@@ -3,7 +3,8 @@ import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Pagination from "./components/Pagination.jsx";
 import Alert from "./components/Alert";
-import { BASE_API_URL } from './config';
+import { BASE_API_URL } from "./config";
+import FilterAndSearch from "./components/FilterAndSearch";
 
 const CmsAwards = () => {
   const [awards, setAwards] = useState([]);
@@ -16,8 +17,12 @@ const CmsAwards = () => {
   const [editYear, setEditYear] = useState("");
   const [editCountryId, setEditCountryId] = useState("");
   const [alert, setAlert] = useState({ message: "", type: "" });
+  const [filterValue, setFilterValue] = useState("none");
+  const [showValue, setShowValue] = useState("10");
+  const [searchValue, setSearchValue] = useState("");
+  const [sortValue, setSortValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const itemsPerPage = parseInt(showValue, 10);
 
   const fetchAwards = async () => {
     try {
@@ -171,11 +176,54 @@ const CmsAwards = () => {
     setEditName("");
   };
 
-  const totalItems = awards.length;
+  const sortAwards = (awardsList) => {
+    if (!sortValue) return awardsList;
+
+    return [...awardsList].sort((a, b) => {
+      switch (sortValue) {
+        case "name_asc":
+          return a.name.localeCompare(b.name);
+        case "name_desc":
+          return b.name.localeCompare(a.name);
+        case "year_asc":
+          return a.year - b.year;
+        case "year_desc":
+          return b.year - a.year;
+        default:
+          return 0;
+      }
+    });
+  };
+
+  const filterAwards = (awardsList) => {
+    if (filterValue === "none") return awardsList;
+    return awardsList.filter(
+      (award) => award.status.toLowerCase() === filterValue.toLowerCase()
+    );
+  };
+
+  const searchAwards = (awardsList) => {
+    return awardsList.filter(
+      (award) =>
+        award.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+        award.year.toString().includes(searchValue)
+    );
+  };
+
+  const processedAwards = sortAwards(searchAwards(filterAwards(awards)));
+  const totalItems = processedAwards.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentAwards = awards.slice(indexOfFirstItem, indexOfLastItem);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterValue, searchValue, showValue, sortValue]);
+
+  const indexOfLastAward = currentPage * itemsPerPage;
+  const indexOfFirstAward = indexOfLastAward - itemsPerPage;
+  const displayedAwards = processedAwards.slice(
+    indexOfFirstAward,
+    indexOfLastAward
+  );
 
   const handlePageChange = (pageNumber) => {
     if (pageNumber >= 1 && pageNumber <= totalPages) {
@@ -193,6 +241,29 @@ const CmsAwards = () => {
               <h2 className="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
                 Awards Management
               </h2>
+
+              <FilterAndSearch
+                showFilterSection={false}
+                showShowsSection={true}
+                showSortSection={true}
+                showSearchSection={true}
+                showValue={showValue}
+                setShowValue={setShowValue}
+                sortValue={sortValue}
+                setSortValue={setSortValue}
+                sortOptions={[
+                  { value: "", label: "-- Sort --" },
+                  { value: "name_asc", label: "Name (A-Z)" },
+                  { value: "name_desc", label: "Name (Z-A)" },
+                  { value: "year_asc", label: "Year (Low to High)" },
+                  { value: "year_desc", label: "Year (High to Low)" },
+                ]}
+                searchValue={searchValue}
+                setSearchValue={setSearchValue}
+                searchPlaceholder="Search awards..."
+              />
+
+              <br />
 
               {alert.message && (
                 <Alert
@@ -295,14 +366,14 @@ const CmsAwards = () => {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                      {currentAwards.map((award, index) => (
+                      {displayedAwards.map((award, index) => (
                         <tr
                           key={award?.id}
                           className="text-gray-700 dark:text-gray-400"
                         >
                           <td className="px-4 py-3 text-sm">
                             <div className="flex items-center text-sm">
-                              <div>{indexOfFirstItem + index + 1}</div>
+                              <div>{indexOfFirstAward + index + 1}</div>
                             </div>
                           </td>
                           <td className="px-4 py-3 text-sm">
@@ -434,18 +505,27 @@ const CmsAwards = () => {
                           </td>
                         </tr>
                       ))}
+
+                      {displayedAwards.length === 0 && (
+                        <tr>
+                          <td
+                            colSpan="5"
+                            className="px-4 py-3 text-sm text-center text-gray-500"
+                          >
+                            No awards found.
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
-                {awards.length > 0 && (
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    totalItems={totalItems}
-                    itemsPerPage={itemsPerPage}
-                    paginate={handlePageChange}
-                  />
-                )}
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={totalItems}
+                  itemsPerPage={itemsPerPage}
+                  paginate={handlePageChange}
+                />
               </div>
             </div>
           </main>

@@ -3,7 +3,8 @@ import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Pagination from "./components/Pagination";
 import Alert from "./components/Alert";
-import { BASE_API_URL } from './config';
+import { BASE_API_URL } from "./config";
+import FilterAndSearch from "./components/FilterAndSearch";
 
 const CmsUsers = () => {
   const [users, setUsers] = useState([]);
@@ -22,32 +23,31 @@ const CmsUsers = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  const itemsPerPage = 10;
+  const [filterValue, setFilterValue] = useState("none");
+  const [showValue, setShowValue] = useState("10");
+  const [searchValue, setSearchValue] = useState("");
+  const [sortValue, setSortValue] = useState("");
+  const itemsPerPage = parseInt(showValue);
 
   useEffect(() => {
-    fetchUsers(currentPage);
-  }, [currentPage]);
+    fetchUsers();
+  }, [currentPage, filterValue, searchValue, sortValue, showValue]);
 
-  const fetchUsers = async (page) => {
+  const fetchUsers = async () => {
     try {
       const response = await fetch(
-        `/api/users?page=${page}&limit=${itemsPerPage}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-          },
-        }
+        `http://localhost:3001/api/users?page=${currentPage}&limit=${itemsPerPage}&filter=${filterValue}&search=${searchValue}&sort=${sortValue}`
       );
       if (!response.ok) {
-        throw new Error("Failed to fetch users");
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
-      setUsers(data.users);
+      setUsers(sortUsers(data.users));
       setTotalPages(data.totalPages);
       setTotalItems(data.totalItems);
     } catch (error) {
-      showAlert(error.message, "error");
+      console.error("Error fetching users:", error);
+      showAlert("Failed to fetch users.", "error");
     }
   };
 
@@ -216,6 +216,50 @@ const CmsUsers = () => {
     }
   };
 
+  const sortUsers = (users) => {
+    if (!sortValue) return users;
+
+    return [...users].sort((a, b) => {
+      switch (sortValue) {
+        case "username_asc":
+          return a.username.localeCompare(b.username);
+        case "username_desc":
+          return b.username.localeCompare(a.username);
+        case "email_asc":
+          return a.email.localeCompare(b.email);
+        case "email_desc":
+          return b.email.localeCompare(a.email);
+        case "role_asc":
+          return a.role.localeCompare(b.role);
+        case "role_desc":
+          return b.role.localeCompare(a.role);
+        default:
+          return new Date(b.createdAt) - new Date(a.createdAt);
+      }
+    });
+  };
+
+  // Search safely with a fallback in case filteredUsers are undefined
+  const searchedUsers = (users || []).filter(
+    (user) =>
+      user.username.toLowerCase().includes(searchValue.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+      user.role.toLowerCase().includes(searchValue.toLowerCase())
+  );
+
+  // Apply sorting to the searched users
+  const sortedUsers = sortUsers(searchedUsers);
+
+  const totalItemsCount = searchedUsers.length;
+  const totalPagesCalculated = Math.ceil(totalItemsCount / itemsPerPage);
+  useEffect(() => {
+    setTotalPages(totalPagesCalculated);
+  }, [totalItemsCount, itemsPerPage]);
+
+  // Calculate total items and pages based on searched users
+  // const totalItems = searchedUsers.length;
+  // const totalPages = Math.ceil(totalItems / itemsPerPage);
+
   // Rest of the component remains the same...
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
@@ -227,6 +271,34 @@ const CmsUsers = () => {
               <h2 className="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
                 Users Management
               </h2>
+
+              <FilterAndSearch
+                showFilterSection={false}
+                showValue={showValue}
+                setShowValue={setShowValue}
+                showOptions={[
+                  { value: "10", label: "10" },
+                  { value: "20", label: "20" },
+                  { value: "30", label: "30" },
+                  { value: "40", label: "40" },
+                ]}
+                sortValue={sortValue}
+                setSortValue={setSortValue}
+                sortOptions={[
+                  { value: "", label: "-- Sort --" },
+                  { value: "username_asc", label: "Username (A-Z)" },
+                  { value: "username_desc", label: "Username (Z-A)" },
+                  { value: "email_asc", label: "Email (A-Z)" },
+                  { value: "email_desc", label: "Email (Z-A)" },
+                  { value: "role_asc", label: "Role (A-Z)" },
+                  { value: "role_desc", label: "Role (Z-A)" },
+                ]}
+                searchValue={searchValue}
+                setSearchValue={setSearchValue}
+                searchPlaceholder="Search users..."
+              />
+
+              <br></br>
 
               {alert.message && (
                 <Alert
@@ -328,7 +400,7 @@ const CmsUsers = () => {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                      {users.map((user, index) => (
+                      {sortedUsers.map((user, index) => (
                         <tr
                           key={user.id}
                           className="text-gray-700 dark:text-gray-400"

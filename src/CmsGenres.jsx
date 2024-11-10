@@ -3,7 +3,8 @@ import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Pagination from "./components/Pagination.jsx";
 import Alert from "./components/Alert";
-import { BASE_API_URL } from './config';
+import { BASE_API_URL } from "./config";
+import FilterAndSearch from "./components/FilterAndSearch";
 
 const CmsGenres = () => {
   const [genres, setGenres] = useState([]);
@@ -15,6 +16,10 @@ const CmsGenres = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const itemsPerPage = 10;
+  const [showValue, setShowValue] = useState("10");
+  const [sortValue, setSortValue] = useState("");
+  const [searchValue, setSearchValue] = useState("");
+  const [filterValue, setFilterValue] = useState("none");
 
   useEffect(() => {
     fetchGenres(currentPage);
@@ -144,6 +149,40 @@ const CmsGenres = () => {
     }
   };
 
+  const sortGenres = (genres) => {
+    if (!sortValue) return genres;
+
+    return [...genres].sort((a, b) => {
+      switch (sortValue) {
+        case "name_asc":
+          return a.name.localeCompare(b.name);
+        case "name_desc":
+          return b.name.localeCompare(a.name);
+        default:
+          return 0;
+      }
+    });
+  };
+
+  const filterGenres = (genres) => {
+    if (filterValue === "none") return genres;
+    return genres.filter(
+      (genre) => genre.status.toLowerCase() === filterValue.toLowerCase()
+    );
+  };
+
+  const searchGenres = (genres) => {
+    return genres.filter(
+      (genre) =>
+        genre.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+        (genre.description || "")
+          .toLowerCase()
+          .includes(searchValue.toLowerCase())
+    );
+  };
+
+  const sortedGenres = sortGenres(searchGenres(filterGenres(genres)));
+
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
       <Sidebar />
@@ -154,6 +193,30 @@ const CmsGenres = () => {
               <h2 className="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
                 Genres Management
               </h2>
+
+              <FilterAndSearch
+                showFilterSection={false}
+                showValue={showValue}
+                setShowValue={setShowValue}
+                showOptions={[
+                  { value: "10", label: "10" },
+                  { value: "20", label: "20" },
+                  { value: "30", label: "30" },
+                  { value: "40", label: "40" },
+                ]}
+                sortValue={sortValue}
+                setSortValue={setSortValue}
+                sortOptions={[
+                  { value: "", label: "-- Sort --" },
+                  { value: "name_asc", label: "Name (A-Z)" },
+                  { value: "name_desc", label: "Name (Z-A)" },
+                ]}
+                searchValue={searchValue}
+                setSearchValue={setSearchValue}
+                searchPlaceholder="Search genres..."
+              />
+
+              <br></br>
 
               {/* Tampilkan alert jika ada */}
               {alert.message && (
@@ -213,7 +276,7 @@ const CmsGenres = () => {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                      {genres.map((genre, index) => (
+                      {sortedGenres.map((genre, index) => (
                         <tr
                           key={genre.id}
                           className="text-gray-700 dark:text-gray-400"
