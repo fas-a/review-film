@@ -3,6 +3,7 @@ import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Pagination from "./components/Pagination.jsx";
 import Alert from "./components/Alert";
+import { BASE_API_URL } from "./config";
 import FilterAndSearch from "./components/FilterAndSearch";
 
 const CmsGenres = () => {
@@ -25,7 +26,7 @@ const CmsGenres = () => {
   }, [currentPage]);
 
   const fetchGenres = (page) => {
-    fetch(`http://localhost:3001/api/genres?page=${page}&limit=${itemsPerPage}`)
+    fetch(`${BASE_API_URL}/api/genres?page=${page}&limit=${itemsPerPage}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -48,7 +49,7 @@ const CmsGenres = () => {
   };
 
   const addGenre = (name) => {
-    fetch("http://localhost:3001/api/genres", {
+    fetch(BASE_API_URL + "/api/genres", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -74,7 +75,7 @@ const CmsGenres = () => {
   };
 
   const editGenre = (id, name) => {
-    fetch(`http://localhost:3001/api/genres/${id}`, {
+    fetch(`${BASE_API_URL}/api/genres/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -103,7 +104,7 @@ const CmsGenres = () => {
   };
 
   const deleteGenre = (id) => {
-    fetch(`http://localhost:3001/api/genres/${id}`, {
+    fetch(`${BASE_API_URL}/api/genres/${id}`, {
       method: "DELETE",
     })
       .then((response) => {

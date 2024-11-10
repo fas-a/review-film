@@ -1,6 +1,7 @@
 // components/BookmarkButton.jsx
 import React, { useState, useEffect } from "react";
 import { BookmarkIcon } from "lucide-react";
+import { BASE_API_URL } from '../config';
 
 const BookmarkButton = ({ dramaId }) => {
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -16,7 +17,7 @@ const BookmarkButton = ({ dramaId }) => {
       if (!token) return;
 
       const response = await fetch(
-        `http://localhost:3001/api/bookmarks/check/${dramaId}`,
+        `${BASE_API_URL}/api/bookmarks/check/${dramaId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -40,14 +41,14 @@ const BookmarkButton = ({ dramaId }) => {
       }
 
       if (isBookmarked) {
-        await fetch(`http://localhost:3001/api/bookmarks/${dramaId}`, {
+        await fetch(`${BASE_API_URL}/api/bookmarks/${dramaId}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
       } else {
-        await fetch("http://localhost:3001/api/bookmarks", {
+        await fetch(BASE_API_URL + "/api/bookmarks", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

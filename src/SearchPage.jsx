@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import Filter from "./components/Filter";
 import FilmCardH from "./components/FilmCardH";
 import Header from "./components/Header";
+import { BASE_API_URL } from './config';
 
 function SearchPage() {
   const [searchParams] = useSearchParams();
@@ -18,7 +19,7 @@ function SearchPage() {
   const [selectedAward, setSelectedAward] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/dramas2")
+    fetch(BASE_API_URL + "/api/dramas2")
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);

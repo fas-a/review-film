@@ -3,6 +3,7 @@ import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Pagination from "./components/Pagination.jsx";
 import Alert from "./components/Alert";
+import { BASE_API_URL } from "./config";
 import FilterAndSearch from "./components/FilterAndSearch";
 
 const CmsActors = () => {
@@ -30,7 +31,7 @@ const CmsActors = () => {
   // Fungsi untuk mengambil data actors
   const fetchActors = async () => {
     try {
-      const response = await fetch("http://localhost:3001/api/actors");
+      const response = await fetch(BASE_API_URL + "/api/actors");
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -47,7 +48,7 @@ const CmsActors = () => {
   // Fungsi untuk mengambil data countries
   const fetchCountries = async () => {
     try {
-      const response = await fetch("http://localhost:3001/api/countries");
+      const response = await fetch(BASE_API_URL + "/api/countries");
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -90,7 +91,7 @@ const CmsActors = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:3001/api/actors", {
+      const response = await fetch(BASE_API_URL + "/api/actors", {
         method: "POST",
         body: formData,
       });
@@ -138,7 +139,7 @@ const CmsActors = () => {
 
   const editActor = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/actors/${id}`, {
+      const response = await fetch(`${BASE_API_URL}/api/actors/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -167,7 +168,7 @@ const CmsActors = () => {
 
   const deleteActor = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/actors/${id}`, {
+      const response = await fetch(`${BASE_API_URL}/api/actors/${id}`, {
         method: "DELETE",
       });
 

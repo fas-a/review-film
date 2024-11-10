@@ -7,6 +7,7 @@ import BookmarkButton from "./components/BookmarkButton";
 import Comment from "./components/Comment";
 import CommentForm from "./components/CommentForm";
 import { useEffect, useState } from "react";
+import { BASE_API_URL } from './config';
 
 function DetailFilm() {
   const { id } = useParams();
@@ -22,7 +23,7 @@ function DetailFilm() {
       return;
     }
     try {
-      const response = await fetch("http://localhost:3001/auth/protected", {
+      const response = await fetch("http://149.129.193.127:3001/auth/protected", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -49,7 +50,7 @@ function DetailFilm() {
   };
   useEffect(() => {
     getProtectedData();
-    fetch("http://localhost:3001/api/drama/" + id)
+    fetch("http://149.129.193.127:3001/api/drama/" + id)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);

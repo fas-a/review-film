@@ -3,6 +3,7 @@ import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
+import { BASE_API_URL } from './config';
 
 const CmsDramaInput = () => {
   const [bannerPreview, setBannerPreview] = useState(null);
@@ -62,7 +63,7 @@ const CmsDramaInput = () => {
   }, [selectedCountry]);
 
   const fetchActors = async () => {
-    fetch(`http://localhost:3001/api/actors`)
+    fetch(`${BASE_API_URL}/api/actors`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -89,7 +90,7 @@ const CmsDramaInput = () => {
     // try {
     //   while (hasMoreData) {
     //     const response = await fetch(
-    //       `http://localhost:3001/api/actors?page=${page}&limit=${limit}`
+    //       `${BASE_API_URL}/api/actors?page=${page}&limit=${limit}`
     //     );
     //     const data = await response.json();
     //     setActors((prevActors) => {
@@ -124,7 +125,7 @@ const CmsDramaInput = () => {
     try {
       while (hasMoreData) {
         const response = await fetch(
-          `http://localhost:3001/api/genres?page=${page}&limit=${limit}`
+          `${BASE_API_URL}/api/genres?page=${page}&limit=${limit}`
         );
         const data = await response.json();
 
@@ -152,7 +153,7 @@ const CmsDramaInput = () => {
   };
   
   const fetchAwards = () => {
-    fetch(`http://localhost:3001/api/awards`)
+    fetch(`${BASE_API_URL}/api/awards`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -181,7 +182,7 @@ const CmsDramaInput = () => {
     try {
       while (hasMoreData) {
         const response = await fetch(
-          `http://localhost:3001/api/countries?page=${page}&limit=${limit}`
+          `${BASE_API_URL}/api/countries?page=${page}&limit=${limit}`
         );
         const data = await response.json();
         setCountries((prevCountries) => {
@@ -240,7 +241,7 @@ const CmsDramaInput = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:3001/api/dramas", {
+      const response = await fetch(BASE_API_URL + "/api/dramas", {
         method: "POST",
         body: formData,
       });

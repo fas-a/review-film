@@ -1977,6 +1977,9 @@ video {
   .xl\:grid-cols-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
+  .xl\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
   .xl\:px-40 {
     padding-left: 10rem;
     padding-right: 10rem;

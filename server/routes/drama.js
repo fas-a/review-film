@@ -110,6 +110,21 @@ router.get("/dramas2", async (req, res) => {
   }
 });
 
+router.get("/latest-dramas", async (req, res) => {
+  try {
+    const dramas = await Drama.findAll({
+      order: [["createdAt", "DESC"]],
+      limit: 10,
+    });
+
+    res.json(dramas);
+  } catch (error) {
+    console.error("Error fetching dramas:", error);
+    res.status(500).json({ message: "Failed to fetch dramas" });
+  }
+});
+
+
 router.post("/dramas", multerUploads, uploadToCloudinary, async (req, res) => {
   try {
     const {

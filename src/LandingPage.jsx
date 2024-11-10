@@ -5,6 +5,7 @@ import Filter from "./components/Filter";
 import FilmCardH from "./components/FilmCardH";
 import PaginationHome from "./components/PaginationHome";
 import Header from "./components/Header";
+import { BASE_API_URL } from './config';
 
 function LandingPage() {
   const [films, setFilms] = useState([]);
@@ -18,8 +19,21 @@ function LandingPage() {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedAward, setSelectedAward] = useState("");
   const [sortValue, setSortValue] = useState("");
+  const [latestFilms, setLatestFilms] = useState([]);
 
-  // Fetch data dari backend, berdasarkan page dan limit
+  // Fetch data dari backend, berdasarkan page dan 
+  const fetchLatestFilms = async () => {
+    try {
+      const response = await fetch(BASE_API_URL + "/api/latest-dramas");
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      setLatestFilms(data);
+    } catch (error) {
+      console.error("Error fetching latest films", error);
+    }
+  };
   useEffect(() => {
     const fetchDramas = async () => {
       setLoading(true);
@@ -31,7 +45,7 @@ function LandingPage() {
         });
 
         const response = await fetch(
-          `http://localhost:3001/api/dramas?${queryParams.toString()}`
+          `${BASE_API_URL}/api/dramas?${queryParams.toString()}`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -47,10 +61,11 @@ function LandingPage() {
     };
 
     fetchDramas();
+    fetchLatestFilms();
   }, [currentPage, sortValue]);
 
   useEffect(() => {
-    fetch("http://localhost:3001/session", {
+    fetch(BASE_API_URL + "/session", {
       method: "GET",
       credentials: "include", // Pastikan untuk menyertakan cookies/session
     })
@@ -173,8 +188,7 @@ function LandingPage() {
       <Header />
       <div className="pt-20">
         <Carousel />
-        <SweepCard title="Most View" />
-        <SweepCard title="Most Popular" />
+        <SweepCard dramas={latestFilms} title="Latest Added" />
         <div className="w-full px-4 md:px-20 xl:px-40 grid mt-4">
           <Filter
             selectedGenre={selectedGenre}
