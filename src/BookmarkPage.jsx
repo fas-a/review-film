@@ -4,6 +4,7 @@ import Filter from "./components/Filter";
 import PaginationHome from "./components/PaginationHome";
 import Alert from "./components/Alert";
 import FilmCardH from "./components/FilmCardH";
+import { BASE_API_URL } from './config';
 
 const BookmarkPage = () => {
   const [bookmarks, setBookmarks] = useState([]);
@@ -32,7 +33,7 @@ const BookmarkPage = () => {
         throw new Error("No authentication token found");
       }
 
-      const response = await fetch(`http://localhost:3001/api/bookmarks`, {
+      const response = await fetch(`${BASE_API_URL}/api/bookmarks`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

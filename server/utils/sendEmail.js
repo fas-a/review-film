@@ -11,7 +11,7 @@ async function sendVerificationEmail(to, token) {
     },
   });
 
-  const verificationLink = `http://localhost:3000/verify-email?token=${token}`;
+  const verificationLink = process.env.CLIENT_URL + `/verify-email?token=${token}`;
 
   const mailOptions = {
     from: process.env.EMAIL_USER,

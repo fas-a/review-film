@@ -3,6 +3,7 @@ import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Pagination from "./components/Pagination";
 import Alert from "./components/Alert";
+import { BASE_API_URL } from './config';
 
 const CmsCountries = () => {
   const [countries, setCountries] = useState([]);
@@ -22,7 +23,7 @@ const CmsCountries = () => {
 
   const fetchCountries = (page) => {
     fetch(
-      `http://localhost:3001/api/countries?page=${page}&limit=${itemsPerPage}`
+      `${BASE_API_URL}/api/countries?page=${page}&limit=${itemsPerPage}`
     )
       .then((response) => {
         if (!response.ok) {
@@ -46,7 +47,7 @@ const CmsCountries = () => {
   };
 
   const addCountry = (name) => {
-    fetch("http://localhost:3001/api/countries", {
+    fetch(BASE_API_URL + "/api/countries", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -72,7 +73,7 @@ const CmsCountries = () => {
   };
 
   const editCountry = (id, name) => {
-    fetch(`http://localhost:3001/api/countries/${id}`, {
+    fetch(`${BASE_API_URL}/api/countries/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -103,7 +104,7 @@ const CmsCountries = () => {
   };
 
   const deleteCountry = (id) => {
-    fetch(`http://localhost:3001/api/countries/${id}`, {
+    fetch(`${BASE_API_URL}/api/countries/${id}`, {
       method: "DELETE",
     })
       .then((response) => {

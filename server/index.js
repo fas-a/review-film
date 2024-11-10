@@ -27,7 +27,7 @@ app.use(
 // Middleware express
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: process.env.CLIENT_URL,
     credentials: true,
   })
 );
@@ -43,7 +43,7 @@ passport.use(
     {
       clientID: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:3001/auth/google/callback",
+      callbackURL: process.env.SERVER_URL + "/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -104,7 +104,7 @@ app.get(
     req.session.token = token;
     console.log(req.session);
 
-    res.redirect("http://localhost:3000");
+    res.redirect(process.env.CLIENT_URL);
   }
 );
 

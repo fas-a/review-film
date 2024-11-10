@@ -11,7 +11,7 @@ async function sendResetPasswordEmail(to, token) {
     },
   });
 
-  const verificationLink = `http://localhost:3000/reset-password?token=${token}`;
+  const verificationLink = process.env.CLIENT_URL + `/reset-password?token=${token}`;
 
   const mailOptions = {
     from: process.env.EMAIL_USER,

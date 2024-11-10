@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import Pagination from "./components/Pagination";
 import DramaPopup from "./components/DramaPopup";
 import Select from "react-select";
+import { BASE_API_URL } from './config';
 
 const CmsDramas = () => {
   const [dramas, setDramas] = useState([]);
@@ -57,7 +58,7 @@ const CmsDramas = () => {
   }, [selectedCountry]);
 
   const fetchActors = async () => {
-    fetch(`http://localhost:3001/api/actors`)
+    fetch(`${BASE_API_URL}/api/actors`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -84,7 +85,7 @@ const CmsDramas = () => {
     // try {
     //   while (hasMoreData) {
     //     const response = await fetch(
-    //       `http://localhost:3001/api/actors?page=${page}&limit=${limit}`
+    //       `${BASE_API_URL}/api/actors?page=${page}&limit=${limit}`
     //     );
     //     const data = await response.json();
     //     setActors((prevActors) => {
@@ -119,7 +120,7 @@ const CmsDramas = () => {
     try {
       while (hasMoreData) {
         const response = await fetch(
-          `http://localhost:3001/api/genres?page=${page}&limit=${limit}`
+          `${BASE_API_URL}/api/genres?page=${page}&limit=${limit}`
         );
         const data = await response.json();
 
@@ -152,7 +153,7 @@ const CmsDramas = () => {
   };
 
   const fetchAwards = () => {
-    fetch(`http://localhost:3001/api/awards`)
+    fetch(`${BASE_API_URL}/api/awards`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -181,7 +182,7 @@ const CmsDramas = () => {
     try {
       while (hasMoreData) {
         const response = await fetch(
-          `http://localhost:3001/api/countries?page=${page}&limit=${limit}`
+          `${BASE_API_URL}/api/countries?page=${page}&limit=${limit}`
         );
         const data = await response.json();
         setCountries((prevCountries) => {
@@ -213,7 +214,7 @@ const CmsDramas = () => {
   const fetchDramas = async (page) => {
     try {
       const response = await fetch(
-        `http://localhost:3001/api/dramas?page=${page}&limit=${itemsPerPage}`
+        `${BASE_API_URL}/api/dramas?page=${page}&limit=${itemsPerPage}`
       );
       const data = await response.json();
       setDramas(data.dramas);
@@ -250,7 +251,7 @@ const CmsDramas = () => {
   const [currentDrama, setCurrentDrama] = useState(null);
 
   const editDramaEntry = (id, updatedDrama) => {
-    fetch(`http://localhost:3001/api/dramas/${id}`, {
+    fetch(`${BASE_API_URL}/api/dramas/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json", // Ensure the content type is set to JSON
@@ -275,7 +276,7 @@ const CmsDramas = () => {
 
   const deleteDrama = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/dramas/${id}`, {
+      const response = await fetch(`${BASE_API_URL}/api/dramas/${id}`, {
         method: "DELETE",
       });
 
@@ -370,7 +371,7 @@ const CmsDramas = () => {
   // Fungsi untuk memperbarui status drama
   const handleUpdateStatus = (newStatus, drama_id) => {
     console.log("Updating status to", newStatus);
-    fetch(`http://localhost:3001/api/update-drama-status`, {
+    fetch(`${BASE_API_URL}/api/update-drama-status`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
