@@ -36,7 +36,7 @@ const CmsUsers = () => {
   const fetchUsers = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3001/api/users?page=${currentPage}&limit=${itemsPerPage}&filter=${filterValue}&search=${searchValue}&sort=${sortValue}`
+        `${process.env.REACT_APP_BASE_API_URL}/api/users?page=${currentPage}&limit=${itemsPerPage}&filter=${filterValue}&search=${searchValue}&sort=${sortValue}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
