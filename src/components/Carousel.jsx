@@ -11,7 +11,7 @@ import "./carousel.css";
 // import required modules
 import { Pagination, Navigation } from "swiper/modules";
 
-export default function App() {
+export default function App({dramas}) {
   return (
     <>
       <div className="w-full h-half px-4 md:px-20 xl:px-40 grid mt-4">

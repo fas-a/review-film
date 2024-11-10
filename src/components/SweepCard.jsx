@@ -13,7 +13,7 @@ import FilmCardV from "./FilmCardV";
 // import required modules
 import { FreeMode, Pagination } from "swiper/modules";
 
-export default function App({ title }) {
+export default function App({ dramas, title }) {
   return (
     <>
       <div className="px-4 md:px-20 xl:px-40 grid mt-4">
@@ -23,46 +23,12 @@ export default function App({ title }) {
           </h1>
           <div className="flex overflow-x-auto hide-scroll-bar">
             <div className="flex flex-nowrap py-2 lg:ml-40 md:ml-20 ml-10">
-              <FilmCardV
-                src="./img/poster-film/filmv1.jpg"
-                title="Captain Marvel"
-              />
-              <FilmCardV
-                src="./img/poster-film/filmv2.jpg"
-                title="Guardian of the Galaxy"
-              />
-              <FilmCardV
-                src="./img/poster-film/filmv3.jpg"
-                title="Antman and The Wasp"
-              />
-              <FilmCardV
-                src="./img/poster-film/filmv4.jpg"
-                title="Sang-Chi"
-              />
-              <FilmCardV
-                src="./img/poster-film/filmv5.jpg"
-                title="Jendela Seribu Sungai"
-              />
-              <FilmCardV
-                src="./img/poster-film/filmv1.jpg"
-                title="Captain Marvel"
-              />
-              <FilmCardV
-                src="./img/poster-film/filmv2.jpg"
-                title="Guardian of the Galaxy"
-              />
-              <FilmCardV
-                src="./img/poster-film/filmv3.jpg"
-                title="Antman and The Wasp"
-              />
-              <FilmCardV
-                src="./img/poster-film/filmv4.jpg"
-                title="Sang-Chi"
-              />
-              <FilmCardV
-                src="./img/poster-film/filmv5.jpg"
-                title="Jendela Seribu Sungai"
-              />
+              {dramas.map((drama) => (
+                <FilmCardV
+                  src={drama.poster}
+                  title={drama.title}
+                />
+              ))}
             </div>
           </div>
         </div>
