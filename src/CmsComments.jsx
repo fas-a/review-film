@@ -3,7 +3,7 @@ import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Pagination from "./components/Pagination";
 import FilterAndSearch from "./components/FilterAndSearch";
-import { BASE_API_URL } from './config';
+ 
 
 const CmsComments = () => {
   // Data statis untuk ditampilkan (bisa diganti dengan data dari database)
@@ -76,7 +76,7 @@ const CmsComments = () => {
 
   const updateStatus = async (selectedCommentIds, newStatus) => {
     try {
-      const response = await fetch(BASE_API_URL + "/api/update-status", {
+      const response = await fetch( process.env.REACT_APP_BASE_API_URL + "/api/update-status", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -130,7 +130,7 @@ const CmsComments = () => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await fetch(BASE_API_URL + "/api/comments");
+        const response = await fetch( process.env.REACT_APP_BASE_API_URL + "/api/comments");
         if (!response.ok) throw new Error("Failed to fetch comments");
         const data = await response.json();
         setComments(data);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { BASE_API_URL } from './config';
+ 
 
 function VerifyEmailPage() {
   const [searchParams] = useSearchParams();
@@ -10,7 +10,7 @@ function VerifyEmailPage() {
   useEffect(() => {
     const verifyEmail = async () => {
       const token = searchParams.get("token");
-      const response = await fetch(BASE_API_URL + "/auth/verify-email", {
+      const response = await fetch( process.env.REACT_APP_BASE_API_URL + "/auth/verify-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token }),

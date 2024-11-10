@@ -3,7 +3,7 @@ import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Pagination from "./components/Pagination.jsx";
 import Alert from "./components/Alert";
-import { BASE_API_URL } from "./config";
+ 
 import FilterAndSearch from "./components/FilterAndSearch";
 
 const CmsGenres = () => {
@@ -26,7 +26,7 @@ const CmsGenres = () => {
   }, [currentPage]);
 
   const fetchGenres = (page) => {
-    fetch(`${BASE_API_URL}/api/genres?page=${page}&limit=${itemsPerPage}`)
+    fetch(`${ process.env.REACT_APP_BASE_API_URL}/api/genres?page=${page}&limit=${itemsPerPage}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -49,7 +49,7 @@ const CmsGenres = () => {
   };
 
   const addGenre = (name) => {
-    fetch(BASE_API_URL + "/api/genres", {
+    fetch( process.env.REACT_APP_BASE_API_URL + "/api/genres", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -75,7 +75,7 @@ const CmsGenres = () => {
   };
 
   const editGenre = (id, name) => {
-    fetch(`${BASE_API_URL}/api/genres/${id}`, {
+    fetch(`${ process.env.REACT_APP_BASE_API_URL}/api/genres/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -104,7 +104,7 @@ const CmsGenres = () => {
   };
 
   const deleteGenre = (id) => {
-    fetch(`${BASE_API_URL}/api/genres/${id}`, {
+    fetch(`${ process.env.REACT_APP_BASE_API_URL}/api/genres/${id}`, {
       method: "DELETE",
     })
       .then((response) => {

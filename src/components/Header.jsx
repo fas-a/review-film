@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import icon from "../img/logo-dramaKu.png";
-import { BASE_API_URL } from '../config';
+ 
 
 const Header = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -22,7 +22,7 @@ const Header = () => {
       return;
     }
     try {
-      const response = await fetch(BASE_API_URL + "/auth/protected", {
+      const response = await fetch( process.env.REACT_APP_BASE_API_URL + "/auth/protected", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -66,7 +66,7 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       // Memanggil rute logout di server
-      await fetch(BASE_API_URL + '/logout', {
+      await fetch( process.env.REACT_APP_BASE_API_URL + '/logout', {
         method: 'GET',
         credentials: 'include', // Pastikan untuk mengirimkan cookies jika diperlukan
       });

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { BASE_API_URL } from './config';
+ 
 
 function VerifyEmail() {
   const [message, setMessage] = useState("");
@@ -21,7 +21,7 @@ function VerifyEmail() {
         }
 
         const response = await fetch(
-          BASE_API_URL + "/auth/verify-email",
+           process.env.REACT_APP_BASE_API_URL + "/auth/verify-email",
           {
             method: "POST",
             headers: {

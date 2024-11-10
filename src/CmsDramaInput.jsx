@@ -3,7 +3,7 @@ import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import { useNavigate, useParams } from "react-router-dom";
 import Select from "react-select";
-import { BASE_API_URL } from "./config";
+ 
 
 const CmsDramaInput = () => {
   const { id } = useParams();
@@ -33,7 +33,7 @@ const CmsDramaInput = () => {
 
   const navigate = useNavigate(); // Definisikan navigate
   useEffect(() => {
-    fetch(BASE_API_URL + "/api/drama/" + id)
+    fetch( process.env.REACT_APP_BASE_API_URL + "/api/drama/" + id)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -127,7 +127,7 @@ const CmsDramaInput = () => {
   }, [selectedCountry]);
 
   const fetchActors = async () => {
-    fetch(`${BASE_API_URL}/api/actors`)
+    fetch(`${ process.env.REACT_APP_BASE_API_URL}/api/actors`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -157,7 +157,7 @@ const CmsDramaInput = () => {
     try {
       while (hasMoreData) {
         const response = await fetch(
-          `${BASE_API_URL}/api/genres?page=${page}&limit=${limit}`
+          `${ process.env.REACT_APP_BASE_API_URL}/api/genres?page=${page}&limit=${limit}`
         );
         const data = await response.json();
 
@@ -190,7 +190,7 @@ const CmsDramaInput = () => {
   };
 
   const fetchAwards = () => {
-    fetch(`${BASE_API_URL}/api/awards`)
+    fetch(`${ process.env.REACT_APP_BASE_API_URL}/api/awards`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -219,7 +219,7 @@ const CmsDramaInput = () => {
     try {
       while (hasMoreData) {
         const response = await fetch(
-          `${BASE_API_URL}/api/countries?page=${page}&limit=${limit}`
+          `${ process.env.REACT_APP_BASE_API_URL}/api/countries?page=${page}&limit=${limit}`
         );
         const data = await response.json();
 
@@ -282,8 +282,8 @@ const CmsDramaInput = () => {
     const isEditMode = window.location.pathname.includes('/edit');
     const method = isEditMode ? "PUT" : "POST";
     const apiUrl = isEditMode
-    ? `${BASE_API_URL}/api/dramas/${editDrama.id}` // Pastikan ID drama tersedia untuk PUT
-    : `${BASE_API_URL}/api/dramas`;
+    ? `${ process.env.REACT_APP_BASE_API_URL}/api/dramas/${editDrama.id}` // Pastikan ID drama tersedia untuk PUT
+    : `${ process.env.REACT_APP_BASE_API_URL}/api/dramas`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -304,7 +304,7 @@ const CmsDramaInput = () => {
   };
 
   // const editDramaEntry = (id, updatedDrama) => {
-  //   fetch(`${BASE_API_URL}/api/dramas/${id}`, {
+  //   fetch(`${ process.env.REACT_APP_BASE_API_URL}/api/dramas/${id}`, {
   //     method: "PUT",
   //     headers: {
   //       "Content-Type": "application/json", // Ensure the content type is set to JSON

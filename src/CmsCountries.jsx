@@ -3,7 +3,7 @@ import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Pagination from "./components/Pagination";
 import Alert from "./components/Alert";
-import { BASE_API_URL } from "./config";
+ 
 import FilterAndSearch from "./components/FilterAndSearch";
 
 const CmsCountries = () => {
@@ -27,7 +27,7 @@ const CmsCountries = () => {
   }, [currentPage]);
 
   const fetchCountries = (page) => {
-    fetch(`${BASE_API_URL}/api/countries?page=${page}&limit=${itemsPerPage}`)
+    fetch(`${ process.env.REACT_APP_BASE_API_URL}/api/countries?page=${page}&limit=${itemsPerPage}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -50,7 +50,7 @@ const CmsCountries = () => {
   };
 
   const addCountry = (name) => {
-    fetch(BASE_API_URL + "/api/countries", {
+    fetch( process.env.REACT_APP_BASE_API_URL + "/api/countries", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -76,7 +76,7 @@ const CmsCountries = () => {
   };
 
   const editCountry = (id, name) => {
-    fetch(`${BASE_API_URL}/api/countries/${id}`, {
+    fetch(`${ process.env.REACT_APP_BASE_API_URL}/api/countries/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -107,7 +107,7 @@ const CmsCountries = () => {
   };
 
   const deleteCountry = (id) => {
-    fetch(`${BASE_API_URL}/api/countries/${id}`, {
+    fetch(`${ process.env.REACT_APP_BASE_API_URL}/api/countries/${id}`, {
       method: "DELETE",
     })
       .then((response) => {

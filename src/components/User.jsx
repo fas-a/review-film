@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { BASE_API_URL } from '../config';
+ 
 
 const User = ({ children }) => {
   const [hasAccess, setHasAccess] = useState(null);
@@ -14,7 +14,7 @@ const User = ({ children }) => {
       return;
     }
     try {
-      const response = await fetch(BASE_API_URL + '/auth/protected', {
+      const response = await fetch( process.env.REACT_APP_BASE_API_URL + '/auth/protected', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,

@@ -3,7 +3,7 @@ import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Pagination from "./components/Pagination.jsx";
 import Alert from "./components/Alert";
-import { BASE_API_URL } from "./config";
+ 
 import FilterAndSearch from "./components/FilterAndSearch";
 import Select from "react-select";
 
@@ -28,7 +28,7 @@ const CmsAwards = () => {
 
   const fetchAwards = async () => {
     try {
-      const response = await fetch(BASE_API_URL + "/api/awards");
+      const response = await fetch( process.env.REACT_APP_BASE_API_URL + "/api/awards");
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -51,7 +51,7 @@ const CmsAwards = () => {
     try {
       while (hasMoreData) {
         const response = await fetch(
-          `${BASE_API_URL}/api/countries?page=${page}&limit=${limit}`
+          `${ process.env.REACT_APP_BASE_API_URL}/api/countries?page=${page}&limit=${limit}`
         );
         const data = await response.json();
 
@@ -95,7 +95,7 @@ const CmsAwards = () => {
 
   const addAward = async () => {
     try {
-      const response = await fetch(BASE_API_URL + "/api/awards", {
+      const response = await fetch( process.env.REACT_APP_BASE_API_URL + "/api/awards", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -127,7 +127,7 @@ const CmsAwards = () => {
 
   const editAward = async (id) => {
     try {
-      const response = await fetch(`${BASE_API_URL}/api/awards/${id}`, {
+      const response = await fetch(`${ process.env.REACT_APP_BASE_API_URL}/api/awards/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -162,7 +162,7 @@ const CmsAwards = () => {
 
   const deleteAward = async (id) => {
     try {
-      const response = await fetch(`${BASE_API_URL}/api/awards/${id}`, {
+      const response = await fetch(`${ process.env.REACT_APP_BASE_API_URL}/api/awards/${id}`, {
         method: "DELETE",
       });
 

@@ -7,7 +7,7 @@ import BookmarkButton from "./components/BookmarkButton";
 import Comment from "./components/Comment";
 import CommentForm from "./components/CommentForm";
 import { useEffect, useState } from "react";
-import { BASE_API_URL } from './config';
+ 
 
 function DetailFilm() {
   const { id } = useParams();
@@ -23,7 +23,7 @@ function DetailFilm() {
       return;
     }
     try {
-      const response = await fetch(BASE_API_URL + "auth/protected", {
+      const response = await fetch( process.env.REACT_APP_BASE_API_URL + "auth/protected", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -50,7 +50,7 @@ function DetailFilm() {
   };
   useEffect(() => {
     getProtectedData();
-    fetch(BASE_API_URL + "/api/drama/" + id)
+    fetch( process.env.REACT_APP_BASE_API_URL + "/api/drama/" + id)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);

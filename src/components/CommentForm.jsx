@@ -1,6 +1,6 @@
 import { StarRating } from "star-ratings-react";
 import { useState } from "react";
-import { BASE_API_URL } from '../config';
+ 
 
 function CommentForm({ user, drama}) {
   const [rating, setRating] = useState(0);
@@ -14,7 +14,7 @@ function CommentForm({ user, drama}) {
       user,
       drama,
     };
-    fetch(BASE_API_URL + "/api/comment", {
+    fetch( process.env.REACT_APP_BASE_API_URL + "/api/comment", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

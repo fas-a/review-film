@@ -5,7 +5,7 @@ import Filter from "./components/Filter";
 import FilmCardH from "./components/FilmCardH";
 import PaginationHome from "./components/PaginationHome";
 import Header from "./components/Header";
-import { BASE_API_URL } from './config';
+ 
 
 function LandingPage() {
   const [films, setFilms] = useState([]);
@@ -24,7 +24,7 @@ function LandingPage() {
   // Fetch data dari backend, berdasarkan page dan 
   const fetchLatestFilms = async () => {
     try {
-      const response = await fetch(BASE_API_URL + "/api/latest-dramas");
+      const response = await fetch( process.env.REACT_APP_BASE_API_URL + "/api/latest-dramas");
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -45,7 +45,7 @@ function LandingPage() {
         });
 
         const response = await fetch(
-          `${BASE_API_URL}/api/dramas?${queryParams.toString()}`
+          `${ process.env.REACT_APP_BASE_API_URL}/api/dramas?${queryParams.toString()}`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -65,7 +65,7 @@ function LandingPage() {
   }, [currentPage, sortValue]);
 
   useEffect(() => {
-    fetch(BASE_API_URL + "/session", {
+    fetch( process.env.REACT_APP_BASE_API_URL + "/session", {
       method: "GET",
       credentials: "include", // Pastikan untuk menyertakan cookies/session
     })

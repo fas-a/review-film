@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import LoginForm from "./components/LoginForm";
-import { BASE_API_URL } from './config';
+ 
 
 const LoginPage = () => {
   const [emailOrUsername, setEmailOrUsername] = useState("");
@@ -11,7 +11,7 @@ const LoginPage = () => {
     e.preventDefault();
     setError(""); // Reset error message
     try {
-      const response = await fetch(BASE_API_URL + "/auth/login", {
+      const response = await fetch( process.env.REACT_APP_BASE_API_URL + "/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ emailOrUsername, password }),
@@ -33,7 +33,7 @@ const LoginPage = () => {
 
   // const handleLogin = async (e) => {
   //   e.preventDefault();
-  //   const response = await fetch(BASE_API_URL + "/auth/login", {
+  //   const response = await fetch( process.env.REACT_APP_BASE_API_URL + "/auth/login", {
   //     method: "POST",
   //     headers: { "Content-Type": "application/json" },
   //     body: JSON.stringify({ emailOrUsername, password }),
@@ -112,7 +112,7 @@ const LoginPage = () => {
                 </form>
                 <hr className="my-8" />
                 <a
-                  href={`${BASE_API_URL}/auth/google`}
+                  href={`${ process.env.REACT_APP_BASE_API_URL}/auth/google`}
                   className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium leading-5 text-white text-gray-700 transition-colors duration-150 border border-gray-300 rounded-lg dark:text-gray-400 active:bg-transparent hover:border-gray-500 focus:border-gray-500 active:text-gray-500 focus:outline-none focus:shadow-outline-gray"
                 >
                   <svg

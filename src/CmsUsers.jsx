@@ -3,7 +3,7 @@ import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Pagination from "./components/Pagination";
 import Alert from "./components/Alert";
-import { BASE_API_URL } from "./config";
+ 
 import FilterAndSearch from "./components/FilterAndSearch";
 
 const CmsUsers = () => {
@@ -92,7 +92,7 @@ const CmsUsers = () => {
   };
 
   // const fetchUsers = (page) => {
-  //   fetch(`${BASE_API_URL}/api/users?page=${page}&limit=${itemsPerPage}`)
+  //   fetch(`${ process.env.REACT_APP_BASE_API_URL}/api/users?page=${page}&limit=${itemsPerPage}`)
   //     .then((response) => {
   //       if (!response.ok) {
   //         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -115,7 +115,7 @@ const CmsUsers = () => {
   };
 
   const addUser = (userData) => {
-    fetch(BASE_API_URL + "/api/users", {
+    fetch( process.env.REACT_APP_BASE_API_URL + "/api/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -141,7 +141,7 @@ const CmsUsers = () => {
   };
 
   const updateUser = (id, userData) => {
-    fetch(`${BASE_API_URL}/api/users/${id}`, {
+    fetch(`${ process.env.REACT_APP_BASE_API_URL}/api/users/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -168,7 +168,7 @@ const CmsUsers = () => {
   };
 
   const deleteUser = (id) => {
-    fetch(`${BASE_API_URL}/api/users/${id}`, {
+    fetch(`${ process.env.REACT_APP_BASE_API_URL}/api/users/${id}`, {
       method: "DELETE",
     })
       .then((response) => {

@@ -4,7 +4,7 @@ import Header from "./components/Header";
 import Pagination from "./components/Pagination";
 import DramaPopup from "./components/DramaPopup";
 import Select from "react-select";
-import { BASE_API_URL } from './config';
+ 
 import FilterAndSearch from "./components/FilterAndSearch";
 import { useNavigate } from "react-router-dom";
 
@@ -81,7 +81,7 @@ const CmsDramas = () => {
   const fetchDramas = async (page) => {
     try {
       const response = await fetch(
-        `${BASE_API_URL}/api/dramas?page=${page}&limit=${itemsPerPage}`
+        `${ process.env.REACT_APP_BASE_API_URL}/api/dramas?page=${page}&limit=${itemsPerPage}`
       );
       const data = await response.json();
       setDramas(data.dramas);
@@ -105,7 +105,7 @@ const CmsDramas = () => {
 
   const deleteDrama = async (id) => {
     try {
-      const response = await fetch(`${BASE_API_URL}/api/dramas/${id}`, {
+      const response = await fetch(`${ process.env.REACT_APP_BASE_API_URL}/api/dramas/${id}`, {
         method: "DELETE",
       });
 
@@ -142,7 +142,7 @@ const CmsDramas = () => {
   // Fungsi untuk memperbarui status drama
   const handleUpdateStatus = (newStatus, drama_id) => {
     console.log("Updating status to", newStatus);
-    fetch(`${BASE_API_URL}/api/update-drama-status`, {
+    fetch(`${ process.env.REACT_APP_BASE_API_URL}/api/update-drama-status`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
