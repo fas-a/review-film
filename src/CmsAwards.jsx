@@ -5,6 +5,7 @@ import Pagination from "./components/Pagination.jsx";
 import Alert from "./components/Alert";
 import { BASE_API_URL } from "./config";
 import FilterAndSearch from "./components/FilterAndSearch";
+import Select from "react-select";
 
 const CmsAwards = () => {
   const [awards, setAwards] = useState([]);
@@ -22,6 +23,7 @@ const CmsAwards = () => {
   const [searchValue, setSearchValue] = useState("");
   const [sortValue, setSortValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedCountry, setSelectedCountry] = useState("");
   const itemsPerPage = parseInt(showValue, 10);
 
   const fetchAwards = async () => {
@@ -49,7 +51,13 @@ const CmsAwards = () => {
       }
       const data = await response.json();
       console.log("Countries data:", data); // Debugging
-      setCountries(data.countries || data); // Handle both {countries: [...]} or direct array response
+      setCountries(() => {
+        const updatedCountries = data.countries.map((newCountry) => ({
+          value: newCountry.id,
+          label: newCountry.name,
+        }));
+        return updatedCountries;
+      });
     } catch (error) {
       console.error("Error fetching countries:", error);
       showAlert("Failed to fetch countries data", "error");
@@ -218,6 +226,11 @@ const CmsAwards = () => {
     setCurrentPage(1);
   }, [filterValue, searchValue, showValue, sortValue]);
 
+  useEffect(() => {
+    setCountryId(selectedCountry.value);
+    setEditCountryId(selectedCountry.value);
+  }, [selectedCountry]);
+
   const indexOfLastAward = currentPage * itemsPerPage;
   const indexOfFirstAward = indexOfLastAward - itemsPerPage;
   const displayedAwards = processedAwards.slice(
@@ -327,20 +340,13 @@ const CmsAwards = () => {
                       >
                         Country
                       </label>
-                      <select
-                        id="country"
-                        required
-                        value={countryId}
-                        onChange={(e) => setCountryId(e.target.value)}
-                        className="w-full px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
-                      >
-                        <option value="">Select Country</option>
-                        {countries.map((country) => (
-                          <option key={country.id} value={country.id}>
-                            {country.name}
-                          </option>
-                        ))}
-                      </select>
+                      <Select
+                        onChange={setSelectedCountry}
+                        options={countries}
+                        placeholder="Select a country"
+                        maxMenuHeight={190}
+                        menuPlacement="top"
+                      />
                     </div>
 
                     <button
@@ -403,12 +409,22 @@ const CmsAwards = () => {
                           </td>
 
                           <td className="px-4 py-3 text-sm">
-                            {/* Display country name (not editable) */}
-                            {
+                            {editableId === award?.id ? (
+                              <Select
+                                defaultValue={countries.find(
+                                  (country) => country.value === editCountryId
+                                )}
+                                onChange={setSelectedCountry}
+                                options={countries}
+                                placeholder="Select a country"
+                                maxMenuHeight={190}
+                                menuPlacement="auto"
+                              />
+                            ) : (
                               countries.find(
-                                (country) => country.id === award.country_id
-                              )?.name
-                            }
+                                (country) => country.value === award.country_id
+                              )?.label
+                            )}
                           </td>
 
                           <td className="px-4 py-3">
