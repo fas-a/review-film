@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
-function FilmCardV({ src, title }) {
+function FilmCardV({ id, src, title }) {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -10,8 +10,9 @@ function FilmCardV({ src, title }) {
   }, []);
 
   const handleClick = () => {
-    navigate('/detail');
+    navigate('/detail/' + id);
   };
+  console.log(id);
   return (
     <>
       <div className="inline-block px-3">

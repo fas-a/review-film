@@ -25,6 +25,7 @@ export default function App({ dramas, title }) {
             <div className="flex flex-nowrap py-2 lg:ml-40 md:ml-20 ml-10">
               {dramas.map((drama) => (
                 <FilmCardV
+                  id={drama.id}
                   src={drama.poster}
                   title={drama.title}
                 />

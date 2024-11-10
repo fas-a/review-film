@@ -213,13 +213,13 @@ const BookmarkPage = () => {
                     Loading...
                   </p>
                 ) : getPaginatedBookmarks().length > 0 ? (
-                  <div className="w-full px-4 md:px-20 xl:px-40 grid mt-4">
-                    <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
+                  <div className="w-full px-2 grid mt-4">
+                    <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-3">
                       {getPaginatedBookmarks().map((film) => (
                         <FilmCardH
                           key={film.id}
                           id={film.id}
-                          src={film.poster || "./img/film.jpg"}
+                          src={film.poster}
                           title={film.title}
                           synopsis={film.synopsis}
                           year={film.year}
