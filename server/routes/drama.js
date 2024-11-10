@@ -886,7 +886,7 @@ router.post("/actors", multerUploads, uploadToCloudinary, async (req, res) => {
 router.put("/actors/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, birth_date, photo, country_id } = req.body;
+    const { name, birth_date, country_id } = req.body;
 
     const actor = await Actor.findByPk(id);
     if (!actor) {
@@ -895,7 +895,6 @@ router.put("/actors/:id", async (req, res) => {
 
     actor.name = name;
     actor.birth_date = birth_date;
-    actor.photo = photo;
     actor.country_id = country_id;
     await actor.save();
 

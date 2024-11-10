@@ -307,85 +307,6 @@ const CmsUsers = () => {
                   onClose={() => setAlert({ message: "", type: "" })}
                 />
               )}
-
-              {/* <div className="w-full overflow-hidden rounded-lg shadow-xs">
-                <div className="w-full overflow-x-auto">
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      if (newUser.username && newUser.email && newUser.role) {
-                        addUser(newUser);
-                      }
-                    }}
-                    className="p-6 bg-white rounded-lg shadow-md dark:bg-gray-800"
-                  >
-                    <div className="mb-4">
-                      <label
-                        htmlFor="username"
-                        className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2"
-                      >
-                        Username
-                      </label>
-                      <input
-                        type="text"
-                        id="username"
-                        name="username"
-                        required
-                        value={newUser.username}
-                        onChange={(e) =>
-                          setNewUser({ ...newUser, username: e.target.value })
-                        }
-                        className="w-full px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <label
-                        htmlFor="email"
-                        className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2"
-                      >
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        required
-                        value={newUser.email}
-                        onChange={(e) =>
-                          setNewUser({ ...newUser, email: e.target.value })
-                        }
-                        className="w-full px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <label
-                        htmlFor="role"
-                        className="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2"
-                      >
-                        Role
-                      </label>
-                      <input
-                        type="text"
-                        id="role"
-                        name="role"
-                        required
-                        value={newUser.role}
-                        onChange={(e) =>
-                          setNewUser({ ...newUser, role: e.target.value })
-                        }
-                        className="w-full px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
-                      />
-                    </div>
-                    <button
-                      type="submit"
-                      className="px-4 py-2 text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-                    >
-                      Submit
-                    </button>
-                  </form>
-                </div>
-              </div> */}
-
               <div className="w-full overflow-hidden rounded-lg shadow-xs mt-8">
                 <div className="w-full overflow-x-auto">
                   <table className="w-full whitespace-no-wrap">
@@ -409,53 +330,24 @@ const CmsUsers = () => {
                             {index + 1 + (currentPage - 1) * itemsPerPage}
                           </td>
                           <td className="px-4 py-3 text-sm">
-                            {editableId === user.id ? (
-                              <input
-                                type="text"
-                                value={editUser.username}
-                                onChange={(e) =>
-                                  setEditUser({
-                                    ...editUser,
-                                    username: e.target.value,
-                                  })
-                                }
-                                className="w-[150px] px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
-                              />
-                            ) : (
-                              <span
-                                onDoubleClick={() => handleEditClick(user)}
-                                className="w-[150px] inline-block"
-                              >
-                                {user.username}
-                              </span>
-                            )}
+                            <span
+                              onDoubleClick={() => handleEditClick(user)}
+                              className="w-[150px] inline-block"
+                            >
+                              {user.username}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-sm">
+                            <span
+                              onDoubleClick={() => handleEditClick(user)}
+                              className="w-[200px] inline-block"
+                            >
+                              {user.email}
+                            </span>
                           </td>
                           <td className="px-4 py-3 text-sm">
                             {editableId === user.id ? (
-                              <input
-                                type="email"
-                                value={editUser.email}
-                                onChange={(e) =>
-                                  setEditUser({
-                                    ...editUser,
-                                    email: e.target.value,
-                                  })
-                                }
-                                className="w-[200px] px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
-                              />
-                            ) : (
-                              <span
-                                onDoubleClick={() => handleEditClick(user)}
-                                className="w-[200px] inline-block"
-                              >
-                                {user.email}
-                              </span>
-                            )}
-                          </td>
-                          <td className="px-4 py-3 text-sm">
-                            {editableId === user.id ? (
-                              <input
-                                type="text"
+                              <select
                                 value={editUser.role}
                                 onChange={(e) =>
                                   setEditUser({
@@ -463,8 +355,11 @@ const CmsUsers = () => {
                                     role: e.target.value,
                                   })
                                 }
-                                className="w-[100px] px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
-                              />
+                                className="px-3 py-2 text-sm leading-5 text-gray-700 border border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 focus:outline-none focus:ring focus:border-blue-500"
+                              >
+                                <option value="User">User</option>
+                                <option value="Admin">Admin</option>
+                              </select>
                             ) : (
                               <span
                                 onDoubleClick={() => handleEditClick(user)}
@@ -530,7 +425,7 @@ const CmsUsers = () => {
                                 </svg>
                                 <span className="ml-2">Suspend</span>
                               </button> */}
-                              {/* {editableId === user.id ? (
+                              {editableId === user.id ? (
                                 <>
                                   <button
                                     className="save-btn flex items-center justify-between w-[100px] px-4 py-2 text-sm font-medium leading-5 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue"
@@ -582,7 +477,7 @@ const CmsUsers = () => {
                                   </svg>
                                   <span className="ml-2">Edit</span>
                                 </button>
-                              )} */}
+                              )}
 
                               <button
                                 className="delete-btn flex items-center justify-between w-[100px] px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:shadow-outline-red"
