@@ -144,6 +144,14 @@ root.render(
             </User>
           }
         />
+        <Route
+          path="/editdrama/:id"
+          element={
+            <User>
+              <CmsDramaInput />
+            </User>
+          }
+        />
       </Routes>
     </Router>
   </React.StrictMode>

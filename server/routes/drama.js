@@ -205,6 +205,96 @@ router.post("/dramas", multerUploads, uploadToCloudinary, async (req, res) => {
   }
 });
 
+router.put("/dramas/:id", multerUploads, uploadToCloudinary, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      title,
+      alt_title,
+      year,
+      country_id,
+      synopsis,
+      availability,
+      link_trailer,
+      awards,
+      genres,
+      actors,
+    } = req.body;
+
+    const poster = req.body.photo;
+
+    const drama = await Drama.findByPk(id);
+    if (!drama) {
+      return res.status(404).json({ message: "Drama not found" });
+    }
+
+    await AwardDrama.destroy({ where: { drama_id: id } });
+    await GenreDrama.destroy({ where: { drama_id: id } });
+    await ActorDrama.destroy({ where: { drama_id: id } });
+
+    drama.title = title;
+    drama.alt_title = alt_title;
+    drama.year = year;
+    drama.country_id = country_id;
+    drama.synopsis = synopsis;
+    drama.availability = availability;
+    drama.link_trailer = link_trailer;
+    drama.poster = poster;
+
+    await drama.save();
+
+    // Hapus semua award, genre, dan actor terkait
+
+    if (drama && awards) {
+      // Pastikan `awards` selalu berupa array
+      const awardsArray = JSON.parse(awards);
+      // Hanya eksekusi jika awardsArray berisi setidaknya satu elemen yang valid
+      if (awardsArray.length > 0) {
+        await Promise.all(
+          awardsArray.map(async (award_id) => {
+            await AwardDrama.create({
+              award_id,
+              drama_id: drama.id,
+            });
+          })
+        );
+      }
+    }
+
+    if (drama && genres) {
+      const genresArray = JSON.parse(genres)
+      if (genresArray.length > 0) {
+        await Promise.all(
+          genresArray.map(async (genre_id) => {
+            await GenreDrama.create({
+              genre_id,
+              drama_id: drama.id,
+            });
+          })
+        );
+      }
+    }
+
+    if (drama && actors) {
+      const actorsArray = JSON.parse(actors)
+      if (actorsArray.length > 0) {
+        await Promise.all(
+          actorsArray.map(async (actor_id) => {
+            await ActorDrama.create({
+              actor_id,
+              drama_id: drama.id,
+            });
+          })
+        );
+      }
+    }
+    res.json(drama);
+  } catch (error) {
+    console.error("Error updating drama:", error);
+    res.status(500).json({ message: "Failed to update drama" });
+  }
+});
+
 router.get("/drama/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -269,91 +359,6 @@ router.delete("/dramas/:id", async (req, res) => {
   } catch (error) {
     console.error("Error deleting drama:", error);
     res.status(500).json({ message: "Failed to delete drama" });
-  }
-});
-
-router.put("/dramas/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const {
-      title,
-      alt_title,
-      year,
-      country_id,
-      synopsis,
-      availability,
-      link_trailer,
-      awards,
-      genres,
-      actors,
-    } = req.body;
-
-    const drama = await Drama.findByPk(id);
-    if (!drama) {
-      return res.status(404).json({ message: "Drama not found" });
-    }
-
-    await AwardDrama.destroy({ where: { drama_id: id } });
-    await GenreDrama.destroy({ where: { drama_id: id } });
-    await ActorDrama.destroy({ where: { drama_id: id } });
-
-    drama.title = title;
-    drama.alt_title = alt_title;
-    drama.year = year;
-    drama.country_id = country_id;
-    drama.synopsis = synopsis;
-    drama.availability = availability;
-    drama.link_trailer = link_trailer;
-
-    await drama.save();
-
-    // Hapus semua award, genre, dan actor terkait
-
-    if (drama && awards) {
-      // Pastikan `awards` selalu berupa array
-
-      // Hanya eksekusi jika awardsArray berisi setidaknya satu elemen yang valid
-      if (awards.length > 0) {
-        await Promise.all(
-          awards.map(async (award_id) => {
-            await AwardDrama.create({
-              award_id,
-              drama_id: drama.id,
-            });
-          })
-        );
-      }
-    }
-
-    if (drama && genres) {
-      if (genres.length > 0) {
-        await Promise.all(
-          genres.map(async (genre_id) => {
-            await GenreDrama.create({
-              genre_id,
-              drama_id: drama.id,
-            });
-          })
-        );
-      }
-    }
-
-    if (drama && actors) {
-      if (actors.length > 0) {
-        await Promise.all(
-          actors.map(async (actor_id) => {
-            await ActorDrama.create({
-              actor_id,
-              drama_id: drama.id,
-            });
-          })
-        );
-      }
-    }
-    res.json(drama);
-  } catch (error) {
-    console.error("Error updating drama:", error);
-    res.status(500).json({ message: "Failed to update drama" });
   }
 });
 

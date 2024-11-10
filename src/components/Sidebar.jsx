@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { BASE_API_URL } from '../config';
 
 export default function Sidebar() {
   const [submenuDramasOpen, setSubmenuDramasOpen] = useState(false);
@@ -22,7 +23,7 @@ export default function Sidebar() {
       return;
     }
     try {
-      const response = await fetch("http://localhost:3001/auth/protected", {
+      const response = await fetch(BASE_API_URL + "/auth/protected", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -50,7 +51,7 @@ export default function Sidebar() {
   const handleLogout = async () => {
     try {
       // Memanggil rute logout di server
-      await fetch("http://localhost:3001/logout", {
+      await fetch(BASE_API_URL + "/logout", {
         method: "GET",
         credentials: "include", // Pastikan untuk mengirimkan cookies jika diperlukan
       });

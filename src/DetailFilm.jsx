@@ -23,7 +23,7 @@ function DetailFilm() {
       return;
     }
     try {
-      const response = await fetch("http://149.129.193.127:3001/auth/protected", {
+      const response = await fetch(BASE_API_URL + "auth/protected", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -50,7 +50,7 @@ function DetailFilm() {
   };
   useEffect(() => {
     getProtectedData();
-    fetch("http://149.129.193.127:3001/api/drama/" + id)
+    fetch(BASE_API_URL + "/api/drama/" + id)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);

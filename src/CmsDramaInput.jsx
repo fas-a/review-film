@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Select from "react-select";
-import { BASE_API_URL } from './config';
+import { BASE_API_URL } from "./config";
 
 const CmsDramaInput = () => {
+  const { id } = useParams();
   const [bannerPreview, setBannerPreview] = useState(null);
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
@@ -15,6 +16,7 @@ const CmsDramaInput = () => {
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [actors, setActors] = useState([]);
   const [selectedActors, setSelectedActors] = useState([]);
+  const [editDrama, setEditDrama] = useState(null);
   const [newDrama, setNewDrama] = useState({
     title: "",
     altTitle: "",
@@ -24,18 +26,80 @@ const CmsDramaInput = () => {
     availability: "",
     trailer: "",
     awards: [],
-    genres: [], 
+    genres: [],
     actors: [],
     photo: "",
   });
 
   const navigate = useNavigate(); // Definisikan navigate
   useEffect(() => {
+    fetch(BASE_API_URL + "/api/drama/" + id)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setEditDrama(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching film", error);
+      });
     fetchCountries();
     fetchAwards();
     fetchGenres();
     fetchActors();
   }, []);
+
+  useEffect(() => {
+    if (editDrama) {
+      setNewDrama({
+        title: editDrama.title,
+        altTitle: editDrama.alt_title,
+        year: editDrama.year,
+        country: editDrama.country_id,
+        synopsis: editDrama.synopsis,
+        availability: editDrama.availability,
+        trailer: editDrama.link_trailer,
+        awards: editDrama.Awards.map((award) => ({
+          value: award.id,
+          label: award.name + " - " + award.year,
+        })),
+        genres: editDrama.Genres.map((genre) => ({
+          value: genre.id,
+          label: genre.name,
+        })),
+        actors: editDrama.Actors.map((actor) => ({
+          value: actor.id,
+          label: actor.name,
+          photo: actor.photo,
+        })),
+        photo: editDrama.photo,
+      });
+
+      setSelectedCountry(editDrama.country_id);
+      setSelectedAwards(
+        editDrama.Awards.map((award) => ({
+          value: award.id,
+          label: award.name + " - " + award.year,
+        }))
+      );
+      setSelectedGenres(
+        editDrama.Genres.map((genre) => ({
+          value: genre.id,
+          label: genre.name,
+        }))
+      );
+      setSelectedActors(
+        editDrama.Actors.map((actor) => ({
+          value: actor.id,
+          label: actor.name,
+          photo: actor.photo,
+        }))
+      );
+    }
+  }, [editDrama]);
 
   useEffect(() => {
     setNewDrama({
@@ -83,38 +147,6 @@ const CmsDramaInput = () => {
       .catch((error) => {
         console.error("Error fetching awards:", error);
       });
-    // const limit = 10; // Tentukan limit data per halaman
-    // let page = 1;
-    // let hasMoreData = true;
-
-    // try {
-    //   while (hasMoreData) {
-    //     const response = await fetch(
-    //       `${BASE_API_URL}/api/actors?page=${page}&limit=${limit}`
-    //     );
-    //     const data = await response.json();
-    //     setActors((prevActors) => {
-    //       const newActors = data.genres.filter(
-    //         (newActor) => !prevActors.some((actor) => actor.id === newActor.id)
-    //       );
-    //       const transformedData = [
-    //         ...prevActors,
-    //         ...newActors.map((actor) => ({
-    //           value: actor.id,
-    //           label: actor.name,
-    //           img: actor.photo,
-    //         })),
-    //       ];
-    //       return transformedData;
-    //     });
-
-    //     // Cek apakah masih ada data yang perlu diambil
-    //     hasMoreData = data.genres.length === limit;
-    //     page += 1;
-    //   }
-    // } catch (error) {
-    //   console.error("Error fetching genres:", error);
-    // }
   };
 
   const fetchGenres = async () => {
@@ -131,11 +163,16 @@ const CmsDramaInput = () => {
 
         setGenres((prevGenres) => {
           // Menggabungkan genre baru dengan genre sebelumnya tanpa duplikat
-          const genreMap = new Map(prevGenres.map(genre => [genre.value, genre]));
+          const genreMap = new Map(
+            prevGenres.map((genre) => [genre.value, genre])
+          );
 
           data.genres.forEach((newGenre) => {
             if (!genreMap.has(newGenre.id)) {
-              genreMap.set(newGenre.id, { value: newGenre.id, label: newGenre.name });
+              genreMap.set(newGenre.id, {
+                value: newGenre.id,
+                label: newGenre.name,
+              });
             }
           });
 
@@ -151,7 +188,7 @@ const CmsDramaInput = () => {
       console.error("Error fetching genres:", error);
     }
   };
-  
+
   const fetchAwards = () => {
     fetch(`${BASE_API_URL}/api/awards`)
       .then((response) => {
@@ -185,21 +222,24 @@ const CmsDramaInput = () => {
           `${BASE_API_URL}/api/countries?page=${page}&limit=${limit}`
         );
         const data = await response.json();
+
         setCountries((prevCountries) => {
-          const newCountries = data.countries.filter(
-            (newCountry) =>
-              !prevCountries.some((country) => country.id === newCountry.id)
+          // Menggabungkan data negara baru dengan negara sebelumnya tanpa duplikat
+          const countryMap = new Map(
+            prevCountries.map((country) => [country.value, country])
           );
 
-          const transformedData = [
-            ...prevCountries,
-            ...newCountries.map((country) => ({
-              value: country.id,
-              label: country.name,
-            })),
-          ];
+          data.countries.forEach((newCountry) => {
+            if (!countryMap.has(newCountry.id)) {
+              countryMap.set(newCountry.id, {
+                value: newCountry.id,
+                label: newCountry.name,
+              });
+            }
+          });
 
-          return transformedData;
+          // Ubah Map kembali menjadi array
+          return Array.from(countryMap.values());
         });
 
         // Cek apakah masih ada data yang perlu diambil
@@ -207,7 +247,7 @@ const CmsDramaInput = () => {
         page += 1;
       }
     } catch (error) {
-      console.error("Error fetching genres:", error);
+      console.error("Error fetching countries:", error);
     }
   };
 
@@ -239,24 +279,53 @@ const CmsDramaInput = () => {
     if (newDrama.photo) {
       formData.append("photo", newDrama.photo);
     }
+    const isEditMode = window.location.pathname.includes('/edit');
+    const method = isEditMode ? "PUT" : "POST";
+    const apiUrl = isEditMode
+    ? `${BASE_API_URL}/api/dramas/${editDrama.id}` // Pastikan ID drama tersedia untuk PUT
+    : `${BASE_API_URL}/api/dramas`;
 
     try {
-      const response = await fetch(BASE_API_URL + "/api/dramas", {
-        method: "POST",
+      const response = await fetch(apiUrl, {
+        method: method,
         body: formData,
       });
 
       if (response.ok) {
-        alert("Drama added successfully!");
-        resetForm();
+        alert(isEditMode ? "Drama updated successfully!" : "Drama added successfully!");
+        navigate('/cmsdramas');
       } else {
-        alert("Failed to add drama!");
+        alert(isEditMode ? "Failed to update drama!" : "Failed to add drama!");
       }
     } catch (error) {
-      console.error("Error adding drama:", error);
-      alert("Failed to add drama!");
+      console.error("Error submitting drama:", error);
+      alert(isEditMode ? "Failed to update drama!" : "Failed to add drama!");
     }
   };
+
+  // const editDramaEntry = (id, updatedDrama) => {
+  //   fetch(`${BASE_API_URL}/api/dramas/${id}`, {
+  //     method: "PUT",
+  //     headers: {
+  //       "Content-Type": "application/json", // Ensure the content type is set to JSON
+  //     },
+  //     body: JSON.stringify(updatedDrama),
+  //   })
+  //     .then((response) => {
+  //       if (response.ok) {
+  //         setDramas(
+  //           dramas.map((drama) =>
+  //             drama.id === id ? { ...drama, ...updatedDrama } : drama
+  //           )
+  //         );
+  //       } else {
+  //         throw new Error("Failed to update drama");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error updating drama:", error);
+  //     });
+  // };
 
   const resetForm = () => {
     setNewDrama({
@@ -277,7 +346,7 @@ const CmsDramaInput = () => {
     setSelectedAwards([]);
     setSelectedGenres([]);
     setSelectedActors([]);
-  }
+  };
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
@@ -342,6 +411,7 @@ const CmsDramaInput = () => {
                             type="text"
                             id="title"
                             name="title"
+                            value={newDrama.title}
                             className="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700"
                             placeholder="Enter the drama title"
                             onChange={(e) => {
@@ -363,6 +433,7 @@ const CmsDramaInput = () => {
                             type="text"
                             id="altTitle"
                             name="altTitle"
+                            value={newDrama.altTitle}
                             className="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700"
                             placeholder="Enter the alternative title"
                             onChange={(e) => {
@@ -388,6 +459,7 @@ const CmsDramaInput = () => {
                             pattern="[0-9]*"
                             id="year"
                             name="year"
+                            value={newDrama.year}
                             className="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700 h-10"
                             autoComplete="off"
                             placeholder="Enter the year"
@@ -412,18 +484,26 @@ const CmsDramaInput = () => {
                             Country
                           </label>
                           {countries.length > 0 ? (
-                            <Select
-                              defaultValue={selectedCountry}
-                              onChange={setSelectedCountry}
-                              options={countries}
-                              placeholder="Select a country"
-                            />
+                            editDrama ||
+                            !window.location.pathname.includes("/edit") ? (
+                              <Select
+                                defaultValue={
+                                  editDrama
+                                    ? countries.find(
+                                        (country) =>
+                                          country.value === editDrama.country_id
+                                      )
+                                    : null
+                                }
+                                onChange={setSelectedCountry}
+                                options={countries}
+                                placeholder="Select a country"
+                              />
+                            ) : (
+                              <p>Loading...</p> // atau komponen loader yang sesuai
+                            )
                           ) : (
-                            <Select
-                              placeholder="Select a country"
-                              isLoading="true"
-                              isDisabled="true"
-                            />
+                            <p>Loading...</p>
                           )}
                         </div>
 
@@ -439,6 +519,7 @@ const CmsDramaInput = () => {
                             id="synopsis"
                             name="synopsis"
                             rows="4"
+                            value={newDrama.synopsis}
                             className="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700"
                             onChange={(e) => {
                               setNewDrama({
@@ -462,6 +543,7 @@ const CmsDramaInput = () => {
                             type="text"
                             id="availability"
                             name="availability"
+                            value={newDrama.availability}
                             className="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700"
                             placeholder="Ex: Fansub: @xxosub on X"
                             onChange={(e) => {
@@ -485,6 +567,7 @@ const CmsDramaInput = () => {
                             type="text"
                             id="trailer"
                             name="trailer"
+                            value={newDrama.trailer}
                             className="mt-1 block w-full p-2 border border-gray-300 rounded-md text-gray-700"
                             placeholder="Enter the trailer link"
                             onChange={(e) => {
@@ -503,19 +586,27 @@ const CmsDramaInput = () => {
                             Awards
                           </label>
                           {awards.length > 0 ? (
-                            <Select
-                              defaultValue={selectedAwards}
-                              onChange={setSelectedAwards}
-                              isMulti="true"
-                              options={awards}
-                              placeholder="Select Awards"
-                            />
+                            editDrama ||
+                            !window.location.pathname.includes("/edit") ? (
+                              <Select
+                                defaultValue={
+                                  editDrama && editDrama.Awards
+                                    ? editDrama.Awards.map((award) => ({
+                                        value: award.id,
+                                        label: `${award.name} - ${award.year}`,
+                                      }))
+                                    : []
+                                }
+                                onChange={setSelectedAwards}
+                                isMulti={true}
+                                options={awards}
+                                placeholder="Select Awards"
+                              />
+                            ) : (
+                              <p>Loading...</p> // atau komponen loader yang sesuai
+                            )
                           ) : (
-                            <Select
-                              placeholder="Select Awards"
-                              isLoading="true"
-                              isDisabled="true"
-                            />
+                            <p>Loading...</p>
                           )}
                         </div>
 
@@ -528,19 +619,27 @@ const CmsDramaInput = () => {
                             Genres
                           </label>
                           {genres.length > 0 ? (
-                            <Select
-                              defaultValue={selectedGenres}
-                              onChange={setSelectedGenres}
-                              isMulti="true"
-                              options={genres}
-                              placeholder="Select Genres"
-                            />
+                            editDrama ||
+                            !window.location.pathname.includes("/edit") ? (
+                              <Select
+                                defaultValue={
+                                  editDrama && editDrama.Genres
+                                    ? editDrama.Genres.map((genre) => ({
+                                        value: genre.id,
+                                        label: genre.name,
+                                      }))
+                                    : []
+                                }
+                                onChange={setSelectedGenres}
+                                isMulti={true}
+                                options={genres}
+                                placeholder="Select Genres"
+                              />
+                            ) : (
+                              <p>Loading...</p> // atau komponen loader yang sesuai
+                            )
                           ) : (
-                            <Select
-                              placeholder="Select Genres"
-                              isLoading="true"
-                              isDisabled="true"
-                            />
+                            <p>Loading...</p>
                           )}
                         </div>
 
@@ -553,26 +652,32 @@ const CmsDramaInput = () => {
                             Actors (Up to 9)
                           </label>
                           {actors.length > 0 ? (
-                            <Select
-                              defaultValue={selectedActors}
-                              onChange={setSelectedActors}
-                              isMulti="true"
-                              options={actors}
-                              placeholder="Select Actors"
-                            />
+                            editDrama ||
+                            !window.location.pathname.includes("/edit") ? (
+                              <Select
+                                defaultValue={
+                                  editDrama && editDrama.Actors
+                                    ? editDrama.Actors.map((actor) => ({
+                                        value: actor.id,
+                                        label: actor.name,
+                                      }))
+                                    : []
+                                }
+                                onChange={setSelectedActors}
+                                isMulti={true}
+                                options={actors}
+                                placeholder="Select Actors"
+                              />
+                            ) : (
+                              <p>Loading...</p> // atau komponen loader yang sesuai
+                            )
                           ) : (
-                            <Select
-                              placeholder="Select Actors"
-                              isLoading="true"
-                              isDisabled="true"
-                            />
+                            <p>Loading...</p>
                           )}
 
                           <div className="grid grid-cols-10 mt-1 gap-4">
                             {selectedActors.map((actor) => (
-                              <div
-                                className="w-20 h-40 rounded-full overflow-hidden"
-                              >
+                              <div className="w-20 h-40 rounded-full overflow-hidden">
                                 <img
                                   src={actor.photo}
                                   alt={actor.label}
