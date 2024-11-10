@@ -49,23 +49,42 @@ const CmsActors = () => {
 
   // Fungsi untuk mengambil data countries
   const fetchCountries = async () => {
+    const limit = 10; // Tentukan limit data per halaman
+    let page = 1;
+    let hasMoreData = true;
+
     try {
-      const response = await fetch(BASE_API_URL + "/api/countries");
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+      while (hasMoreData) {
+        const response = await fetch(
+          `${BASE_API_URL}/api/countries?page=${page}&limit=${limit}`
+        );
+        const data = await response.json();
+
+        setCountries((prevCountries) => {
+          // Menggabungkan data negara baru dengan negara sebelumnya tanpa duplikat
+          const countryMap = new Map(
+            prevCountries.map((country) => [country.value, country])
+          );
+
+          data.countries.forEach((newCountry) => {
+            if (!countryMap.has(newCountry.id)) {
+              countryMap.set(newCountry.id, {
+                value: newCountry.id,
+                label: newCountry.name,
+              });
+            }
+          });
+
+          // Ubah Map kembali menjadi array
+          return Array.from(countryMap.values());
+        });
+
+        // Cek apakah masih ada data yang perlu diambil
+        hasMoreData = data.countries.length === limit;
+        page += 1;
       }
-      const data = await response.json();
-      console.log("Countries data:", data); // Debugging
-      setCountries(() => {
-        const updatedCountries = data.countries.map((newCountry) => ({
-          value: newCountry.id,
-          label: newCountry.name,
-        }));
-        return updatedCountries;
-      });
     } catch (error) {
       console.error("Error fetching countries:", error);
-      showAlert("Failed to fetch countries data", "error");
     }
   };
 
