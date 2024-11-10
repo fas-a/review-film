@@ -3,6 +3,7 @@ import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Pagination from "./components/Pagination";
 import Alert from "./components/Alert";
+import FilterAndSearch from "./components/FilterAndSearch";
 
 const CmsCountries = () => {
   const [countries, setCountries] = useState([]);
@@ -14,6 +15,10 @@ const CmsCountries = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const itemsPerPage = 10;
+  const [showValue, setShowValue] = useState("10");
+  const [sortValue, setSortValue] = useState("");
+  const [searchValue, setSearchValue] = useState("");
+  const [filterValue, setFilterValue] = useState("none");
 
   // Fetch countries setiap kali currentPage berubah
   useEffect(() => {
@@ -149,6 +154,37 @@ const CmsCountries = () => {
     }
   };
 
+  // Add the sortCountries function inside the CmsCountries component
+  const sortCountries = (countries) => {
+    if (!sortValue) return countries;
+
+    return [...countries].sort((a, b) => {
+      switch (sortValue) {
+        case "name_asc":
+          return a.name.localeCompare(b.name);
+        case "name_desc":
+          return b.name.localeCompare(a.name);
+        default:
+          return 0;
+      }
+    });
+  };
+
+  // Update the filtering in CmsCountries.jsx
+  const filteredCountries = (countries || []).filter((country) => {
+    if (filterValue === "none") return true;
+    return (country.status || "").toLowerCase() === filterValue.toLowerCase();
+  });
+
+  // Update the searching in CmsCountries.jsx
+  const searchedCountries = (filteredCountries || []).filter(
+    (country) =>
+      (country.name || "").toLowerCase().includes(searchValue.toLowerCase()) ||
+      (country.code || "").toLowerCase().includes(searchValue.toLowerCase())
+  );
+
+  const sortedCountries = sortCountries(searchedCountries);
+
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
       <Sidebar />
@@ -160,6 +196,27 @@ const CmsCountries = () => {
                 Countries Management
               </h2>
 
+              <FilterAndSearch
+                showFilterSection={false}
+                showShowsSection={true}
+                showSortSection={true}
+                showSearchSection={true}
+                showValue={showValue}
+                setShowValue={setShowValue}
+                sortValue={sortValue}
+                setSortValue={setSortValue}
+                sortOptions={[
+                  { value: "", label: "-- Sort --" },
+                  { value: "name_asc", label: "Name (A-Z)" },
+                  { value: "name_desc", label: "Name (Z-A)" },
+                ]}
+                searchValue={searchValue}
+                setSearchValue={setSearchValue}
+                searchPlaceholder="Search for countries"
+              />
+
+              <br></br>
+
               {/* Tampilkan alert jika ada */}
               {alert.message && (
                 <Alert
@@ -168,6 +225,8 @@ const CmsCountries = () => {
                   onClose={() => setAlert({ message: "", type: "" })}
                 />
               )}
+
+              <br></br>
 
               <div className="w-full overflow-hidden rounded-lg shadow-xs">
                 <div className="w-full overflow-x-auto">
@@ -218,7 +277,7 @@ const CmsCountries = () => {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                      {countries.map((country, index) => (
+                      {sortedCountries.map((country, index) => (
                         <tr
                           key={country.id}
                           className="text-gray-700 dark:text-gray-400"

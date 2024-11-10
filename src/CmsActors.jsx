@@ -3,6 +3,7 @@ import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Pagination from "./components/Pagination.jsx";
 import Alert from "./components/Alert";
+import FilterAndSearch from "./components/FilterAndSearch";
 
 const CmsActors = () => {
   const [actors, setActors] = useState([]);
@@ -13,8 +14,12 @@ const CmsActors = () => {
   const [editPhoto, setEditPhoto] = useState("");
   const [editCountryId, setEditCountryId] = useState("");
   const [alert, setAlert] = useState({ message: "", type: "" });
+  const [filterValue, setFilterValue] = useState("none");
+  const [showValue, setShowValue] = useState("10");
+  const [searchValue, setSearchValue] = useState("");
+  const [sortValue, setSortValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const itemsPerPage = parseInt(showValue);
   const [newActor, setNewActor] = useState({
     countryId: "",
     actorName: "",
@@ -215,15 +220,54 @@ const CmsActors = () => {
     return country ? country.name : "Unknown";
   };
 
-  // Hitung total halaman berdasarkan jumlah data
-  const totalPages = Math.ceil(actors.length / itemsPerPage);
+  const sortActors = (actorsList) => {
+    if (!sortValue) return actorsList;
 
-  // Pagination calculations
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentActors = actors.slice(indexOfFirstItem, indexOfLastItem);
+    return [...actorsList].sort((a, b) => {
+      switch (sortValue) {
+        case "name_asc":
+          return a.name.localeCompare(b.name);
+        case "name_desc":
+          return b.name.localeCompare(a.name);
+        case "birth_date_asc":
+          return a.birth_date - b.birth_date;
+        case "birth_date_desc":
+          return b.birth_date - a.birth_date;
+        default:
+          return 0;
+      }
+    });
+  };
 
-  const paginate = (pageNumber) => {
+  const filterActors = (actorsList) => {
+    if (filterValue === "none") return actorsList;
+    return actorsList.filter(
+      (actor) => actor.status.toLowerCase() === filterValue.toLowerCase()
+    );
+  };
+
+  const searchActors = (actorsList) => {
+    return actorsList.filter((actor) =>
+      actor.name.toLowerCase().includes(searchValue.toLowerCase())
+    );
+  };
+
+  const processedActors = sortActors(searchActors(filterActors(actors)));
+  const totalItems = processedActors.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterValue, searchValue, showValue, sortValue]);
+
+  const indexOfLastActor = currentPage * itemsPerPage;
+  const indexOfFirstActor = indexOfLastActor - itemsPerPage;
+  const displayedActors = processedActors.slice(
+    indexOfFirstActor,
+    indexOfLastActor
+  );
+
+  const handlePageChange = (pageNumber) => {
     if (pageNumber >= 1 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
     }
@@ -239,6 +283,30 @@ const CmsActors = () => {
               <h2 className="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
                 Actors Management
               </h2>
+
+              <FilterAndSearch
+                showFilterSection={false}
+                showValue={showValue}
+                setShowValue={setShowValue}
+                showOptions={[
+                  { value: "10", label: "10" },
+                  { value: "20", label: "20" },
+                  { value: "30", label: "30" },
+                  { value: "40", label: "40" },
+                ]}
+                sortValue={sortValue}
+                setSortValue={setSortValue}
+                sortOptions={[
+                  { value: "", label: "-- Sort --" },
+                  { value: "name_asc", label: "Name (A-Z)" },
+                  { value: "name_desc", label: "Name (Z-A)" },
+                ]}
+                searchValue={searchValue}
+                setSearchValue={setSearchValue}
+                searchPlaceholder="Search actor..."
+              />
+
+              <br></br>
 
               {alert.message && (
                 <Alert
@@ -354,7 +422,7 @@ const CmsActors = () => {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                      {currentActors.map((actor, index) => (
+                      {displayedActors.map((actor, index) => (
                         <tr
                           key={actor?.id}
                           className="text-gray-700 dark:text-gray-400"
@@ -500,15 +568,13 @@ const CmsActors = () => {
                     </tbody>
                   </table>
                 </div>
-                {actors.length > 0 && (
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={Math.ceil(actors.length / itemsPerPage)}
-                    totalItems={actors.length}
-                    itemsPerPage={itemsPerPage}
-                    paginate={paginate}
-                  />
-                )}
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={totalItems}
+                  itemsPerPage={itemsPerPage}
+                  paginate={handlePageChange}
+                />
               </div>
             </div>
           </main>

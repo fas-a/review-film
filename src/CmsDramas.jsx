@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import Pagination from "./components/Pagination";
 import DramaPopup from "./components/DramaPopup";
 import Select from "react-select";
+import FilterAndSearch from "./components/FilterAndSearch";
 
 const CmsDramas = () => {
   const [dramas, setDramas] = useState([]);
@@ -19,11 +20,73 @@ const CmsDramas = () => {
   const [actors, setActors] = useState([]);
   const [selectedActors, setSelectedActors] = useState([]);
   const [bannerPreview, setBannerPreview] = useState(null);
-  const itemsPerPage = 10;
+  const [filterValue, setFilterValue] = useState("none");
+  const [showValue, setShowValue] = useState("10");
+  const [searchValue, setSearchValue] = useState("");
+  const [sortValue, setSortValue] = useState("");
+  const itemsPerPage = parseInt(showValue, 10);
+
+  const sortDramas = (dramasList) => {
+    if (!sortValue) return dramasList;
+
+    return [...dramasList].sort((a, b) => {
+      switch (sortValue) {
+        case "title_asc":
+          return a.title.localeCompare(b.title);
+        case "title_desc":
+          return b.title.localeCompare(a.title);
+        case "year_asc":
+          return a.year - b.year;
+        case "year_desc":
+          return b.year - a.year;
+        default:
+          return 0;
+      }
+    });
+  };
+
+  const filterDramas = (dramasList) => {
+    if (filterValue === "none") return dramasList;
+    return dramasList.filter(
+      (drama) => drama.status.toLowerCase() === filterValue.toLowerCase()
+    );
+  };
+
+  const searchDramas = (dramasList) => {
+    return dramasList.filter(
+      (drama) =>
+        (drama.title || "").toLowerCase().includes(searchValue.toLowerCase()) ||
+        (drama.alt_title || "")
+          .toLowerCase()
+          .includes(searchValue.toLowerCase())
+    );
+  };
+
+  const processedDramas = sortDramas(searchDramas(dramas));
+  const totalItemsProcessed = processedDramas.length;
+  const totalPagesProcessed = Math.ceil(totalItemsProcessed / itemsPerPage);
 
   useEffect(() => {
-    fetchDramas(currentPage);
-  }, [currentPage]);
+    setCurrentPage(1);
+  }, [searchValue, showValue, sortValue]);
+
+  const indexOfLastDrama = currentPage * itemsPerPage;
+  const indexOfFirstDrama = indexOfLastDrama - itemsPerPage;
+  const displayedDramas = processedDramas.slice(
+    indexOfFirstDrama,
+    indexOfLastDrama
+  );
+
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPagesProcessed) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
+  // Fetch all dramas once when the component mounts or pagination/search/sort changes
+  useEffect(() => {
+    fetchDramas();
+  }, [currentPage, searchValue, sortValue, showValue]);
 
   useEffect(() => {
     fetchCountries();
@@ -226,12 +289,6 @@ const CmsDramas = () => {
     }
   };
 
-  const handlePageChange = (pageNumber) => {
-    if (pageNumber >= 1 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
-    }
-  };
-
   const [editableId, setEditableId] = useState(null);
   const [editDrama, setEditDrama] = useState({
     title: "",
@@ -401,10 +458,9 @@ const CmsDramas = () => {
       .catch((error) => {
         console.error("Error updating drama status:", error);
       });
-  
+
     closeModal(); // Close modal after status update
   };
-  
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
@@ -416,6 +472,36 @@ const CmsDramas = () => {
               <h2 className="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
                 Dramas Management
               </h2>
+
+              <FilterAndSearch
+                showSortSection={true}
+                showSearchSection={true}
+                filterValue={filterValue}
+                setFilterValue={setFilterValue}
+                filterOptions={[
+                  { value: "none", label: "None" },
+                  { value: "approved", label: "Approved" },
+                  { value: "unapproved", label: "Unapproved" },
+                  { value: "pending", label: "Pending" },
+                ]}
+                showValue={showValue}
+                setShowValue={setShowValue}
+                sortValue={sortValue}
+                setSortValue={setSortValue}
+                sortOptions={[
+                  { value: "", label: "-- Sort --" },
+                  { value: "title_asc", label: "Title (A-Z)" },
+                  { value: "title_desc", label: "Title (Z-A)" },
+                  { value: "year_asc", label: "Year (Low to High)" },
+                  { value: "year_desc", label: "Year (High to Low)" },
+                ]}
+                searchValue={searchValue}
+                setSearchValue={setSearchValue}
+                searchPlaceholder="Search dramas..."
+              />
+
+              <br />
+
               <div className="w-full overflow-hidden rounded-lg shadow-xs mt-8">
                 <div className="w-full overflow-x-auto">
                   <table className="w-full whitespace-no-wrap">
@@ -440,7 +526,7 @@ const CmsDramas = () => {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                      {dramas.map((drama, index) => {
+                      {displayedDramas.map((drama, index) => {
                         const country = countries.find(
                           (country) => country.value === drama.country_id
                         );

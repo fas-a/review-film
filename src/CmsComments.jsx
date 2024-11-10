@@ -168,14 +168,32 @@ const CmsComments = () => {
 
               {/* Panggil komponen FilterAndSearch */}
               <FilterAndSearch
+                showFilterSection={true}
+                showShowsSection={true}
+                showSortSection={true}
+                showSearchSection={true}
                 filterValue={filterValue}
                 setFilterValue={setFilterValue}
+                filterOptions={[
+                  { value: "none", label: "None" },
+                  { value: "approved", label: "Approved" },
+                  { value: "unapproved", label: "Unapproved" },
+                  { value: "pending", label: "Pending" },
+                ]}
                 showValue={showValue}
                 setShowValue={setShowValue}
-                searchValue={searchValue}
-                setSearchValue={setSearchValue}
                 sortValue={sortValue}
                 setSortValue={setSortValue}
+                sortOptions={[
+                  { value: "", label: "-- Sort --" },
+                  { value: "rate_asc", label: "Rate (Low to High)" },
+                  { value: "rate_desc", label: "Rate (High to Low)" },
+                  { value: "content_asc", label: "Comment (A-Z)" },
+                  { value: "content_desc", label: "Comment (Z-A)" },
+                ]}
+                searchValue={searchValue}
+                setSearchValue={setSearchValue}
+                searchPlaceholder="Search for comments"
               />
 
               <div className="w-full overflow-hidden rounded-lg shadow-xs mt-8">
