@@ -158,6 +158,13 @@ const LoginPage = () => {
                   >
                     Create account
                   </a>
+                  <br />
+                  <a
+                    className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
+                    href="./forgot-password"
+                  >
+                    Forgot Password
+                  </a>
                 </p>
               </div>
             </div>

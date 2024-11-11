@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
  
 
 function RegisterPage() {
@@ -6,6 +6,17 @@ function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (password.length > 0 && password.length < 8) {
+      setError('Password must be at least 8 characters long');
+    } else if (password && confirmPassword && password !== confirmPassword) {
+      setError('Passwords do not match');
+    } else {
+      setError('');
+    }
+  }, [password, confirmPassword]);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -105,6 +116,7 @@ function RegisterPage() {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                     />
+                     {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
                   </label>
                   <label className="block mt-4 text-sm">
                     <span className="text-gray-700 dark:text-gray-400">

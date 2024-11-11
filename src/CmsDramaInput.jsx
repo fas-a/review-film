@@ -62,19 +62,9 @@ const CmsDramaInput = () => {
         synopsis: editDrama.synopsis,
         availability: editDrama.availability,
         trailer: editDrama.link_trailer,
-        awards: editDrama.Awards.map((award) => ({
-          value: award.id,
-          label: award.name + " - " + award.year,
-        })),
-        genres: editDrama.Genres.map((genre) => ({
-          value: genre.id,
-          label: genre.name,
-        })),
-        actors: editDrama.Actors.map((actor) => ({
-          value: actor.id,
-          label: actor.name,
-          photo: actor.photo,
-        })),
+        awards: (editDrama.Awards || []).map((award) => Number(award.id)),
+        genres: (editDrama.Genres || []).map((genre) => Number(genre.id)),
+        actors: (editDrama.Actors || []).map((actor) => Number(actor.id)),
         photo: editDrama.photo,
       });
 

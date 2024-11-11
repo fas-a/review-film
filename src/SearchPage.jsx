@@ -11,13 +11,21 @@ function SearchPage() {
 
   const [films, setFilms] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [selectedGenre, setSelectedGenre] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedAvailability, setSelectedAvailability] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedAward, setSelectedAward] = useState("");
+  const [sortValue, setSortValue] = useState("");
 
+  const handleSortChange = (sort) => {
+    // Added sort change handler
+    setSortValue(sort);
+    setCurrentPage(1);
+  };
   useEffect(() => {
     fetch( process.env.REACT_APP_BASE_API_URL + "/api/dramas2")
       .then((response) => {
@@ -147,6 +155,8 @@ function SearchPage() {
           onStatusChange={handleStatusChange}
           selectedAward={selectedAward}
           onAwardChange={handleAwardChange}
+          selectedSort={sortValue}
+          onSortChange={handleSortChange}
         />
         <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
           {filteredFilms.length > 0 ? (

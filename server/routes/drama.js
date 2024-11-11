@@ -46,7 +46,10 @@ router.get("/dramas", async (req, res) => {
     const { rows: dramas, count } = await Drama.findAndCountAll({
       limit,
       offset,
-      order,
+      order: [
+        ["updatedAt", "DESC"],
+        ["createdAt", "DESC"],
+      ],
       include: [
         {
           model: Genre,
@@ -243,6 +246,7 @@ router.put("/dramas/:id", multerUploads, uploadToCloudinary, async (req, res) =>
 
     await drama.save();
 
+    console.log(awards, genres, actors);
     // Hapus semua award, genre, dan actor terkait
 
     if (drama && awards) {

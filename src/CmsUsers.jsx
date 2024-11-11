@@ -53,7 +53,7 @@ const CmsUsers = () => {
 
   const suspendUser = async (id) => {
     try {
-      const response = await fetch(`/api/users/${id}/suspend`, {
+      const response = await fetch(`${process.env.REACT_APP_BASE_API_URL}/api/users/${id}/suspend`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -73,7 +73,7 @@ const CmsUsers = () => {
 
   const activateUser = async (id) => {
     try {
-      const response = await fetch(`/api/users/${id}/activate`, {
+      const response = await fetch(`${process.env.REACT_APP_BASE_API_URL}/api/users/${id}/activate`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
