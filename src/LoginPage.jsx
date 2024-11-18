@@ -9,7 +9,7 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(""); // Reset error message
+    setError("");
     try {
       const response = await fetch( process.env.REACT_APP_BASE_API_URL + "/auth/login", {
         method: "POST",
@@ -30,24 +30,6 @@ const LoginPage = () => {
       console.error(error);
     }
   };
-
-  // const handleLogin = async (e) => {
-  //   e.preventDefault();
-  //   const response = await fetch( process.env.REACT_APP_BASE_API_URL + "/auth/login", {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify({ emailOrUsername, password }),
-  //   });
-  //   console.log(emailOrUsername);
-  //   const data = await response.json();
-  //   if (response.ok) {
-  //     sessionStorage.setItem("token", data.token);
-  //     console.log(data.token);
-  //     window.location.href = "/";
-  //   } else {
-  //     console.error(data.message);
-  //   }
-  // };
 
   return (
     <>
