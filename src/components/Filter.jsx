@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
- 
 
 function Filter({
   selectedGenre,
@@ -66,7 +65,9 @@ function Filter({
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const response = await fetch( process.env.REACT_APP_BASE_API_URL + "/api/countries");
+        const response = await fetch(
+          process.env.REACT_APP_BASE_API_URL + "/api/countries"
+        );
         if (!response.ok) throw new Error("Failed to fetch countries");
         const data = await response.json();
         setCountries(data.countries);
