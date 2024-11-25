@@ -1,7 +1,6 @@
 // components/BookmarkButton.jsx
 import React, { useState, useEffect } from "react";
 import { BookmarkIcon } from "lucide-react";
- 
 
 const BookmarkButton = ({ dramaId }) => {
   const [isBookmarked, setIsBookmarked] = useState(false);
@@ -17,7 +16,7 @@ const BookmarkButton = ({ dramaId }) => {
       if (!token) return;
 
       const response = await fetch(
-        `${ process.env.REACT_APP_BASE_API_URL}/api/bookmarks/check/${dramaId}`,
+        `${process.env.REACT_APP_BASE_API_URL}/api/bookmarks/check/${dramaId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -41,14 +40,17 @@ const BookmarkButton = ({ dramaId }) => {
       }
 
       if (isBookmarked) {
-        await fetch(`${ process.env.REACT_APP_BASE_API_URL}/api/bookmarks/${dramaId}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await fetch(
+          `${process.env.REACT_APP_BASE_API_URL}/api/bookmarks/${dramaId}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
       } else {
-        await fetch( process.env.REACT_APP_BASE_API_URL + "/api/bookmarks", {
+        await fetch(process.env.REACT_APP_BASE_API_URL + "/api/bookmarks", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -71,6 +73,7 @@ const BookmarkButton = ({ dramaId }) => {
     <button
       onClick={toggleBookmark}
       disabled={loading}
+      data-testid="bookmark-button"
       className={`p-2 rounded-full transition-colors ${
         isBookmarked
           ? "text-yellow-500 hover:text-yellow-600"
