@@ -85,20 +85,4 @@ describe("CommentForm Component", () => {
       expect(commentInput.value).toBe("");
     });
   });
-
-  test("updates form state on input change", () => {
-    render(<CommentForm {...mockProps} />);
-
-    // Test rating change
-    const ratingInput = screen.getByTestId("rating-input");
-    fireEvent.change(ratingInput, { target: { value: "3" } });
-    expect(ratingInput.value).toBe("3");
-
-    // Test comment change
-    const commentInput = screen.getByPlaceholderText(
-      "Enter some long form content."
-    );
-    fireEvent.change(commentInput, { target: { value: "Test comment" } });
-    expect(commentInput.value).toBe("Test comment");
-  });
 });

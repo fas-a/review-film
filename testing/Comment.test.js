@@ -6,7 +6,7 @@ import Comment from "../src/components/Comment";
 describe("Comment Component", () => {
   const mockProps = {
     avatar: "https://example.com/avatar.jpg",
-    name: "John Doe",
+    name: "Salsabil Kh",
     comment: "Great drama!",
     rating: "4.5/5",
   };
@@ -15,7 +15,7 @@ describe("Comment Component", () => {
     render(<Comment {...mockProps} />);
 
     // Cek nama user
-    expect(screen.getByText("John Doe")).toBeInTheDocument();
+    expect(screen.getByText("Salsabil Kh")).toBeInTheDocument();
 
     // Cek isi komentar
     expect(screen.getByText("Great drama!")).toBeInTheDocument();
