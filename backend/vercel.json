@@ -15,6 +15,5 @@
       "src": "/auth/(.*)",
       "dest": "/index.js"
     }
-  ],
-  "files": ["config/config.json"]
+  ]
 }
