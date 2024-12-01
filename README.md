@@ -1,70 +1,224 @@
-# Getting Started with Create React App
+# Review Film 🎬 - Website DramaKu
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Repository project **Review-Film**.  
+[GitHub Repository](https://github.com/fas-a/review-film.git)
 
-## Available Scripts
+Repository ini berisi source code untuk Website DramaKu. Website DramaKu bertujuan untuk memberikan informasi lengkap tentang drama dan film, termasuk detail seperti poster, sinopsis, rating, genre, aktor, dan video trailer. Platform ini memungkinkan pengguna untuk melakukan review dan memberikan penilaian pada drama favorit mereka.
 
-In the project directory, you can run:
+# Developed By 👩‍💻👨‍💻
 
-### `npm start`
+- **Faris Abulkhoir (221524040)**
+- **Salsabil Khoirunisa (221524058)**
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+# Preview Website DramaKu
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+![App Screenshot](./frontend/src/img/LandingPage.jpg)
 
-### `npm test`
+## Spesification Technologies
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Frontend:**
+  - React
+  - Tailwind CSS
+  - React Router
+  - Fetch API
+- **Backend:**
+  - Node.js
+  - JWT Authentication
+  - Google OAuth
+  - Cloudinary
+- **Database:**
+  - PostgreSQL
+- **Testing:**
+  - Jest
+  - React Testing Library
+- **Deployment:**
+  - Docker
+  - Docker Compose
+  - Alibaba Cloud
 
-### `npm run build`
+# Installation
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Run Locally
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Ikuti langkah-langkah berikut untuk menjalankan project secara lokal:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 1. Clone Repository
 
-### `npm run eject`
+```bash
+git clone https://github.com/fas-a/review-film.git
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 2. Arahkan ke root direktori proyek
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+cd review-film
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 3. Setup Database
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Pastikan PostgreSQL terinstal di komputer Anda.
+Buat database baru dengan nama `review-film`.
 
-## Learn More
+### 4. Backend Setup
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Masuk ke folder backend.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+cd backend
+```
 
-### Code Splitting
+Install dependencies
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```bash
+npm install
+```
 
-### Analyzing the Bundle Size
+Buat file .env di folder backend
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```bash
+cp .env.example .env
+```
 
-### Making a Progressive Web App
+Perbarui file .env dengan konfigurasi berikut:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```bash
+GOOGLE_CLIENT_ID=<your_google_client_id>
+GOOGLE_CLIENT_SECRET=<your_google_client_secret>
+JWT_SECRET=<your_jwt_secret>
 
-### Advanced Configuration
+EMAIL_USER=<your_email_user>
+EMAIL_PASSWORD=<your_email_password>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+CLOUDINARY_CLOUD_NAME=<your_cloudinary_cloud_name>
+CLOUDINARY_API_KEY=<your_cloudinary_api_key>
+CLOUDINARY_API_SECRET=<your_cloudinary_api_secret>
 
-### Deployment
+SERVER_URL=http://localhost:3001
+CLIENT_URL=http://localhost:3000
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+DATABASE_URL=postgres://postgres:<your_password>@localhost:5432/review-film
 
-### `npm run build` fails to minify
+DB_NAME=review-film
+DB_USER=postgres
+DB_PASS=<your_postgresql_password>
+DB_HOST=localhost
+DB_DIALECT=postgres
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Migrasi database
+
+```bash
+npx sequelize-cli db:migrate
+```
+
+Seed database
+
+```bash
+npx sequelize-cli db:seed:all
+```
+
+Jalankan backend server
+
+```bash
+npm run dev
+```
+
+### 5. Frontend Setup
+
+Pindah kembali ke root project
+
+```bash
+cd ..
+```
+
+Masuk ke folder frontend
+
+```bash
+cd frontend
+```
+
+Install dependencies
+
+```bash
+npm install
+```
+
+Buat file .env di folder frontend
+
+```bash
+cp .env.example .env
+```
+
+Perbarui file .env dengan konfigurasi berikut:
+
+```bash
+REACT_APP_BASE_API_URL=http://localhost:3001
+GOOGLE_CLIENT_ID=<your_google_client_id>
+GOOGLE_CLIENT_SECRET=<your_google_client_secret>
+```
+
+Jalankan frontend server
+
+```bash
+npm start
+```
+
+## With Docker
+
+### 1. Pastikan Docker dan Docker Compose telah terinstal di komputer Anda.
+
+### 2. Jalankan Aplikasi
+
+Arahkan ke root direktori proyek
+
+```bash
+cd review-film
+```
+
+Buat file doocker-compose.yml
+
+```bash
+cp docker-compose.yml.example docker-compose.yml
+```
+
+Perbarui konfigurasi docker-compose.yml
+
+Bangun dan jalankan container
+
+```bash
+docker-compose up --build
+```
+
+Pastikan semua service berjalan. Anda dapat memverifikasi dengan
+
+```bash
+docker ps
+```
+
+Migrasi database
+
+```bash
+docker exec dramaku-backend-1 npx sequelize-cli db:migrate
+```
+
+Seed database
+
+```bash
+docker exec review-film-backend-1 npx sequelize-cli db:seed:all
+```
+
+
+## Akses Website
+
+Buka browser dan akses frontend di: `http://localhost:3000`.
+
+Backend API berjalan di: `http://localhost:3001`.
+
+## Live Demo
+
+Live demo bisa diakses pada link berikut: `https://bit.ly/3BaetFb`.
+
+### Akun Login
+
+Username: admin
+Passwoord: 12345678
