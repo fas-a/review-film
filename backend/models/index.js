@@ -1,13 +1,25 @@
 'use strict';
 
-import "pg";
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const process = require('process');
+const dotenv = require('dotenv');
+dotenv.config(); // Load environment variables from .env file
+
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
+const configPath = path.resolve(__dirname, '../config/config.json');
+const config = require(configPath)[env];
+
+// Replace placeholders with actual environment variables
+Object.keys(config).forEach(key => {
+  if (typeof config[key] === 'string' && config[key].startsWith('${env:')) {
+    const envVar = config[key].slice(6, -1);
+    config[key] = process.env[envVar];
+  }
+});
+
 const db = {};
 
 let sequelize;
