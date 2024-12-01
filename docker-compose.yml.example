@@ -1,8 +1,8 @@
 version: '3.8'
 
 services:
-  restart: always
   frontend:
+    restart: always
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -16,6 +16,7 @@ services:
       - GOOGLE_CLIENT_SECRET=
 
   backend:
+    restart: always
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -42,6 +43,7 @@ services:
       - db
 
   db:
+    restart: always
     image: postgres:13
     environment:
       POSTGRES_USER: 
