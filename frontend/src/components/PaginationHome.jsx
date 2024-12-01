@@ -1,3 +1,5 @@
+import React from "react";
+
 const PaginationHome = ({ currentPage, totalPages, paginate }) => {
   const maxPagesToShow = 5; // Jumlah halaman yang ditampilkan sekaligus
   const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
