@@ -221,4 +221,5 @@ Live demo bisa diakses pada link berikut: `https://bit.ly/3BaetFb`.
 ### Akun Login
 
 Username: admin
-Passwoord: 12345678
+
+Password: 12345678
