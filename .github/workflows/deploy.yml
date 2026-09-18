@@ -1,11 +1,10 @@
-name: Docker CI
+name: CICD
 
 on:
   pull_request:
     branches: [master]
   push:
     branches: [master]
-  workflow_dispatch:
 
 permissions:
   contents: read
@@ -14,13 +13,43 @@ jobs:
   docker-build:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      packages: write
+
     strategy:
       matrix:
         service: [frontend, backend]
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: Build Docker image
-        run: docker build -t dramaku-${{ matrix.service }}:ci ./${{ matrix.service }}
+      - name: Set image name
+        env:
+          REPOSITORY: ${{ github.repository }}
+          SERVICE: ${{ matrix.service }}
+        run: |
+          echo "IMAGE=ghcr.io/${REPOSITORY,,}-${SERVICE}" >> "$GITHUB_ENV"
+
+      - name: Login to GHCR
+        if: github.event_name == 'push'
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          printf '%s' "$GHCR_TOKEN" |
+            docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+
+      - name: Build image
+        env:
+          SERVICE: ${{ matrix.service }}
+        run: |
+          docker build \
+            --platform linux/amd64 \
+            --label "org.opencontainers.image.source=https://github.com/$GITHUB_REPOSITORY" \
+            -t "$IMAGE:$GITHUB_SHA" \
+            "./$SERVICE"
+
+      - name: Push image
+        if: github.event_name == 'push'
+        run: docker push "$IMAGE:$GITHUB_SHA"
