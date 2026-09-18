@@ -53,3 +53,87 @@ jobs:
       - name: Push image
         if: github.event_name == 'push'
         run: docker push "$IMAGE:$GITHUB_SHA"
+    deploy:
+    needs: docker-build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    permissions:
+      contents: read
+
+    concurrency:
+      group: dramaku-production
+      cancel-in-progress: false
+
+    steps:
+      - name: Install cloudflared
+        run: |
+          curl -fL --retry 3 \
+            https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb \
+            -o /tmp/cloudflared.deb
+          sudo dpkg -i /tmp/cloudflared.deb
+
+      - name: Prepare SSH credentials
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.VPS_SSH_KNOWN_HOSTS }}
+        run: |
+          test -n "$SSH_PRIVATE_KEY"
+          test -n "$SSH_KNOWN_HOSTS"
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/deploy_key ~/.ssh/known_hosts
+
+      - name: Deploy to VPS
+        run: |
+          ssh \
+            -i ~/.ssh/deploy_key \
+            -o IdentitiesOnly=yes \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            -o ConnectTimeout=20 \
+            -o ServerAliveInterval=15 \
+            -o ServerAliveCountMax=3 \
+            -o "ProxyCommand=cloudflared access ssh --hostname %h" \
+            deploy@ssh.fas-a.site \
+            "bash -se -- '$GITHUB_SHA'" <<'REMOTE'
+          set -euo pipefail
+          cd "$HOME/dramaku"
+
+          export IMAGE_TAG="$1"
+          [[ "$IMAGE_TAG" =~ ^[0-9a-f]{40}$ ]]
+
+          docker compose config --quiet
+          docker compose pull frontend backend
+
+          docker compose up -d --wait --wait-timeout 120 db
+          docker compose run --rm --no-deps backend \
+            npx sequelize-cli db:migrate
+
+          docker compose up -d \
+            --no-deps \
+            --force-recreate \
+            --wait \
+            --wait-timeout 120 \
+            backend frontend
+
+          curl --noproxy '*' \
+            --fail --silent --show-error \
+            --retry 5 --retry-connrefused --retry-delay 3 \
+            --max-time 10 \
+            http://127.0.0.1:8080/healthz
+
+          if grep -q '^IMAGE_TAG=' .env; then
+            sed -i "s/^IMAGE_TAG=.*/IMAGE_TAG=$IMAGE_TAG/" .env
+          else
+            printf '\nIMAGE_TAG=%s\n' "$IMAGE_TAG" >> .env
+          fi
+
+          echo "Deployment berhasil: $IMAGE_TAG"
+          REMOTE
+
+      - name: Remove SSH credentials
+        if: always()
+        run: rm -f ~/.ssh/deploy_key ~/.ssh/known_hosts
