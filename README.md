@@ -232,3 +232,7 @@ Password: 12345678
 Username: sabil
 Password: 12345678
 ```
+
+## CI/CD ke VPS
+
+Panduan GitHub Actions, secrets, deployment, dan rollback: [deploy/README.md](deploy/README.md).

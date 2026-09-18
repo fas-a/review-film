@@ -9,7 +9,7 @@ dotenv.config(); // Load environment variables from .env file
 
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-const configPath = path.resolve(__dirname, '../config/config.json');
+const configPath = path.resolve(__dirname, '../config/config.js');
 const config = require(configPath)[env];
 
 // Replace placeholders with actual environment variables

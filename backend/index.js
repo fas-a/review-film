@@ -136,11 +136,19 @@ app.get("/logout", (req, res) => {
   });
 });
 
+app.get("/healthz", async (req, res) => {
+  try {
+    await sequelize.authenticate();
+    res.json({ status: "ok" });
+  } catch {
+    res.status(503).json({ status: "unavailable" });
+  }
+});
 app.use("/api", require("./routes/drama"));
 app.use("/auth", require("./routes/auth"));
 
 // const PORT = 3000;
-const PORT = process.env.NODE_ENV === "test" ? 0 : 3001;
+const PORT = process.env.NODE_ENV === "test" ? 0 : Number(process.env.PORT || 3001);
 
 app.listen(PORT, () => {
   // console.log(`Server running on port ${PORT}`);

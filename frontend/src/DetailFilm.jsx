@@ -23,7 +23,7 @@ function DetailFilm() {
       return;
     }
     try {
-      const response = await fetch( process.env.REACT_APP_BASE_API_URL + "auth/protected", {
+      const response = await fetch( process.env.REACT_APP_BASE_API_URL + "/auth/protected", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
